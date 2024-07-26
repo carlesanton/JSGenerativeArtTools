@@ -1,3 +1,4 @@
+import { RgbQuant } from './external_libraries/RgbQuant/rgbquant.js';
 
 function extractCollorPaletteFromImage(img) {
     let resized_image = img.get();  // Duplicate the image
