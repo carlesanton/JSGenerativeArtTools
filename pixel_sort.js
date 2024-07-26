@@ -69,3 +69,8 @@ function angleToCoordinates(angleInDegrees, radius = 100) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
+export {
+  sort_step,
+  sort_step_random,
+  angleToCoordinates
+}

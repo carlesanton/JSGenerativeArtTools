@@ -24,3 +24,8 @@ function prepareP5Js(artwork_seed) {
   randomSeed(random_seed);
   noiseSeed(random_seed);
 }
+
+export {
+  scaleCanvasToFit,
+  prepareP5Js,
+}

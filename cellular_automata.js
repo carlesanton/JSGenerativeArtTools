@@ -167,3 +167,8 @@ function cellular_automata_multicolor_cicle(grid, palette, new_random_color_inde
     newGrid.updatePixels()
     return newGrid;
 } 
+
+export {
+    cellular_automata_multicolor_cicle,
+    cellular_automata,
+}

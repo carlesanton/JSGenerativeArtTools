@@ -104,3 +104,9 @@ function colorQuantize(img_to_reduce, number_of_colors){
   return out
 }
 
+export {
+  extractCollorPaletteFromImage,
+  buildPaletteIndexDict,
+  displayPalette,
+  colorQuantize,
+};
