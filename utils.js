@@ -14,4 +14,13 @@ function scaleCanvasToFit(artworkHeight, artworkWidth) {
     canvasElement.style.height = 'auto';
   }
 }
-  
+
+function prepareP5Js(artwork_seed) {
+  let random_seed = artwork_seed
+  if (random_seed == -1){
+    random_seed = floor(random(10000000));
+  }
+  console.log('Using seed: ', random_seed)
+  randomSeed(random_seed);
+  noiseSeed(random_seed);
+}
