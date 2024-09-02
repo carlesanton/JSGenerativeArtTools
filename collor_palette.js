@@ -97,7 +97,7 @@ function colorQuantize(img_to_reduce, number_of_colors){
       out.pixels[off1] = reduced_image[off1];
       out.pixels[off1+1] = reduced_image[off1+1];
       out.pixels[off1+2] = reduced_image[off1+2];
-      out.pixels[off1+3] = 225;
+      out.pixels[off1+3] = 255;
     }
   }
   out.updatePixels()
