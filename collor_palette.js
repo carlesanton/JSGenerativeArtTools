@@ -78,7 +78,7 @@ function colorQuantize(img_to_reduce, number_of_colors){
 
   var opts = {
     colors: number_of_colors ,               // desired palette size
-    method: 2,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
+    method: 1,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
     boxSize: [64,64],        // subregion dims (if method = 2)
     // boxPxls: 2,              // min-population threshold (if method = 2)
     // initColors: 256,        // # of top-occurring colors  to start with (if method = 1)
