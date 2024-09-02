@@ -10,7 +10,7 @@ function calculateFPS(currentTime) {
 }
 
 function displayFPS(fps) {
-    let roundedFps = parseFloat(fps.toFixed(2));
+    let roundedFps = parseInt(fps.toFixed(2));
     let fps_string = 'FPS: ' + roundedFps
 
     // // Save the original text size
