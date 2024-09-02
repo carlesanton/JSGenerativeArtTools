@@ -55,6 +55,8 @@ function displayPalette(colorPallete, palleteWidth, palleteHeight){
     xOffset-=width/2
     yOffset-=height/2
   }
+
+  strokeWeight(2); // Thickness of the border
   for (let row = 0; row < numberOfRows; row++) {
     for (let col = 0; col < numberOfColumns; col++) {
       let i = row * numberOfColumns + col;
