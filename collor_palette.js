@@ -2,7 +2,6 @@ import { RgbQuant } from './external_libraries/RgbQuant/rgbquant.js';
 
 function extractCollorPaletteFromImage(img) {
     let resized_image = img.get();
-    // resized_image.resize(100,100)
     resized_image.loadPixels();
     const colors = new Map();
     for (let i = 0; i < resized_image.pixels.length; i += 4) {
