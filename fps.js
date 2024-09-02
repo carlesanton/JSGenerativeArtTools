@@ -27,8 +27,6 @@ function displayFPS(fps) {
 
     // Style the text with white color, black borders
     fill(255); // White fill color
-    stroke(0); // Black stroke color
-    strokeWeight(2); // Thickness of the border
 
     textSize(32);
     let textCoordX = width - fpsTextWidth - 30
