@@ -27,8 +27,8 @@ function sort_step(sorted){
   } 
 
 function sort_step_random(sorted, n_iterations, direction = {x:1,y:0}){
-  // sorted = image.get()
-  sorted.loadPixels();
+  let sorted_img = sorted.get()
+  sorted_img.loadPixels();
   for(let i = 0; i<n_iterations; i++){
     let w = Math.floor(random(sorted.width));
     let h = Math.floor(random(sorted.height));
@@ -51,7 +51,7 @@ function sort_step_random(sorted, n_iterations, direction = {x:1,y:0}){
       // }
     }
   }
-  sorted.updatePixels()
+  sorted_img.updatePixels()
   return sorted
 }
 
