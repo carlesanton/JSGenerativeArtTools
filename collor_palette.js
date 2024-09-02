@@ -47,9 +47,15 @@ function displayPalette(colorPallete, palleteWidth, palleteHeight){
     numberOfRows = Math.ceil(numberOfRows);
   }
 
-  const xOffset = 0;
-  const yOffset = 0;
+  let xOffset = 0;
+  let yOffset = 0;
 
+  // Change coords if using WEBGL
+  let usingWEBGL = _renderer['GL']
+  if (usingWEBGL){
+    xOffset-=width/2
+    yOffset-=height/2
+  }
   for (let row = 0; row < numberOfRows; row++) {
     for (let col = 0; col < numberOfColumns; col++) {
       let i = row * numberOfColumns + col;
