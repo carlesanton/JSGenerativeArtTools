@@ -2,7 +2,6 @@ import { RgbQuant } from './external_libraries/RgbQuant/rgbquant.js';
 
 function extractCollorPaletteFromImage(img) {
     let resized_image = img.get();
-    resized_image.resize(100,100)
     resized_image.loadPixels();
     const colors = new Map();
     for (let i = 0; i < resized_image.pixels.length; i += 4) {
@@ -47,9 +46,17 @@ function displayPalette(colorPallete, palleteWidth, palleteHeight){
     numberOfRows = Math.ceil(numberOfRows);
   }
 
-  const xOffset = 0;
-  const yOffset = 0;
+  let xOffset = 0;
+  let yOffset = 0;
 
+  // Change coords if using WEBGL
+  let usingWEBGL = _renderer['GL']
+  if (usingWEBGL){
+    xOffset-=width/2
+    yOffset-=height/2
+  }
+
+  strokeWeight(2); // Thickness of the border
   for (let row = 0; row < numberOfRows; row++) {
     for (let col = 0; col < numberOfColumns; col++) {
       let i = row * numberOfColumns + col;
@@ -71,7 +78,7 @@ function colorQuantize(img_to_reduce, number_of_colors){
 
   var opts = {
     colors: number_of_colors ,               // desired palette size
-    method: 2,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
+    method: 1,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
     boxSize: [64,64],        // subregion dims (if method = 2)
     // boxPxls: 2,              // min-population threshold (if method = 2)
     // initColors: 256,        // # of top-occurring colors  to start with (if method = 1)
@@ -97,7 +104,7 @@ function colorQuantize(img_to_reduce, number_of_colors){
       out.pixels[off1] = reduced_image[off1];
       out.pixels[off1+1] = reduced_image[off1+1];
       out.pixels[off1+2] = reduced_image[off1+2];
-      out.pixels[off1+3] = 225;
+      out.pixels[off1+3] = 255;
     }
   }
   out.updatePixels()

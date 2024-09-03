@@ -10,7 +10,8 @@ function calculateFPS(currentTime) {
 }
 
 function displayFPS(fps) {
-    let roundedFps = parseFloat(fps.toFixed(2));
+    let usingWEBGL = _renderer['GL']
+    let roundedFps = parseInt(fps.toFixed(2));
     let fps_string = 'FPS: ' + roundedFps
 
     // // Save the original text size
@@ -26,12 +27,16 @@ function displayFPS(fps) {
 
     // Style the text with white color, black borders
     fill(255); // White fill color
-    stroke(0); // Black stroke color
-    strokeWeight(2); // Thickness of the border
 
     textSize(32);
-    text(fps_string, width - fpsTextWidth - 30, 50); // Adjust the y-coordinate as needed
-    // text(roundedFps.toString(), 10, 50);
+    let textCoordX = width - fpsTextWidth - 30
+    let textCoordY = 50
+    if (usingWEBGL){
+        textCoordX-= width/2
+        textCoordY-=height/2
+    }
+    console.log(fps_string)
+    text(fps_string, textCoordX, textCoordY); // Adjust the y-coordinate as needed
 }
 
 export {
