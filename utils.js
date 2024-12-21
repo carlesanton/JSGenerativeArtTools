@@ -23,6 +23,8 @@ function prepareP5Js(artwork_seed) {
   console.log('Using seed: ', random_seed)
   randomSeed(random_seed);
   noiseSeed(random_seed);
+
+  return random_seed
 }
 
 export {
