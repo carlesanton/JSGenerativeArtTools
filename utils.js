@@ -1,18 +1,15 @@
 function scaleCanvasToFit(canvas, artworkHeight, artworkWidth) {
-  const artworkAspectRatio = artworkHeight / artworkWidth;
-  const canvasElement = document.querySelector('#defaultCanvas0');
+  var canvas_parent_ref = "#"+canvas.parent().id
+  var parent_element = select(canvas_parent_ref)
 
-  const innerWidth = window.innerWidth;
-  const innerHeight = window.innerHeight;
+  let scaleFactor = Math.min(
+    parent_element.width / artworkWidth,
+    parent_element.height / artworkHeight
+  );
+  let scaledWidth_ = artworkWidth * scaleFactor;
+  let scaledHeight_ = artworkHeight * scaleFactor;
 
-  // Landscape orientation
-  if (innerHeight <= innerWidth * artworkAspectRatio) {
-    canvasElement.style.height = '100%';
-    canvasElement.style.width = 'auto';
-  } else {
-    canvasElement.style.width = '100%';
-    canvasElement.style.height = 'auto';
-  }
+  resizeCanvas(scaledWidth_, scaledHeight_)
 }
 
 function prepareP5Js(artwork_seed) {
