@@ -1,4 +1,4 @@
-function scaleCanvasToFit(artworkHeight, artworkWidth) {
+function scaleCanvasToFit(canvas, artworkHeight, artworkWidth) {
   const artworkAspectRatio = artworkHeight / artworkWidth;
   const canvasElement = document.querySelector('#defaultCanvas0');
 
