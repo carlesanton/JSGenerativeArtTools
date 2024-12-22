@@ -1,3 +1,5 @@
+import {create_number_input_text, create_expandable_card} from './ui.js'
+
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
 export let defaultCellularAutomataInitialSteps = 0;

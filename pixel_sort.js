@@ -1,3 +1,5 @@
+import {create_number_input_text, create_expandable_card, create_subtitle} from './ui.js'
+
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
 export let defaultPixelSortingPasses = 8;
