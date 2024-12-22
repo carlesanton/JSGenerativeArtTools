@@ -1,3 +1,8 @@
+export let defaultPixelSortInitialSteps = 50; //50
+export let defaultPixelSortMaxSteps = -1;
+export let defaultPixelSortingPasses = 8;
+export let defaultSortNoiseScale = 360
+export let defaultNoiseDirectionChangeRate = 45;
 
 function sort_step(sorted){
     sorted.loadPixels();
@@ -69,8 +74,51 @@ function angleToCoordinates(angleInDegrees, radius = 100) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
+function createPixelSortingSettings() {
+  var elements_dict = {};
+
+  // Create Main Card
+  const card = create_expandable_card('PixelSortingSettings', 'Pixel Sorting');
+  const cardBody = card.getElementsByClassName('card-body')[0];
+
+  // Add input fields and labels
+  const initialSteps = create_number_input_text('PSinitialSteps', 'Initial Steps', defaultPixelSortInitialSteps);
+  elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
+
+  const maxSteps = create_number_input_text('PSMaxSteps', 'Max Steps', defaultPixelSortMaxSteps);
+  elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
+
+  const passesPerFrame = create_number_input_text('PSPassesPerFrame', 'Passes Per Frame', defaultPixelSortingPasses);
+  elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
+
+  const noiseTitle = create_subtitle('Noise');
+
+  const noiseScale = create_number_input_text('PSnoiseScale', 'Scale', defaultSortNoiseScale);
+  elements_dict['PSnoiseScale'] = noiseScale.getElementsByTagName('input')[0];
+
+  const noiseDirection = create_number_input_text('PSnoiseDirectionChangeRate', 'Direction Change Rate', defaultNoiseDirectionChangeRate);
+  elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
+
+  cardBody.appendChild(initialSteps);
+  cardBody.appendChild(document.createElement('br'));
+  cardBody.appendChild(maxSteps);
+  cardBody.appendChild(document.createElement('br'));
+  cardBody.appendChild(passesPerFrame);
+  cardBody.appendChild(document.createElement('br'));
+  cardBody.appendChild(noiseTitle);
+  cardBody.appendChild(document.createElement('br'));
+  cardBody.appendChild(noiseScale);
+  cardBody.appendChild(document.createElement('br'));
+  cardBody.appendChild(noiseDirection);
+
+  elements_dict['main-toolbar'] = card;
+
+  return elements_dict;
+}
+
 export {
   sort_step,
   sort_step_random,
-  angleToCoordinates
+  angleToCoordinates,
+  createPixelSortingSettings
 }
