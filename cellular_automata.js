@@ -1,3 +1,7 @@
+export let defaultRandomColorChangeRate = 3;
+export let defaultCAMaxSteps = -1;
+export let defaultCellularAutomataInitialSteps = 0;
+
 function getMajorityColor(x, y, grid) {
     const directions = [
         [-1, -1], [-1, 0], [-1, 1],
