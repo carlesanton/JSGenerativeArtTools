@@ -168,7 +168,36 @@ function cellular_automata_multicolor_cicle(grid, palette, new_random_color_inde
     return newGrid;
 } 
 
+function createCASettingsCard() {
+    var elements_dict = {};
+
+    // Create Main Card
+    const card = create_expandable_card('cellularAutomataSettings', 'Cellular Automata');
+    const cardBody = card.getElementsByClassName('card-body')[0]
+
+    // Add input fields and labels
+    const initialSteps = create_number_input_text('CAInitialSteps', 'Initial Steps', defaultCellularAutomataInitialSteps);
+    elements_dict['CAInitialSteps'] = initialSteps.getElementsByTagName('input')[0];
+    
+    const maxSteps = create_number_input_text('CAMaxSteps', 'Total Steps', defaultCAMaxSteps);
+    elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
+        
+    const randomColor = create_number_input_text('CARandomColorChangeRate', 'Random Color Change Rate', defaultRandomColorChangeRate);
+    elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
+
+    cardBody.appendChild(initialSteps);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(maxSteps);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(randomColor);
+
+    elements_dict['main-toolbar'] = card;
+  
+    return elements_dict;
+}
+
 export {
     cellular_automata_multicolor_cicle,
     cellular_automata,
+    createCASettingsCard,
 }
