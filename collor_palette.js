@@ -96,7 +96,6 @@ function colorQuantize(img_to_reduce, number_of_colors){
   var q = new RgbQuant(opts); // option 2 of sublib
 
   q.sample(img_to_reduce.canvas, img_to_reduce.pixels[0].length);
-  palette = q.palette(true);
   let reduced_image = new Uint8ClampedArray(q.reduce(img_to_reduce.canvas, 1))
   for (let w = 0; w < img_to_reduce.width; w ++) {
     for (let h = 0; h < img_to_reduce.height; h ++) {
