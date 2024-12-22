@@ -94,7 +94,7 @@ function create_button(label, onClick, description){
     var div = document.createElement('div');
 
     const button = document.createElement('button');
-    button.setAttribute('onclick', onClick);
+    button.onclick = onClick;
     button.innerHTML = label;
     div.appendChild(button);
     
