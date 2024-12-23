@@ -146,11 +146,11 @@ function create_input_image_button(callback, label, default_text, description_pr
             reader.readAsDataURL(input_image);
 
             // Change description to add file name
-            // var new_description = input_image.name
-            // if (description_prefix !== undefined && description_prefix !== null) {
-            //     new_description = description_prefix + new_description;
-            // }
-            // description_tag.textContent = new_description;
+            var new_description = input_image.name
+            if (description_prefix !== undefined && description_prefix !== null) {
+                new_description = description_prefix + new_description;
+            }
+            description_tag.textContent = new_description;
         },
         false
     );
