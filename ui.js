@@ -110,10 +110,65 @@ function create_button(label, onClick, description){
     return div;
 }
 
+function create_input_image_button(callback, label, default_text, description_prefix){
+    var div = document.createElement('div');
+    
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('id', 'inputImageButton');
+    input.style.display = "none"
+    
+    const button = document.createElement('button');
+    button.onclick = () => { input.click(); };
+    button.innerHTML = label;
+    
+    var description_tag = document.createElement('text');
+    if (default_text !== undefined && default_text !== null) {
+        description_tag.textContent = default_text;
+    }
+
+    input.addEventListener(
+        "change",
+        () => { 
+            let input_image = input.files[0]
+            // Check if the file is an image.
+            if (input_image.type && !input_image.type.startsWith('image/')) {
+                console.log('File is not an image.', input_image.type, input_image);
+                return;
+            }
+
+            // This allows to read the file content when the FileReader is loaded (feeling like a pro already 😎)
+            const reader = new FileReader();
+            reader.addEventListener('load', (event) => {
+                let user_img = event.target.result;
+                callback(user_img)
+            });
+            reader.readAsDataURL(input_image);
+
+            // Change description to add file name
+            // var new_description = input_image.name
+            // if (description_prefix !== undefined && description_prefix !== null) {
+            //     new_description = description_prefix + new_description;
+            // }
+            // description_tag.textContent = new_description;
+        },
+        false
+    );
+
+
+    div.appendChild(button);
+    div.appendChild(input);
+    div.appendChild(document.createTextNode(' '))
+    div.appendChild(description_tag)
+    
+    return div;
+}
+
 export {
     create_card,
     create_expandable_card,
     create_subtitle,
     create_number_input_text,
     create_button,
+    create_input_image_button,
 }
