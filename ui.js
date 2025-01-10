@@ -106,11 +106,11 @@ function create_number_input_text(id, label, default_value, min, max){
     if (min !== undefined && min !== null) {
         input.setAttribute('min', min);
     }
-    if (default_value !== undefined && default_value !== null) {
-        input.defaultValue = default_value;
-    }
     if (max !== undefined && max !== null) {
         input.setAttribute('max', max);
+    }
+    if (default_value !== undefined && default_value !== null) {
+        input.defaultValue = default_value;
     }
 
     div.appendChild(input);
