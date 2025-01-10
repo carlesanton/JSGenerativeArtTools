@@ -203,6 +203,7 @@ function create_button(label, onClick, description, size){
         var separation = document.createTextNode(' ');
 
         var description_tag = document.createElement('text');
+        description_tag.className = 'text-md'
         description_tag.textContent = description;
         div.appendChild(separation)
         div.appendChild(description_tag)
