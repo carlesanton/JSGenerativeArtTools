@@ -218,16 +218,7 @@ function create_input_image_button(callback, label, default_text, description_pr
     var input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('id', 'inputImageButton');
-    input.style.display = "none"
-    
-    const button = document.createElement('button');
-    button.onclick = () => { input.click(); };
-    button.innerHTML = label;
-    
-    var description_tag = document.createElement('text');
-    if (default_text !== undefined && default_text !== null) {
-        description_tag.textContent = default_text;
-    }
+    input.setAttribute('class', 'file-input file-input-bordered file-input-content w-full max-w-xs');
 
     input.addEventListener(
         "change",
@@ -257,11 +248,7 @@ function create_input_image_button(callback, label, default_text, description_pr
         false
     );
 
-
-    div.appendChild(button);
     div.appendChild(input);
-    div.appendChild(document.createTextNode(' '))
-    div.appendChild(description_tag)
     
     return div;
 }
