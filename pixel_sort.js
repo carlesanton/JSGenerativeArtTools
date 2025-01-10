@@ -1,4 +1,4 @@
-import {create_number_input_text, create_expandable_card, create_subtitle} from './ui.js'
+import {create_number_input_text, create_daisyui_expandable_card, create_subtitle} from './ui.js'
 
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
@@ -80,8 +80,8 @@ function createPixelSortingSettings() {
   var elements_dict = {};
 
   // Create Main Card
-  const card = create_expandable_card('PixelSortingSettings', 'Pixel Sorting');
-  const cardBody = card.getElementsByClassName('card-body')[0];
+  const card = create_daisyui_expandable_card('PixelSortingSettings', 'Pixel Sorting');
+  const cardBody = card.getElementsByClassName('collapse-content')[0];
 
   // Add input fields and labels
   const initialSteps = create_number_input_text('PSinitialSteps', 'Initial Steps', defaultPixelSortInitialSteps);
