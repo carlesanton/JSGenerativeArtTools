@@ -46,7 +46,7 @@ function create_expandable_card(id, title) {
     collapseContent.appendChild(cardBody);
     card.appendChild(collapseContent);
     return card;
-  }
+}
   
 function create_subtitle(title){
     var div = document.createElement('div');
