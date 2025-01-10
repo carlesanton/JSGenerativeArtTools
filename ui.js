@@ -186,10 +186,15 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     return div;
 }
 
-function create_button(label, onClick, description){
+function create_button(label, onClick, description, size){
     var div = document.createElement('div');
 
     const button = document.createElement('button');
+    var class_name = 'btn btn-neutral'
+    if (size !== undefined && size !== null) {
+        class_name += ' btn-'+size
+    }
+    button.className = class_name;
     button.onclick = onClick;
     button.innerHTML = label;
     div.appendChild(button);
