@@ -93,7 +93,7 @@ function create_number_input_text(id, label, default_value, min, max){
     
     var input = document.createElement('input');
     input.setAttribute('type', 'number');
-    input.setAttribute('class', 'inputNumber');
+    input.setAttribute('class', 'input input-bordered input-sm');
     input.setAttribute('id', id);
 
     // Conditionally set optional attributes
