@@ -1,4 +1,4 @@
-import {create_number_input_text, create_expandable_card, create_subtitle} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle} from './ui.js'
 
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
@@ -80,25 +80,55 @@ function createPixelSortingSettings() {
   var elements_dict = {};
 
   // Create Main Card
-  const card = create_expandable_card('PixelSortingSettings', 'Pixel Sorting');
-  const cardBody = card.getElementsByClassName('card-body')[0];
+  const card = create_daisyui_expandable_card('PixelSortingSettings', 'Pixel Sorting');
+  const cardBody = card.getElementsByClassName('collapse-content')[0];
 
   // Add input fields and labels
-  const initialSteps = create_number_input_text('PSinitialSteps', 'Initial Steps', defaultPixelSortInitialSteps);
+  const initialSteps = create_number_input_slider_and_number(
+    'PSinitialSteps',
+    'Initial Steps',
+    defaultPixelSortInitialSteps,
+    0,
+    150,
+  );
   elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
 
-  const maxSteps = create_number_input_text('PSMaxSteps', 'Max Steps', defaultPixelSortMaxSteps);
+  const maxSteps = create_number_input_slider_and_number(
+    'PSMaxSteps',
+    'Max Steps', 
+    defaultPixelSortMaxSteps,
+    -1,
+    1000,
+  );
   elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
 
-  const passesPerFrame = create_number_input_text('PSPassesPerFrame', 'Passes Per Frame', defaultPixelSortingPasses);
+  const passesPerFrame = create_number_input_slider_and_number(
+    'PSPassesPerFrame',
+    'Passes Per Frame',
+    defaultPixelSortingPasses,
+    0,
+    25,
+  );
   elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
 
   const noiseTitle = create_subtitle('Noise');
 
-  const noiseScale = create_number_input_text('PSnoiseScale', 'Scale', defaultSortNoiseScale);
+  const noiseScale = create_number_input_slider_and_number(
+    'PSnoiseScale',
+    'Scale',
+    defaultSortNoiseScale,
+    0,
+    720,
+  );
   elements_dict['PSnoiseScale'] = noiseScale.getElementsByTagName('input')[0];
 
-  const noiseDirection = create_number_input_text('PSnoiseDirectionChangeRate', 'Direction Change Rate', defaultNoiseDirectionChangeRate);
+  const noiseDirection = create_number_input_slider_and_number(
+    'PSnoiseDirectionChangeRate',
+    'Direction Change Rate',
+    defaultNoiseDirectionChangeRate,
+    0,
+    150,
+  );
   elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
 
   cardBody.appendChild(initialSteps);
@@ -108,7 +138,6 @@ function createPixelSortingSettings() {
   cardBody.appendChild(passesPerFrame);
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseTitle);
-  cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseScale);
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseDirection);

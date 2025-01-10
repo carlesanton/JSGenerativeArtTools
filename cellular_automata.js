@@ -1,4 +1,4 @@
-import {create_number_input_text, create_expandable_card} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card} from './ui.js'
 
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
@@ -178,17 +178,35 @@ function createCASettingsCard() {
     var elements_dict = {};
 
     // Create Main Card
-    const card = create_expandable_card('cellularAutomataSettings', 'Cellular Automata');
-    const cardBody = card.getElementsByClassName('card-body')[0]
+    const card = create_daisyui_expandable_card('cellularAutomataSettings', 'Cellular Automata');
+    const cardBody = card.getElementsByClassName('collapse-content')[0];
 
     // Add input fields and labels
-    const initialSteps = create_number_input_text('CAInitialSteps', 'Initial Steps', defaultCellularAutomataInitialSteps);
+    const initialSteps = create_number_input_slider_and_number(
+        'CAInitialSteps',
+        'Initial Steps',
+        defaultCellularAutomataInitialSteps,
+        0,
+        150,
+    );
     elements_dict['CAInitialSteps'] = initialSteps.getElementsByTagName('input')[0];
     
-    const maxSteps = create_number_input_text('CAMaxSteps', 'Total Steps', defaultCAMaxSteps);
+    const maxSteps = create_number_input_slider_and_number(
+        'CAMaxSteps',
+        'Total Steps',
+        defaultCAMaxSteps,
+        -1,
+        1000,
+    );
     elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
         
-    const randomColor = create_number_input_text('CARandomColorChangeRate', 'Random Color Change Rate', defaultRandomColorChangeRate);
+    const randomColor = create_number_input_slider_and_number(
+        'CARandomColorChangeRate',
+        'Random Color Change Rate',
+        defaultRandomColorChangeRate,
+        0,
+        100,
+    );
     elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
 
     cardBody.appendChild(initialSteps);
