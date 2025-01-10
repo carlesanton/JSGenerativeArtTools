@@ -138,7 +138,6 @@ function createPixelSortingSettings() {
   cardBody.appendChild(passesPerFrame);
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseTitle);
-  cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseScale);
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseDirection);
