@@ -120,8 +120,12 @@ function create_number_input_text(id, label, default_value, min, max){
 }
 
 function create_number_input_slider_and_number(id, label, default_value, min, max){    
+    // Outer container
     var div = document.createElement('div');
-    div.className = 'grid grid-cols-5 gap-4';
+    div.className = 'flex flex-col';
+
+    var inputs_div = document.createElement('div');
+    inputs_div.className = 'flex items-center';
 
     // Value
     // Create value div
@@ -180,8 +184,9 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
 
     number_div.appendChild(number);
     range_div.appendChild(range);
-    div.appendChild(number_div);
-    div.appendChild(range_div);
+    inputs_div.appendChild(number_div);
+    inputs_div.appendChild(range_div);
+    div.appendChild(inputs_div);
 
     return div;
 }
