@@ -100,6 +100,7 @@ function create_number_input_text(id, label, default_value, min, max){
     if (label !== undefined && label !== null) {
         const label_tag = document.createElement('label');
         label_tag.setAttribute('for', id);
+        label_tag.className = 'text-lg';
         label_tag.innerHTML = label + ':';
         div.appendChild(label_tag);
     }
