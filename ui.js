@@ -118,6 +118,73 @@ function create_number_input_text(id, label, default_value, min, max){
     return div;
 }
 
+function create_number_input_slider_and_number(id, label, default_value, min, max){    
+    var div = document.createElement('div');
+    div.className = 'grid grid-cols-5 gap-4';
+
+    // Value
+    // Create value div
+    const number_div = document.createElement('div');
+    number_div.id = id+'number';
+    number_div.className = 'col-span-1';
+    // Create value display
+    var number = document.createElement('input');
+    number.setAttribute('type', 'number');
+    number.setAttribute('class', 'input input-bordered input-sm'); // This makes the whole div grow
+    number.setAttribute('id', id);
+
+    // Range
+    // Create range div
+    const range_div = document.createElement('div');
+    range_div.className = 'col-span-4';
+    range_div.id = id+'range';
+    // Create range input
+    var range = document.createElement('input');
+    range.setAttribute('type', 'range');
+    range.setAttribute('id', id);
+    range.className = 'range'
+
+    range.addEventListener('input', function (e) {
+        number.value = e.target.value;
+      });
+    number.addEventListener('input', function (e) {
+        range.value = e.target.value;
+    });
+
+    // Conditionally set optional attributes
+    if (label !== undefined && label !== null) {
+        const label_div = document.createElement('div');
+        label_div.className = 'col-span-5';
+        label_div.setAttribute('for', id);
+        
+        const label_element = document.createElement('h3');
+        label_element.className = 'text-lg';
+        label_element.innerHTML = label + ':';
+
+        label_div.appendChild(label_element);
+        div.appendChild(label_div);
+    }
+    if (min !== undefined && min !== null) {
+        range.min = min;
+        number.min = min;
+    }
+    if (max !== undefined && max !== null) {
+        range.max = max;
+        number.max = max;
+    }
+    if (default_value !== undefined && default_value !== null) {
+        range.defaultValue = default_value;
+        number.defaultValue = default_value;
+    }
+
+    number_div.appendChild(number);
+    range_div.appendChild(range);
+    div.appendChild(number_div);
+    div.appendChild(range_div);
+
+    return div;
+}
+
 function create_button(label, onClick, description){
     var div = document.createElement('div');
 
@@ -197,6 +264,7 @@ export {
     create_expandable_card,
     create_subtitle,
     create_number_input_text,
+    create_number_input_slider_and_number,
     create_button,
     create_input_image_button,
     create_daisyui_expandable_card,
