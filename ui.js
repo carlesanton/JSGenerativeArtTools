@@ -48,6 +48,32 @@ function create_expandable_card(id, title) {
     return card;
 }
   
+function create_daisyui_expandable_card(id, title) {
+    // Create the main card container
+    const card = document.createElement('div');
+    card.setAttribute('id', id);
+    card.className = 'collapse collapse-arrow border-base-300 bg-base-200 border shadow-xl transition-none' // better with or without animation?
+    // card.className = 'collapse collapse-arrow border-base-300 bg-base-200 border shadow-xl' // better with or without animation?
+
+    const checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+    checkbox.checked="true" // set checkd for it to be open
+
+    const cardTitle = document.createElement('h2');
+    cardTitle.setAttribute('class', 'collapse-title text-xl font-medium');
+    cardTitle.innerHTML = title;
+
+    const cardBody = document.createElement('div');
+    cardBody.className = 'collapse-content'
+    cardBody.id = id+'card-body'
+
+    card.appendChild(checkbox);
+    card.appendChild(cardTitle);
+    card.appendChild(cardBody);
+
+    return card;
+}
+
 function create_subtitle(title){
     var div = document.createElement('div');
     
@@ -171,4 +197,5 @@ export {
     create_number_input_text,
     create_button,
     create_input_image_button,
+    create_daisyui_expandable_card,
 }
