@@ -131,23 +131,24 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // Create value div
     const number_div = document.createElement('div');
     number_div.id = id+'number';
-    number_div.className = 'col-span-1';
+    number_div.className = 'relative w-32 flex justify-center mr-4';
     // Create value display
     var number = document.createElement('input');
     number.setAttribute('type', 'number');
-    number.setAttribute('class', 'input input-bordered input-sm'); // This makes the whole div grow
+    number.setAttribute('class', 'input input-bordered input-xs text-base w-full text-center');
     number.setAttribute('id', id);
 
     // Range
     // Create range div
     const range_div = document.createElement('div');
-    range_div.className = 'col-span-4';
+    range_div.className = 'relative w-full';
     range_div.id = id+'range';
     // Create range input
     var range = document.createElement('input');
     range.setAttribute('type', 'range');
     range.setAttribute('id', id);
     range.className = 'range'
+    range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
 
     range.addEventListener('input', function (e) {
         number.value = e.target.value;
@@ -159,7 +160,7 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // Conditionally set optional attributes
     if (label !== undefined && label !== null) {
         const label_div = document.createElement('div');
-        label_div.className = 'col-span-5';
+        label_div.className = 'mb-2';
         label_div.setAttribute('for', id);
         
         const label_element = document.createElement('h3');
