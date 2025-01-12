@@ -4,6 +4,16 @@ export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
 export let defaultCellularAutomataInitialSteps = 0;
 
+let CARandomColorChangeRate;
+let CAMaxSteps;
+let CellularAutomataInitialSteps;
+
+let CAInputs;
+
+let cellular_automata_step = 0
+let CAShader; // variable for the shader
+let ca_src = '';
+
 function getMajorityColor(x, y, grid) {
     const directions = [
         [-1, -1], [-1, 0], [-1, 1],
