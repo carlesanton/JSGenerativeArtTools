@@ -104,7 +104,7 @@ function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
   
   color_buffer.begin();
   if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
-    if(apply_direction_change && frameCount%noiseDirectionChangeRate==1){
+    if(apply_direction_change && pixel_sort_step%noiseDirectionChangeRate==1){
         change_ps_direction()
     }
     for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
