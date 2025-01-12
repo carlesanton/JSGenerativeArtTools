@@ -99,6 +99,13 @@ function initialize_pixel_sorting_shader(){
   PSShader = createFilterShader(ps_src.join('\n'));
 }
 
+function change_ps_direction(){
+  angle = noise(random(1000))*sortNoiseScale;
+  noise_coordinates = angleToCoordinates(angle, noise_radius);
+  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
+  console.log('New PS Noise coordinates', noise_coordinates)
+}
+
 
 function createPixelSortingSettings() {
   var elements_dict = {};
@@ -177,5 +184,6 @@ export {
   load_pixel_shader_code,
   initialize_pixel_sorting_shader,
   angleToCoordinates,
+  change_ps_direction,
   createPixelSortingSettings
 }
