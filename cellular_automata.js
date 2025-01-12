@@ -215,6 +215,12 @@ function set_ca_max_steps(new_max_steps){
   return old_max_steps
 }
 
+function set_ca_color_change_rate(new_change_rate){
+    const old_change_rate = CARandomColorChangeRate;
+    CARandomColorChangeRate = new_change_rate;
+    return old_change_rate
+}
+
 function set_ca_new_random_color(new_random_color){
     CAShader.setUniform('next_random_color', new_random_color);
 }
@@ -260,6 +266,7 @@ function createCASettingsCard() {
         defaultRandomColorChangeRate,
         0,
         100,
+        set_ca_color_change_rate,
     );
     elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
 
