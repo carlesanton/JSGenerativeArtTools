@@ -184,6 +184,15 @@ function cellular_automata_multicolor_cicle(grid, palette, new_random_color_inde
     return newGrid;
 } 
 
+function load_cellular_automata_code(){
+    ca_src = loadStrings('./lib/JSGenerativeArtTools/cellular_automata_shader.frag');
+}
+
+function initialize_cellular_automata_shader(){
+  CAShader = createFilterShader(ca_src.join('\n'));
+}
+
+
 function createCASettingsCard() {
     var elements_dict = {};
 
@@ -233,5 +242,7 @@ function createCASettingsCard() {
 export {
     cellular_automata_multicolor_cicle,
     cellular_automata,
+    load_cellular_automata_code,
+    initialize_cellular_automata_shader,
     createCASettingsCard,
 }
