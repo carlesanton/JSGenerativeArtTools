@@ -203,6 +203,23 @@ function cellular_automata_gpu(color_buffer){
     return color_buffer;
 }
 
+function set_ca_max_steps(new_max_steps){
+  const old_max_steps = CAMaxSteps;
+  CAMaxSteps = new_max_steps;
+  return old_max_steps
+}
+
+function set_ca_new_random_color(new_random_color){
+    CAShader.setUniform('next_random_color', new_random_color);
+}
+
+function get_CARandomColorChangeRate(){
+    return CARandomColorChangeRate
+}
+
+function get_CellularAutomataInitialSteps(){
+    return CellularAutomataInitialSteps
+}
 
 function createCASettingsCard() {
     var elements_dict = {};
@@ -264,6 +281,10 @@ export {
     load_cellular_automata_code,
     initialize_cellular_automata_shader,
     cellular_automata_gpu,
+    set_ca_new_random_color,
+    set_ca_max_steps,
+    get_CARandomColorChangeRate,
+    get_CellularAutomataInitialSteps,
     createCASettingsCard,
     update_all_ca_parametters,
 }
