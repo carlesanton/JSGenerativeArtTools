@@ -225,6 +225,10 @@ function set_ca_new_random_color(new_random_color){
     CAShader.setUniform('next_random_color', new_random_color);
 }
 
+function reset_ca_steps(){
+  cellular_automata_step = 0;
+}
+
 function get_CARandomColorChangeRate(){
     return CARandomColorChangeRate
 }
@@ -301,4 +305,5 @@ export {
     get_CellularAutomataInitialSteps,
     createCASettingsCard,
     update_all_ca_parametters,
+    reset_ca_steps,
 }
