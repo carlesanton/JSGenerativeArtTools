@@ -6,6 +6,21 @@ export let defaultPixelSortingPasses = 8;
 export let defaultSortNoiseScale = 360
 export let defaultNoiseDirectionChangeRate = 45;
 
+let pixel_sort_step = 0
+const noise_radius = 1.5;
+let angle = -180;
+let noise_coordinates;
+let ps_src = ''; // variable for shader code
+let PSShader; // variable for the shader
+
+let PSInputs;
+
+let sortNoiseScale;
+let noiseDirectionChangeRate;
+let pixelSortMaxSteps;
+let PixelSortInitialSteps;
+let pixelSortingPassesPerFrame;
+
 function sort_step(sorted){
     sorted.loadPixels();
     for (let w = 0; w < sorted.width; w ++) {
@@ -76,6 +91,54 @@ function angleToCoordinates(angleInDegrees, radius = 100) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
+function load_pixel_shader_code(){
+  ps_src = loadStrings('./lib/JSGenerativeArtTools/pixel_sort_shader.frag');
+}
+
+function initialize_pixel_sorting_shader(){
+  PSShader = createFilterShader(ps_src.join('\n'));
+}
+
+function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
+  // Change Direction if needed
+  
+  color_buffer.begin();
+  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
+    if(apply_direction_change && frameCount%noiseDirectionChangeRate==1){
+        change_ps_direction()
+    }
+    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
+      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
+      filter(PSShader)
+    }
+    pixel_sort_step++;
+  }
+  color_buffer.end();
+
+  return color_buffer
+}
+
+function change_ps_direction(){
+  angle = noise(random(1000))*sortNoiseScale;
+  noise_coordinates = angleToCoordinates(angle, noise_radius);
+  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
+  console.log('New PS Noise coordinates', noise_coordinates)
+}
+
+function set_ps_max_steps(new_max_steps){
+  const old_max_steps = pixelSortMaxSteps;
+  pixelSortMaxSteps = new_max_steps;
+  return old_max_steps
+}
+
+function reset_ps_steps(){
+  pixel_sort_step = 0;
+}
+
+function get_PixelSortInitialSteps(){
+  return PixelSortInitialSteps;
+}
+
 function createPixelSortingSettings() {
   var elements_dict = {};
 
@@ -144,12 +207,30 @@ function createPixelSortingSettings() {
 
   elements_dict['main-toolbar'] = card;
 
+  PSInputs = elements_dict
+
   return elements_dict;
+}
+
+function update_all_ps_parametters(){
+  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
+  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
+  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
+  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
+  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
 }
 
 export {
   sort_step,
   sort_step_random,
+  load_pixel_shader_code,
+  initialize_pixel_sorting_shader,
+  pixel_sorting_gpu,
   angleToCoordinates,
+  set_ps_max_steps,
+  get_PixelSortInitialSteps,
+  reset_ps_steps,
+  change_ps_direction,
+  update_all_ps_parametters,
   createPixelSortingSettings
 }
