@@ -203,14 +203,30 @@ function cellular_automata_gpu(color_buffer){
     return color_buffer;
 }
 
+function set_ca_initial_steps(new_initial_steps){
+  const old_initial_steps = CellularAutomataInitialSteps;
+  CellularAutomataInitialSteps = new_initial_steps;
+  return old_initial_steps
+}
+
 function set_ca_max_steps(new_max_steps){
   const old_max_steps = CAMaxSteps;
   CAMaxSteps = new_max_steps;
   return old_max_steps
 }
 
+function set_ca_color_change_rate(new_change_rate){
+    const old_change_rate = CARandomColorChangeRate;
+    CARandomColorChangeRate = new_change_rate;
+    return old_change_rate
+}
+
 function set_ca_new_random_color(new_random_color){
     CAShader.setUniform('next_random_color', new_random_color);
+}
+
+function reset_ca_steps(){
+  cellular_automata_step = 0;
 }
 
 function get_CARandomColorChangeRate(){
@@ -235,6 +251,7 @@ function createCASettingsCard() {
         defaultCellularAutomataInitialSteps,
         0,
         150,
+        set_ca_initial_steps,
     );
     elements_dict['CAInitialSteps'] = initialSteps.getElementsByTagName('input')[0];
     
@@ -244,6 +261,7 @@ function createCASettingsCard() {
         defaultCAMaxSteps,
         -1,
         1000,
+        set_ca_max_steps,
     );
     elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
         
@@ -253,6 +271,7 @@ function createCASettingsCard() {
         defaultRandomColorChangeRate,
         0,
         100,
+        set_ca_color_change_rate,
     );
     elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
 
@@ -287,4 +306,5 @@ export {
     get_CellularAutomataInitialSteps,
     createCASettingsCard,
     update_all_ca_parametters,
+    reset_ca_steps,
 }

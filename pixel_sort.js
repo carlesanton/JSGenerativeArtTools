@@ -104,7 +104,7 @@ function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
   
   color_buffer.begin();
   if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
-    if(apply_direction_change && frameCount%noiseDirectionChangeRate==1){
+    if(apply_direction_change && pixel_sort_step%noiseDirectionChangeRate==1){
         change_ps_direction()
     }
     for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
@@ -125,10 +125,34 @@ function change_ps_direction(){
   console.log('New PS Noise coordinates', noise_coordinates)
 }
 
+function set_ps_initial_steps(new_initial_steps){
+  const old_initial_steps = PixelSortInitialSteps;
+  PixelSortInitialSteps = new_initial_steps;
+  return old_initial_steps
+}
+
 function set_ps_max_steps(new_max_steps){
   const old_max_steps = pixelSortMaxSteps;
   pixelSortMaxSteps = new_max_steps;
   return old_max_steps
+}
+
+function set_ps_passes_per_frame(new_passes_per_frame){
+  var old_passes_per_frame = pixelSortingPassesPerFrame
+  pixelSortingPassesPerFrame = new_passes_per_frame
+  return old_passes_per_frame
+}
+
+function set_ps_noise_scale(new_noise_scale){
+  var old_noise_scale = sortNoiseScale
+  sortNoiseScale = new_noise_scale
+  return old_noise_scale
+}
+
+function set_ps_direction_change_rate(new_direction_change_rate){
+  var old_direction_change_rate = noiseDirectionChangeRate
+  noiseDirectionChangeRate = new_direction_change_rate
+  return old_direction_change_rate
 }
 
 function reset_ps_steps(){
@@ -153,6 +177,7 @@ function createPixelSortingSettings() {
     defaultPixelSortInitialSteps,
     0,
     150,
+    set_ps_initial_steps,
   );
   elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
 
@@ -162,6 +187,7 @@ function createPixelSortingSettings() {
     defaultPixelSortMaxSteps,
     -1,
     1000,
+    set_ps_max_steps,
   );
   elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
 
@@ -171,17 +197,19 @@ function createPixelSortingSettings() {
     defaultPixelSortingPasses,
     0,
     25,
+    set_ps_passes_per_frame,
   );
   elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
 
   const noiseTitle = create_subtitle('Noise');
 
-  const noiseScale = create_number_input_slider_and_number(
-    'PSnoiseScale',
+  const noiseScale = create_number_input_slider_and_number( // Maybe delete this one, doesn't changes much
+    'PSnoiseScale',                                         // Try to make something that generates 3, 1 directions and so on
     'Scale',
     defaultSortNoiseScale,
     0,
     720,
+    set_ps_noise_scale,
   );
   elements_dict['PSnoiseScale'] = noiseScale.getElementsByTagName('input')[0];
 
@@ -191,6 +219,7 @@ function createPixelSortingSettings() {
     defaultNoiseDirectionChangeRate,
     0,
     150,
+    set_ps_direction_change_rate,
   );
   elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
 

@@ -119,7 +119,7 @@ function create_number_input_text(id, label, default_value, min, max){
     return div;
 }
 
-function create_number_input_slider_and_number(id, label, default_value, min, max){    
+function create_number_input_slider_and_number(id, label, default_value, min, max, on_change_callback) {
     // Outer container
     var div = document.createElement('div');
     div.className = 'flex flex-col';
@@ -152,9 +152,15 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
 
     range.addEventListener('input', function (e) {
         number.value = e.target.value;
+        if (on_change_callback !== undefined && on_change_callback !== null) {
+            on_change_callback(number.value);
+        }
       });
     number.addEventListener('input', function (e) {
         range.value = e.target.value;
+        if (on_change_callback !== undefined && on_change_callback !== null) {
+            on_change_callback(range.value);
+        }
     });
 
     // Conditionally set optional attributes
