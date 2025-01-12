@@ -4,6 +4,16 @@ export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
 export let defaultCellularAutomataInitialSteps = 0;
 
+let CARandomColorChangeRate;
+let CAMaxSteps;
+let CellularAutomataInitialSteps;
+
+let CAInputs;
+
+let cellular_automata_step = 0
+let CAShader; // variable for the shader
+let ca_src = '';
+
 function getMajorityColor(x, y, grid) {
     const directions = [
         [-1, -1], [-1, 0], [-1, 1],
@@ -174,6 +184,43 @@ function cellular_automata_multicolor_cicle(grid, palette, new_random_color_inde
     return newGrid;
 } 
 
+function load_cellular_automata_code(){
+    ca_src = loadStrings('./lib/JSGenerativeArtTools/cellular_automata_shader.frag');
+}
+
+function initialize_cellular_automata_shader(){
+  CAShader = createFilterShader(ca_src.join('\n'));
+}
+
+function cellular_automata_gpu(color_buffer){
+    color_buffer.begin();
+    if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
+        filter(CAShader)
+        cellular_automata_step+=1
+    }
+    color_buffer.end();
+
+    return color_buffer;
+}
+
+function set_ca_max_steps(new_max_steps){
+  const old_max_steps = CAMaxSteps;
+  CAMaxSteps = new_max_steps;
+  return old_max_steps
+}
+
+function set_ca_new_random_color(new_random_color){
+    CAShader.setUniform('next_random_color', new_random_color);
+}
+
+function get_CARandomColorChangeRate(){
+    return CARandomColorChangeRate
+}
+
+function get_CellularAutomataInitialSteps(){
+    return CellularAutomataInitialSteps
+}
+
 function createCASettingsCard() {
     var elements_dict = {};
 
@@ -217,11 +264,27 @@ function createCASettingsCard() {
 
     elements_dict['main-toolbar'] = card;
   
+    CAInputs = elements_dict
+
     return elements_dict;
+}
+
+function update_all_ca_parametters(){
+    CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
+    CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
+    CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
 }
 
 export {
     cellular_automata_multicolor_cicle,
     cellular_automata,
+    load_cellular_automata_code,
+    initialize_cellular_automata_shader,
+    cellular_automata_gpu,
+    set_ca_new_random_color,
+    set_ca_max_steps,
+    get_CARandomColorChangeRate,
+    get_CellularAutomataInitialSteps,
     createCASettingsCard,
+    update_all_ca_parametters,
 }
