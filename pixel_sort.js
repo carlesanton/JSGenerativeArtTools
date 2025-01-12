@@ -187,6 +187,7 @@ function createPixelSortingSettings() {
     defaultPixelSortMaxSteps,
     -1,
     1000,
+    set_ps_max_steps,
   );
   elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
 
