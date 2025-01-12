@@ -192,6 +192,17 @@ function initialize_cellular_automata_shader(){
   CAShader = createFilterShader(ca_src.join('\n'));
 }
 
+function cellular_automata_gpu(color_buffer){
+    color_buffer.begin();
+    if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
+        filter(CAShader)
+        cellular_automata_step+=1
+    }
+    color_buffer.end();
+
+    return color_buffer;
+}
+
 
 function createCASettingsCard() {
     var elements_dict = {};
@@ -252,6 +263,7 @@ export {
     cellular_automata,
     load_cellular_automata_code,
     initialize_cellular_automata_shader,
+    cellular_automata_gpu,
     createCASettingsCard,
     update_all_ca_parametters,
 }
