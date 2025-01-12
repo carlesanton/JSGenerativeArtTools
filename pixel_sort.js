@@ -99,6 +99,25 @@ function initialize_pixel_sorting_shader(){
   PSShader = createFilterShader(ps_src.join('\n'));
 }
 
+function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
+  // Change Direction if needed
+  
+  color_buffer.begin();
+  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
+    if(apply_direction_change && frameCount%noiseDirectionChangeRate==1){
+        change_ps_direction()
+    }
+    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
+      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
+      filter(PSShader)
+    }
+    pixel_sort_step++;
+  }
+  color_buffer.end();
+
+  return color_buffer
+}
+
 function change_ps_direction(){
   angle = noise(random(1000))*sortNoiseScale;
   noise_coordinates = angleToCoordinates(angle, noise_radius);
@@ -193,6 +212,7 @@ export {
   sort_step_random,
   load_pixel_shader_code,
   initialize_pixel_sorting_shader,
+  pixel_sorting_gpu,
   angleToCoordinates,
   change_ps_direction,
   update_all_ps_parametters,
