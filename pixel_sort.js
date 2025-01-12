@@ -125,6 +125,19 @@ function change_ps_direction(){
   console.log('New PS Noise coordinates', noise_coordinates)
 }
 
+function set_ps_max_steps(new_max_steps){
+  const old_max_steps = pixelSortMaxSteps;
+  pixelSortMaxSteps = new_max_steps;
+  return old_max_steps
+}
+
+function reset_ps_steps(){
+  pixel_sort_step = 0;
+}
+
+function get_PixelSortInitialSteps(){
+  return PixelSortInitialSteps;
+}
 
 function createPixelSortingSettings() {
   var elements_dict = {};
@@ -214,6 +227,9 @@ export {
   initialize_pixel_sorting_shader,
   pixel_sorting_gpu,
   angleToCoordinates,
+  set_ps_max_steps,
+  get_PixelSortInitialSteps,
+  reset_ps_steps,
   change_ps_direction,
   update_all_ps_parametters,
   createPixelSortingSettings
