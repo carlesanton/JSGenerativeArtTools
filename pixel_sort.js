@@ -149,6 +149,11 @@ function set_ps_noise_scale(new_noise_scale){
   return old_noise_scale
 }
 
+function set_ps_direction_change_rate(new_direction_change_rate){
+  var old_direction_change_rate = noiseDirectionChangeRate
+  noiseDirectionChangeRate = new_direction_change_rate
+  return old_direction_change_rate
+}
 
 function reset_ps_steps(){
   pixel_sort_step = 0;
@@ -213,6 +218,7 @@ function createPixelSortingSettings() {
     defaultNoiseDirectionChangeRate,
     0,
     150,
+    set_ps_direction_change_rate,
   );
   elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
 
