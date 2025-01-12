@@ -137,6 +137,13 @@ function set_ps_max_steps(new_max_steps){
   return old_max_steps
 }
 
+function set_ps_passes_per_frame(new_passes_per_frame){
+  var old_passes_per_frame = pixelSortingPassesPerFrame
+  pixelSortingPassesPerFrame = new_passes_per_frame
+  return old_passes_per_frame
+}
+
+
 function reset_ps_steps(){
   pixel_sort_step = 0;
 }
@@ -178,6 +185,7 @@ function createPixelSortingSettings() {
     defaultPixelSortingPasses,
     0,
     25,
+    set_ps_passes_per_frame,
   );
   elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
 
