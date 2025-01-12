@@ -261,6 +261,7 @@ function createCASettingsCard() {
         defaultCAMaxSteps,
         -1,
         1000,
+        set_ca_max_steps,
     );
     elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
         
