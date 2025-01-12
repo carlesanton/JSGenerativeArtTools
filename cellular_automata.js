@@ -203,6 +203,12 @@ function cellular_automata_gpu(color_buffer){
     return color_buffer;
 }
 
+function set_ca_initial_steps(new_initial_steps){
+  const old_initial_steps = CellularAutomataInitialSteps;
+  CellularAutomataInitialSteps = new_initial_steps;
+  return old_initial_steps
+}
+
 function set_ca_max_steps(new_max_steps){
   const old_max_steps = CAMaxSteps;
   CAMaxSteps = new_max_steps;
@@ -235,6 +241,7 @@ function createCASettingsCard() {
         defaultCellularAutomataInitialSteps,
         0,
         150,
+        set_ca_initial_steps,
     );
     elements_dict['CAInitialSteps'] = initialSteps.getElementsByTagName('input')[0];
     
