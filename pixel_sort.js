@@ -197,8 +197,8 @@ function createPixelSortingSettings() {
 
   const noiseTitle = create_subtitle('Noise');
 
-  const noiseScale = create_number_input_slider_and_number(
-    'PSnoiseScale',
+  const noiseScale = create_number_input_slider_and_number( // Maybe delete this one, doesn't changes much
+    'PSnoiseScale',                                         // Try to make something that generates 3, 1 directions and so on
     'Scale',
     defaultSortNoiseScale,
     0,
