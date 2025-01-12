@@ -125,6 +125,12 @@ function change_ps_direction(){
   console.log('New PS Noise coordinates', noise_coordinates)
 }
 
+function set_ps_initial_steps(new_initial_steps){
+  const old_initial_steps = PixelSortInitialSteps;
+  PixelSortInitialSteps = new_initial_steps;
+  return old_initial_steps
+}
+
 function set_ps_max_steps(new_max_steps){
   const old_max_steps = pixelSortMaxSteps;
   pixelSortMaxSteps = new_max_steps;
@@ -153,6 +159,7 @@ function createPixelSortingSettings() {
     defaultPixelSortInitialSteps,
     0,
     150,
+    set_ps_initial_steps,
   );
   elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
 
