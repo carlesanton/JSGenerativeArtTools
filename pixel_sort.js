@@ -143,6 +143,12 @@ function set_ps_passes_per_frame(new_passes_per_frame){
   return old_passes_per_frame
 }
 
+function set_ps_noise_scale(new_noise_scale){
+  var old_noise_scale = sortNoiseScale
+  sortNoiseScale = new_noise_scale
+  return old_noise_scale
+}
+
 
 function reset_ps_steps(){
   pixel_sort_step = 0;
@@ -197,6 +203,7 @@ function createPixelSortingSettings() {
     defaultSortNoiseScale,
     0,
     720,
+    set_ps_noise_scale,
   );
   elements_dict['PSnoiseScale'] = noiseScale.getElementsByTagName('input')[0];
 
