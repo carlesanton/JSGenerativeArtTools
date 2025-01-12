@@ -175,7 +175,17 @@ function createPixelSortingSettings() {
 
   elements_dict['main-toolbar'] = card;
 
+  PSInputs = elements_dict
+
   return elements_dict;
+}
+
+function update_all_ps_parametters(){
+  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
+  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
+  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
+  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
+  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
 }
 
 export {
@@ -185,5 +195,6 @@ export {
   initialize_pixel_sorting_shader,
   angleToCoordinates,
   change_ps_direction,
+  update_all_ps_parametters,
   createPixelSortingSettings
 }
