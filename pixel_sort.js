@@ -6,6 +6,21 @@ export let defaultPixelSortingPasses = 8;
 export let defaultSortNoiseScale = 360
 export let defaultNoiseDirectionChangeRate = 45;
 
+let pixel_sort_step = 0
+const noise_radius = 1.5;
+let angle = -180;
+let noise_coordinates;
+let ps_src = ''; // variable for shader code
+let PSShader; // variable for the shader
+
+let PSInputs;
+
+let sortNoiseScale;
+let noiseDirectionChangeRate;
+let pixelSortMaxSteps;
+let PixelSortInitialSteps;
+let pixelSortingPassesPerFrame;
+
 function sort_step(sorted){
     sorted.loadPixels();
     for (let w = 0; w < sorted.width; w ++) {
