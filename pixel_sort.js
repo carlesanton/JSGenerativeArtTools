@@ -91,6 +91,15 @@ function angleToCoordinates(angleInDegrees, radius = 100) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
+function load_pixel_shader_code(){
+  ps_src = loadStrings('./lib/JSGenerativeArtTools/pixel_sort_shader.frag');
+}
+
+function initialize_pixel_sorting_shader(){
+  PSShader = createFilterShader(ps_src.join('\n'));
+}
+
+
 function createPixelSortingSettings() {
   var elements_dict = {};
 
@@ -165,6 +174,8 @@ function createPixelSortingSettings() {
 export {
   sort_step,
   sort_step_random,
+  load_pixel_shader_code,
+  initialize_pixel_sorting_shader,
   angleToCoordinates,
   createPixelSortingSettings
 }
