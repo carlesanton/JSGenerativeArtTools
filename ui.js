@@ -152,11 +152,15 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
 
     range.addEventListener('input', function (e) {
         number.value = e.target.value;
-        on_change_callback(number.value);
+        if (on_change_callback !== undefined && on_change_callback !== null) {
+            on_change_callback(number.value);
+        }
       });
     number.addEventListener('input', function (e) {
         range.value = e.target.value;
-        on_change_callback(range.value);
+        if (on_change_callback !== undefined && on_change_callback !== null) {
+            on_change_callback(range.value);
+        }
     });
 
     // Conditionally set optional attributes
