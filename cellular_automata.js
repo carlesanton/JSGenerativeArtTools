@@ -236,7 +236,15 @@ function createCASettingsCard() {
 
     elements_dict['main-toolbar'] = card;
   
+    CAInputs = elements_dict
+
     return elements_dict;
+}
+
+function update_all_ca_parametters(){
+    CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
+    CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
+    CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
 }
 
 export {
@@ -245,4 +253,5 @@ export {
     load_cellular_automata_code,
     initialize_cellular_automata_shader,
     createCASettingsCard,
+    update_all_ca_parametters,
 }
