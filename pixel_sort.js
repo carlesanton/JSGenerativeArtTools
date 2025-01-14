@@ -149,6 +149,26 @@ function set_ps_passes_per_frame(new_passes_per_frame){
   return old_passes_per_frame
 }
 
+function set_ps_passes_per_frame_from_slider(new_passes_per_frame){
+  var inputElement = PSInputs.PSPassesPerFrame
+  var old_passes_per_frame = inputElement.value
+  inputElement.value = new_passes_per_frame
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_passes_per_frame
+}
+
+function disable_ps_passes_per_frame(){
+  var inputElement = PSInputs.PSPassesPerFrame
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
 function set_ps_noise_scale(new_noise_scale){
   var old_noise_scale = sortNoiseScale
   sortNoiseScale = new_noise_scale
@@ -285,6 +305,8 @@ export {
   set_ps_max_steps,
   set_ps_direction_change_rate_from_slider,
   disable_ps_direction_change_rate,
+  set_ps_passes_per_frame_from_slider,
+  disable_ps_passes_per_frame,
   get_PixelSortInitialSteps,
   reset_ps_steps,
   change_ps_direction,
