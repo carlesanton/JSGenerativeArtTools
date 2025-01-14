@@ -118,11 +118,17 @@ function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
   return color_buffer
 }
 
-function change_ps_direction(){
-  angle = noise(random(1000))*sortNoiseScale;
-  noise_coordinates = angleToCoordinates(angle, noise_radius);
-  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  console.log('New PS Noise coordinates', noise_coordinates)
+function change_ps_direction() {
+  let oldCoordinates = {x:12321, y:123123}
+  if (noise_coordinates){
+    oldCoordinates = noise_coordinates; // Clone the current coordinates
+  }
+
+  do {
+    angle = noise(random(1000)) * sortNoiseScale;
+    noise_coordinates = angleToCoordinates(angle, noise_radius);
+    PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
+  } while (oldCoordinates.x == noise_coordinates.x && oldCoordinates.y == noise_coordinates.y); // Keep looping until coordinates change
 }
 
 function set_ps_initial_steps(new_initial_steps){
