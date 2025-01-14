@@ -118,11 +118,17 @@ function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
   return color_buffer
 }
 
-function change_ps_direction(){
-  angle = noise(random(1000))*sortNoiseScale;
-  noise_coordinates = angleToCoordinates(angle, noise_radius);
-  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  console.log('New PS Noise coordinates', noise_coordinates)
+function change_ps_direction() {
+  let oldCoordinates = {x:12321, y:123123}
+  if (noise_coordinates){
+    oldCoordinates = noise_coordinates; // Clone the current coordinates
+  }
+
+  do {
+    angle = noise(random(1000)) * sortNoiseScale;
+    noise_coordinates = angleToCoordinates(angle, noise_radius);
+    PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
+  } while (oldCoordinates.x == noise_coordinates.x && oldCoordinates.y == noise_coordinates.y); // Keep looping until coordinates change
 }
 
 function set_ps_initial_steps(new_initial_steps){
@@ -143,6 +149,26 @@ function set_ps_passes_per_frame(new_passes_per_frame){
   return old_passes_per_frame
 }
 
+function set_ps_passes_per_frame_from_slider(new_passes_per_frame){
+  var inputElement = PSInputs.PSPassesPerFrame
+  var old_passes_per_frame = inputElement.value
+  inputElement.value = new_passes_per_frame
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_passes_per_frame
+}
+
+function disable_ps_passes_per_frame(){
+  var inputElement = PSInputs.PSPassesPerFrame
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
 function set_ps_noise_scale(new_noise_scale){
   var old_noise_scale = sortNoiseScale
   sortNoiseScale = new_noise_scale
@@ -153,6 +179,26 @@ function set_ps_direction_change_rate(new_direction_change_rate){
   var old_direction_change_rate = noiseDirectionChangeRate
   noiseDirectionChangeRate = new_direction_change_rate
   return old_direction_change_rate
+}
+
+function set_ps_direction_change_rate_from_slider(new_direction_change_rate){
+  var inputElement = PSInputs.PSnoiseDirectionChangeRate
+  var old_direction_change_rate = inputElement.value
+  inputElement.value = new_direction_change_rate
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_direction_change_rate
+}
+
+function disable_ps_direction_change_rate(){
+  var inputElement = PSInputs.PSnoiseDirectionChangeRate
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
 }
 
 function reset_ps_steps(){
@@ -257,6 +303,10 @@ export {
   pixel_sorting_gpu,
   angleToCoordinates,
   set_ps_max_steps,
+  set_ps_direction_change_rate_from_slider,
+  disable_ps_direction_change_rate,
+  set_ps_passes_per_frame_from_slider,
+  disable_ps_passes_per_frame,
   get_PixelSortInitialSteps,
   reset_ps_steps,
   change_ps_direction,

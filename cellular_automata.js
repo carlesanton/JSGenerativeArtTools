@@ -2,10 +2,12 @@ import {create_number_input_slider_and_number, create_daisyui_expandable_card} f
 
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
+export let defaultCAPassesPerFrame = 1;
 export let defaultCellularAutomataInitialSteps = 0;
 
 let CARandomColorChangeRate;
 let CAMaxSteps;
+let CAPassesPerFrame;
 let CellularAutomataInitialSteps;
 
 let CAInputs;
@@ -195,7 +197,9 @@ function initialize_cellular_automata_shader(){
 function cellular_automata_gpu(color_buffer){
     color_buffer.begin();
     if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
-        filter(CAShader)
+        for (let i = 0; i < CAPassesPerFrame; i++) {
+            filter(CAShader)
+        }
         cellular_automata_step+=1
     }
     color_buffer.end();
@@ -215,11 +219,58 @@ function set_ca_max_steps(new_max_steps){
   return old_max_steps
 }
 
+function set_ca_passes_per_frame(new_passes_per_frame){
+  const old_passes_per_frame = CAPassesPerFrame;
+  CAPassesPerFrame = new_passes_per_frame;
+  return old_passes_per_frame
+}
+
 function set_ca_color_change_rate(new_change_rate){
     const old_change_rate = CARandomColorChangeRate;
     CARandomColorChangeRate = new_change_rate;
     return old_change_rate
 }
+
+function set_ca_color_change_rate_from_slider(new_color_change_rate){
+  var inputElement = CAInputs.CARandomColorChangeRate
+  var old_color_change_rate = inputElement.value
+  inputElement.value = new_color_change_rate
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_color_change_rate
+}
+
+function disable_ca_color_change_rate(){
+  var inputElement = CAInputs.CARandomColorChangeRate
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
+function set_ca_passes_per_frame_from_slider(new_passes_per_frame){
+  var inputElement = CAInputs.CAPassesPerFrame
+  var old_passes_per_frame = inputElement.value
+  inputElement.value = new_passes_per_frame
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_passes_per_frame
+}
+
+function disable_ca_passes_per_frame(){
+  var inputElement = CAInputs.CAPassesPerFrame
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
 
 function set_ca_new_random_color(new_random_color){
     CAShader.setUniform('next_random_color', new_random_color);
@@ -264,7 +315,17 @@ function createCASettingsCard() {
         set_ca_max_steps,
     );
     elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
-        
+
+    const passesPerFrame = create_number_input_slider_and_number(
+        'passesPerFrame',
+        'Passes per Frame',
+        defaultCAPassesPerFrame,
+        0,
+        5,
+        set_ca_passes_per_frame,
+    );
+    elements_dict['CAPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
+
     const randomColor = create_number_input_slider_and_number(
         'CARandomColorChangeRate',
         'Random Color Change Rate',
@@ -279,6 +340,8 @@ function createCASettingsCard() {
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(maxSteps);
     cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(passesPerFrame);
+    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(randomColor);
 
     elements_dict['main-toolbar'] = card;
@@ -291,6 +354,7 @@ function createCASettingsCard() {
 function update_all_ca_parametters(){
     CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
     CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
+    CAPassesPerFrame = parseInt(CAInputs['CAPassesPerFrame'].value)
     CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
 }
 
@@ -307,4 +371,8 @@ export {
     createCASettingsCard,
     update_all_ca_parametters,
     reset_ca_steps,
+    set_ca_color_change_rate_from_slider,
+    disable_ca_color_change_rate,
+    set_ca_passes_per_frame_from_slider,
+    disable_ca_passes_per_frame,
 }
