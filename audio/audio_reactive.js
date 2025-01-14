@@ -40,23 +40,21 @@ function initializeAudio(){
     audio = new p5.AudioIn();
     fft = new p5.FFT(0, 512);
 
-    if (audioSourceIdx != 0){
-        // List available inputs
-        audio.getSources().then((sources) => {
-            console.log('Available input sources:')
-            sources.forEach(function(device) {
-                console.log(device.kind + ": " + device.label);
-                });
-            var audioSource = sources[audioSourceIdx];
-            if (audioSource){
-                console.log('Connecting to audio source number ', audioSourceIdx, ' with name', audioSource.label);
-                audio.setSource(audioSourceIdx)
-            }
-            else {
-                console.log('No Audio Source with index', audioSourceIdx)
-            }
-        })
-    }
+    // List available inputs
+    audio.getSources().then((sources) => {
+        console.log('Available input sources:')
+        sources.forEach(function(device) {
+            console.log(device.kind + ": " + device.label);
+            });
+        var audioSource = sources[audioSourceIdx];
+        if (audioSource){
+            console.log('Connecting to audio source number ', audioSourceIdx, ' with name', audioSource.label);
+            audio.setSource(audioSourceIdx)
+        }
+        else {
+            console.log('No Audio Source with index', audioSourceIdx)
+        }
+    })
     
     // start the Audio Input.
     // By default, it does not .connect() (to the computer speakers)
