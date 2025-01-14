@@ -251,6 +251,26 @@ function disable_ca_color_change_rate(){
   inputElement.dispatchEvent(event);
 }
 
+function set_ca_passes_per_frame_from_slider(new_passes_per_frame){
+  var inputElement = CAInputs.CAPassesPerFrame
+  var old_passes_per_frame = inputElement.value
+  inputElement.value = new_passes_per_frame
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_passes_per_frame
+}
+
+function disable_ca_passes_per_frame(){
+  var inputElement = CAInputs.CAPassesPerFrame
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
 
 function set_ca_new_random_color(new_random_color){
     CAShader.setUniform('next_random_color', new_random_color);
@@ -353,4 +373,6 @@ export {
     reset_ca_steps,
     set_ca_color_change_rate_from_slider,
     disable_ca_color_change_rate,
+    set_ca_passes_per_frame_from_slider,
+    disable_ca_passes_per_frame,
 }
