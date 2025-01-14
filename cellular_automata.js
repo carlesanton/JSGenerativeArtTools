@@ -231,6 +231,27 @@ function set_ca_color_change_rate(new_change_rate){
     return old_change_rate
 }
 
+function set_ca_color_change_rate_from_slider(new_color_change_rate){
+  var inputElement = CAInputs.CARandomColorChangeRate
+  var old_color_change_rate = inputElement.value
+  inputElement.value = new_color_change_rate
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_color_change_rate
+}
+
+function disable_ca_color_change_rate(){
+  var inputElement = CAInputs.CARandomColorChangeRate
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
+
 function set_ca_new_random_color(new_random_color){
     CAShader.setUniform('next_random_color', new_random_color);
 }
@@ -330,4 +351,6 @@ export {
     createCASettingsCard,
     update_all_ca_parametters,
     reset_ca_steps,
+    set_ca_color_change_rate_from_slider,
+    disable_ca_color_change_rate,
 }
