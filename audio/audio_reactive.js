@@ -59,7 +59,6 @@ function initializeAudio(){
     // start the Audio Input.
     // By default, it does not .connect() (to the computer speakers)
     audio.start();
-    userStartAudio();
 
     fft.setInput(audio)
     LFpeakDetect = new p5.PeakDetect(200,1000, LFPeakThreshold);
