@@ -24,7 +24,7 @@ let LFPeakThreshold = 0.35;
 let MFpeakDetect;
 let MFPeakThreshold = 0.001;
 
-let audioSourceIdx = 1;
+let audioSourceIdx = 0;
 
 // Initialize Dummy functions
 let onBeat = function (){
@@ -40,28 +40,25 @@ function initializeAudio(){
     audio = new p5.AudioIn();
     fft = new p5.FFT(0, 512);
 
-    if (audioSourceIdx != 0){
-        // List available inputs
-        audio.getSources().then((sources) => {
-            console.log('Available input sources:')
-            sources.forEach(function(device) {
-                console.log(device.kind + ": " + device.label);
-                });
-            var audioSource = sources[audioSourceIdx];
-            if (audioSource){
-                console.log('Connecting to audio source number ', audioSourceIdx, ' with name', audioSource.label);
-                audio.setSource(audioSourceIdx)
-            }
-            else {
-                console.log('No Audio Source with index', audioSourceIdx)
-            }
-        })
-    }
+    // List available inputs
+    audio.getSources().then((sources) => {
+        console.log('Available input sources:')
+        sources.forEach(function(device) {
+            console.log(device.kind + ": " + device.label);
+            });
+        var audioSource = sources[audioSourceIdx];
+        if (audioSource){
+            console.log('Connecting to audio source number ', audioSourceIdx, ' with name', audioSource.label);
+            audio.setSource(audioSourceIdx)
+        }
+        else {
+            console.log('No Audio Source with index', audioSourceIdx)
+        }
+    })
     
     // start the Audio Input.
     // By default, it does not .connect() (to the computer speakers)
     audio.start();
-    userStartAudio();
 
     fft.setInput(audio)
     LFpeakDetect = new p5.PeakDetect(200,1000, LFPeakThreshold);
