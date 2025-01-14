@@ -24,7 +24,7 @@ let LFPeakThreshold = 0.35;
 let MFpeakDetect;
 let MFPeakThreshold = 0.001;
 
-let audioSourceIdx = 1;
+let audioSourceIdx = 0;
 
 // Initialize Dummy functions
 let onBeat = function (){
