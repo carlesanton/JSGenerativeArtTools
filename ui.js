@@ -163,6 +163,32 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
         }
     });
 
+    // Function to toggle disabled state
+    function toggleDisabled(disabled) {
+        number.disabled = disabled;
+        range.disabled = disabled;
+    }
+
+    // Override the disabled property setter
+    Object.defineProperty(number, 'linkedDisabled', {
+        get: function() { return this._disabled; },
+        set: function(value) {
+            this._disabled = value;
+            toggleDisabled(value);
+        }
+    });
+    
+    Object.defineProperty(range, 'linkedDisabled', {
+        get: function() { return this._disabled; },
+        set: function(value) {
+            this._disabled = value;
+            toggleDisabled(value);
+        }
+    });
+    // Initialize _disabled properties
+    number._disabled = false;
+    range._disabled = false;
+
     // Conditionally set optional attributes
     if (label !== undefined && label !== null) {
         const label_div = document.createElement('div');
