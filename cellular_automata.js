@@ -2,10 +2,12 @@ import {create_number_input_slider_and_number, create_daisyui_expandable_card} f
 
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
+export let defaultCAPassesPerFrame = 1;
 export let defaultCellularAutomataInitialSteps = 0;
 
 let CARandomColorChangeRate;
 let CAMaxSteps;
+let CAPassesPerFrame;
 let CellularAutomataInitialSteps;
 
 let CAInputs;
@@ -195,7 +197,9 @@ function initialize_cellular_automata_shader(){
 function cellular_automata_gpu(color_buffer){
     color_buffer.begin();
     if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
-        filter(CAShader)
+        for (let i = 0; i < CAPassesPerFrame; i++) {
+            filter(CAShader)
+        }
         cellular_automata_step+=1
     }
     color_buffer.end();
@@ -213,6 +217,12 @@ function set_ca_max_steps(new_max_steps){
   const old_max_steps = CAMaxSteps;
   CAMaxSteps = new_max_steps;
   return old_max_steps
+}
+
+function set_ca_passes_per_frame(new_passes_per_frame){
+  const old_passes_per_frame = CAPassesPerFrame;
+  CAPassesPerFrame = new_passes_per_frame;
+  return old_passes_per_frame
 }
 
 function set_ca_color_change_rate(new_change_rate){
@@ -264,7 +274,17 @@ function createCASettingsCard() {
         set_ca_max_steps,
     );
     elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
-        
+
+    const passesPerFrame = create_number_input_slider_and_number(
+        'passesPerFrame',
+        'Passes per Frame',
+        defaultCAPassesPerFrame,
+        0,
+        5,
+        set_ca_passes_per_frame,
+    );
+    elements_dict['CAPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
+
     const randomColor = create_number_input_slider_and_number(
         'CARandomColorChangeRate',
         'Random Color Change Rate',
@@ -279,6 +299,8 @@ function createCASettingsCard() {
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(maxSteps);
     cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(passesPerFrame);
+    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(randomColor);
 
     elements_dict['main-toolbar'] = card;
@@ -291,6 +313,7 @@ function createCASettingsCard() {
 function update_all_ca_parametters(){
     CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
     CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
+    CAPassesPerFrame = parseInt(CAInputs['CAPassesPerFrame'].value)
     CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
 }
 
