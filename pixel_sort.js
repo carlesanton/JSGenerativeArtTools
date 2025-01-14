@@ -161,6 +161,26 @@ function set_ps_direction_change_rate(new_direction_change_rate){
   return old_direction_change_rate
 }
 
+function set_ps_direction_change_rate_from_slider(new_direction_change_rate){
+  var inputElement = PSInputs.PSnoiseDirectionChangeRate
+  var old_direction_change_rate = inputElement.value
+  inputElement.value = new_direction_change_rate
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+  return old_direction_change_rate
+}
+
+function disable_ps_direction_change_rate(){
+  var inputElement = PSInputs.PSnoiseDirectionChangeRate
+  inputElement.linkedDisabled = !inputElement.disabled
+
+  // Propagate change to slider and value by manualy triggering on change
+  var event = new Event('input');
+  inputElement.dispatchEvent(event);
+}
+
 function reset_ps_steps(){
   pixel_sort_step = 0;
 }
@@ -263,6 +283,8 @@ export {
   pixel_sorting_gpu,
   angleToCoordinates,
   set_ps_max_steps,
+  set_ps_direction_change_rate_from_slider,
+  disable_ps_direction_change_rate,
   get_PixelSortInitialSteps,
   reset_ps_steps,
   change_ps_direction,
