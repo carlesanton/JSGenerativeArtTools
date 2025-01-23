@@ -358,7 +358,7 @@ export class ScrollingWaveform extends SoundVisualizer {
     } else {
       gfxBuffer.background(this.backgroundColor);
     }
-
+    gfxBuffer.clear()
     gfxBuffer.pop();
 
     gfxBuffer.strokeWeight(1);
@@ -610,6 +610,7 @@ export class Spectrogram extends SoundVisualizer {
     let selectOffscreenBuffer = int(xBufferVal / this.width) % 2;
     //print("selectOffscreenBuffer", selectOffscreenBuffer);
     let offScreenBuffer = this.offscreenGfxBuffer1;
+    let bufferLengthInXPixels = this.convertBufferLengthToXPixels(spectrum.length);
 
     // TODO: add in a clear for the offscreen background?
     if (xBufferVal > this.width) {
@@ -662,7 +663,6 @@ export class Spectrogram extends SoundVisualizer {
       offScreenBuffer.colorMode(RGB);
     }
 
-    let bufferLengthInXPixels = this.convertBufferLengthToXPixels(spectrum.length);
     for (let i = 0; i < spectrum.length; i++) {
       let y = map(i, 0, spectrum.length, this.height, 0);
       //let col = map(spectrum[i], 0, 255, blue(this.backgroundColor), 255);
