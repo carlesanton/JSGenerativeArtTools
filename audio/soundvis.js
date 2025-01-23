@@ -465,7 +465,6 @@ export class ScrollingWaveform extends SoundVisualizer {
     let xBufferVal = map(xIndex, 0, xAxisLengthInSamples, 0, this.width);
     let xVal = xBufferVal - (floor(xBufferVal / this.width) * this.width);
     let offScreenBuffer = this.setupAndGetOffScreenBuffer(xBufferVal);
-    let numSamplesInOnePixel = this.getNumSamplesInOnePixel();
     let bufferLengthInXPixels = this.convertBufferLengthToXPixels(waveform.length);
 
 
