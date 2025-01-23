@@ -487,7 +487,7 @@ export class ScrollingWaveform extends SoundVisualizer {
     
     // purple ice
     //let hue = map(maxWaveformVal, 0, 1, 340, 240);
-    let col = this.getColorForWaveformValue(maxWaveformVal);
+    let col = this.getColorForWaveformValue(this.levelMappingMethod(maxWaveformVal, this.levelScale));
     offScreenBuffer.stroke(col);
     
     offScreenBuffer.beginShape(); 
@@ -512,8 +512,14 @@ export class ScrollingWaveform extends SoundVisualizer {
         swappedBuffers = false; 
       }
       
+      // Map level if levelMappingMethod is passed in construciton
+      if (this.levelMappingMethod !== undefined && this.levelMappingMethod !== null) {
+        waveformVal = this.levelMappingMethod(waveformVal, this.levelScale);
+        // waveformVal = map(waveformVal, 0, 1, -1, 1);
+      }
+
       let x = map(xIndexWithinAxis, 0, xAxisLengthInSamples, 0, this.width);
-      let y = map(waveformVal, -1, 1, this.getBottom(), this.y);
+      let y = map(waveformVal, -1, 1, 0, this.height);
 
       offScreenBuffer.vertex(x, y);
     
