@@ -231,4 +231,8 @@ export class AudioReactive {
     }
   }
 
+  isDisplayVisualizationEnabled() {
+    return this.displayVisualizationEnabled;
+  }
+
 }
