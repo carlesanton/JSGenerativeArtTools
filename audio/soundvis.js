@@ -468,9 +468,6 @@ export class ScrollingWaveform extends SoundVisualizer {
     let offScreenBuffer = this.setupAndGetOffScreenBuffer(xBufferVal);
     let bufferLengthInXPixels = this.convertBufferLengthToXPixels(waveform.length);
 
-
-    let debugLastX = null;
-    let debugI = 0;
     let prevOffScreenBuffer = offScreenBuffer;
     
     // TODO:
@@ -524,17 +521,6 @@ export class ScrollingWaveform extends SoundVisualizer {
       offScreenBuffer.vertex(x, y);
     
       xIndex++;
-
-      if (debugLastX != null && abs(debugLastX - x) > 10) {
-        print("swappedBuffers", swappedBuffers, "x", x, "y", y, "lastX", debugLastX, "i", debugI, "waveform.length", waveform.length, "this.width", this.width);
-        print("xBufferVal", xBufferVal, "xIndex", xIndex, "xIndexWithinAxis", xIndexWithinAxis);
-        let selectOffscreenBuffer = int(xBufferVal / this.width) % 2;
-        print("...start swapping buffers; xBufferVal", xBufferVal, "this.width", 
-            this.width, "selectOffscreenBuffer", selectOffscreenBuffer);
-      }
-
-      debugLastX = x;
-      debugI++;
     }
     offScreenBuffer.endShape();
 
