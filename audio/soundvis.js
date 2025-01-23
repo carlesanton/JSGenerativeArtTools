@@ -305,7 +305,7 @@ export class MinMaxRange {
   }
 }
 
-const COLORSCHEME = {
+export const COLORSCHEME = {
   GRAYSCALE: 'grayscale',
   PURPLEICE: 'purpleice',
   RAINBOW: 'rainbow',
