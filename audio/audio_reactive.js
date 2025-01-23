@@ -1,3 +1,4 @@
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
 import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
