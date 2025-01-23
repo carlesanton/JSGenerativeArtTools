@@ -1250,3 +1250,187 @@ export class InstantWaveformVis extends SoundVisualizer {
     }
   }
 }
+
+export class BeatDetectorVisualizer extends Rectangle {
+  // see: https://p5js.org/reference/#/p5.FFT
+  constructor(x, y, width, height, backgroundColor, beatDetectLevel, levelMappingMethod, levelScale) {
+    super(x, y, width, height, backgroundColor);
+
+    print("Created BeatDetector Visualizer:", x, y, width, height);
+
+    this.beatDetectLevel = beatDetectLevel;
+    // this.beatCutoffLevel = beatDetectLevel;
+    this.beatDetected = false;
+    this.minimumRadius = 0.0;
+    this.radius = this.minimumRadius;
+    this.lastMax
+    this.volLevel = 0.0;
+    this.levelMappingMethod = levelMappingMethod;
+    this.levelScale = levelScale;
+    this.displaySize = 0.7 * min(this.height, this.width);
+
+    this.isStrokeOn = true;
+    this.isFillOn = true;
+
+    this.colorScheme = COLORSCHEME.GRAYSCALE;
+    this.strokeColor = color(255);
+    this.setupColors();
+    this.setFadeBackground(true);
+  }
+
+  setFadeBackground(turnOnFadeBackground){
+    if(turnOnFadeBackground){
+      this.backgroundColor = color(red(this.backgroundColor), 
+                                 green(this.backgroundColor),
+                                 blue(this.backgroundColor),
+                                 20); 
+    }else{
+     this.backgroundColor = color(red(this.backgroundColor), 
+                                 green(this.backgroundColor),
+                                 blue(this.backgroundColor)); 
+    }
+  }
+
+  setupColors() {
+    if (this.colorScheme == COLORSCHEME.CUSTOM) {
+      // no op; in this mode, we let user select color via this.strokeColor 
+    } else if (this.colorScheme == COLORSCHEME.PURPLEICE) {
+      colorMode(HSB);
+      this.outerCircleStroke = color(340, 80, 90, 0.8);
+      this.outerCircleBeatDetectedStroke = color(240, 80, 90, 1);
+      this.thresholdCircleStroke = color(4000, 100, 250, 1);
+      this.volumeCircleStroke = color(200, 80, 90, 0.8);
+
+      colorMode(RGB);
+      this.outerCircleFillColor = color(red(this.outerCircleStroke), green(this.outerCircleStroke),
+        blue(this.outerCircleStroke), 150);
+      this.thresholdCircleFillColor = color(red(this.thresholdCircleStroke), green(this.thresholdCircleStroke),
+        blue(this.thresholdCircleStroke), 140);
+      this.thresholdCircleBeatDetectedColor = color(red(this.thresholdCircleStroke), green(this.thresholdCircleStroke),
+        blue(this.thresholdCircleStroke), 140);
+      this.volumeCircleFillColor = color(red(this.volumeCircleStroke), green(this.volumeCircleStroke),
+        blue(this.volumeCircleStroke), 180);
+      this.outerCircleBeatDetectedFillColor = color(red(this.outerCircleBeatDetectedStroke), green(this.outerCircleBeatDetectedStroke),
+        blue(this.outerCircleBeatDetectedStroke), 180);
+      
+    }else if(this.colorScheme == COLORSCHEME.RAINBOW){ 
+      colorMode(HSB);
+      this.outerCircleStroke = color(50, 80, 90, 0.8);
+      this.outerCircleBeatDetectedStroke = color(50, 80, 90, 0.8);;
+      this.thresholdCircleStroke = color(0, 80, 90);
+      this.volumeCircleStroke = color(50, 80, 90, 0.8);
+
+      colorMode(RGB);
+      this.outerCircleFillColor = color(red(this.outerCircleStroke), green(this.outerCircleStroke),
+        blue(this.outerCircleStroke), 120);
+      this.thresholdCircleFillColor = color(red(this.thresholdCircleStroke), green(this.thresholdCircleStroke),
+        blue(this.thresholdCircleStroke), 140);
+      this.thresholdCircleBeatDetectedColor = color(red(this.thresholdCircleStroke), green(this.thresholdCircleStroke),
+        blue(this.thresholdCircleStroke), 140);
+      this.volumeCircleFillColor = color(red(this.volumeCircleStroke), green(this.volumeCircleStroke),
+        blue(this.volumeCircleStroke), 180);
+      this.outerCircleBeatDetectedFillColor = color(red(this.outerCircleBeatDetectedStroke), green(this.outerCircleBeatDetectedStroke),
+        blue(this.outerCircleBeatDetectedStroke), 180);
+    }else {
+      //default to grayscale
+      colorMode(RGB);
+      this.outerCircleStroke = color(225, 225, 225, 255);
+      this.outerCircleBeatDetectedStroke = color(50, 50, 255, 255);
+      this.thresholdCircleStroke = color(50);
+      this.volumeCircleStroke = color(225, 225, 225, 225);
+
+      this.outerCircleFillColor = color(red(this.outerCircleStroke), green(this.outerCircleStroke),
+        blue(this.outerCircleStroke), 50);
+      this.thresholdCircleFillColor = color(red(this.thresholdCircleStroke), green(this.thresholdCircleStroke),
+        blue(this.thresholdCircleStroke), 128);
+      this.thresholdCircleBeatDetectedColor = color(50, 50, 255, 255);
+      this.volumeCircleFillColor = color(red(this.volumeCircleStroke), green(this.volumeCircleStroke),
+        blue(this.volumeCircleStroke), 180);
+      this.outerCircleBeatDetectedFillColor = color(red(this.outerCircleBeatDetectedStroke), green(this.outerCircleBeatDetectedStroke),
+        blue(this.outerCircleBeatDetectedStroke), 180);
+    }
+  }
+
+  setBeatDetectLevel(beatDetectLevel){
+    this.beatDetectLevel = beatDetectLevel;
+    this.radius = constrain(this.beatDetectLevel, 0, 1); // Limit so it doesnt go offbounds
+  }
+
+  setLevelScale(levelScale){
+    this.levelScale = levelScale
+  }
+
+  setBeatDetected(beatDetected){
+    this.beatDetected = beatDetected;
+  }
+
+  update(volLevel) {
+    this.volLevel = volLevel;
+    if (this.levelMappingMethod !== undefined && this.levelMappingMethod !== null) {
+      this.volLevel = this.levelMappingMethod(this.volLevel, this.levelScale);
+    }
+    // this.beatCutoffLevel = beatCutoffLevel;
+    // var ratio = (this.beatCutoffLevel - this.beatDetectLevel) / this.beatDetectLevel;
+    // if (ratio>0){
+    //   this.beatDetected = true;
+    // }
+    // else {
+    //   this.beatDetected = false;
+    // }
+    // ratio = map(ratio, 0, 1, this.minimumRadius, 1)
+    // this.radius = constrain(ratio, this.minimumRadius, 1)
+    // console.log('beatDetectLevel', this.beatDetectLevel, 'beatCutoffLevel', this.beatCutoffLevel, 'radius', this.radius)
+    this.setupColors();
+  }
+
+  draw() {
+    push();
+
+    // draw background
+    noStroke();
+    fill(this.backgroundColor);
+    rect(this.x, this.y, this.width, this.height);
+
+    // Threshold circle
+    if(this.beatDetected){ // No beat detected
+      fill(this.thresholdCircleBeatDetectedColor);
+    }
+    else {
+      fill(this.thresholdCircleFillColor);
+    }
+    stroke(this.thresholdCircleStroke);
+    circle(
+      this.getLeft() + this.width/2,
+      this.getBottom() - this.height/2,
+      this.displaySize * this.beatDetectLevel,
+    )
+
+    // Outter circle
+    if(this.beatDetected){ // No beat detected
+      stroke(this.outerCircleBeatDetectedStroke);
+      fill(this.outerCircleBeatDetectedFillColor);
+    }
+    else {
+      fill(this.outerCircleFillColor);
+      stroke(this.outerCircleStroke);
+    }
+    strokeWeight(3)
+    circle(
+      this.getLeft() + this.width/2,
+      this.getBottom() - this.height/2,
+      this.displaySize,
+    )
+
+    // Vol Circle
+    fill(this.volumeCircleFillColor);
+    stroke(this.volumeCircleStroke);
+    strokeWeight(3)
+    circle(
+      this.getLeft() + this.width/2,
+      this.getBottom() - this.height/2,
+      this.displaySize * this.volLevel,
+    )
+
+    pop();
+  }
+}
