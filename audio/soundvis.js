@@ -317,7 +317,7 @@ export const COLORSCHEME = {
 //   and move some of the offscreen buffer code there?
 // - [done] erase offscreenbuffer once fully offscreen
 export class ScrollingWaveform extends SoundVisualizer {
-  constructor(x, y, width, height, backgroundColor, lengthInSeconds) {
+  constructor(x, y, width, height, backgroundColor, lengthInSeconds, beatDetectLevel, levelMappingMethod, levelScale) {
     super(x, y, width, height, backgroundColor, lengthInSeconds);
 
     this.colorScheme = COLORSCHEME.GRAYSCALE;
@@ -338,6 +338,11 @@ export class ScrollingWaveform extends SoundVisualizer {
     this.resetGraphicsBuffer(this.offscreenGfxBuffer2);
 
     this.previousOffScreenBuffer = this.offscreenGfxBuffer1;
+
+    this.beatDetectLevel = beatDetectLevel;
+    this.prevBeatDetectLevel = beatDetectLevel;
+    this.levelMappingMethod = levelMappingMethod;
+    this.levelScale = levelScale
   }
 
   resetGraphicsBuffer(gfxBuffer, clearColor) {
@@ -396,6 +401,15 @@ export class ScrollingWaveform extends SoundVisualizer {
     return offScreenBuffer;
   }
   
+  setBeatDetectLevel(beatDetectLevel){
+    beatDetectLevel = beatDetectLevel<0.99 ? beatDetectLevel: 0.97 // To prevent it from going off screen
+    this.beatDetectLevel = beatDetectLevel;
+  }
+
+  setLevelScale(levelScale){
+    this.levelScale = levelScale
+  }
+
   getColorForWaveformValue(waveformVal){
     //TODO fix and test this
     colorMode(HSB);
@@ -1017,7 +1031,7 @@ export class SpectrumVisualizer extends Rectangle {
 
 export class InstantWaveformVis extends SoundVisualizer {
   // see: https://p5js.org/reference/#/p5.FFT
-  constructor(x, y, width, height, backgroundColor, lengthInSeconds) {
+  constructor(x, y, width, height, backgroundColor, lengthInSeconds, beatDetectLevel, levelMappingMethod, levelScale) {
     super(x, y, width, height, backgroundColor, lengthInSeconds);
     this.waveform = null;
     this.maxWaveformVal = 0;
@@ -1027,6 +1041,9 @@ export class InstantWaveformVis extends SoundVisualizer {
     this.setFadeBackground(true);
     this.strokeColor = color(255);  
     this.colorScheme = COLORSCHEME.GRAYSCALE;
+    this.beatDetectLevel = beatDetectLevel;
+    this.levelMappingMethod = levelMappingMethod;
+    this.levelScale = levelScale;
   }
   
   setFadeBackground(turnOnFadeBackground){
@@ -1042,6 +1059,14 @@ export class InstantWaveformVis extends SoundVisualizer {
     }
   }
   
+  setBeatDetectLevel(beatDetectLevel){
+    this.beatDetectLevel = beatDetectLevel;
+  }
+
+  setLevelScale(levelScale){
+    this.levelScale = levelScale
+  }
+
   getColorForWaveformValue(waveformVal){
     //TODO fix and test this
     colorMode(HSB);
