@@ -31,6 +31,60 @@ class AudioVisualizationModule {
 
     this.setupVisualizations();
   }
+
+  setupVisualizations() {
+    let yTop = this.topLeftCorner.y;
+    let yHeight = this.bottomRightCorner.y - this.topLeftCorner.y;
+    let xWidth = this.bottomRightCorner.x - this.topLeftCorner.x;
+    let scrollingWaveform = new soundvis.ScrollingWaveform(
+      this.topLeftCorner.x, yTop, parseInt(2 * xWidth / 3), yHeight / 3, 
+      this.backgroundColor, this.options.showLengthInSeconds, this.beatDetectLevel,
+      this.options.levelMappingMethod, this.options.levelScale,
+    );
+
+    let beatDetectorVisualizer = new soundvis.BeatDetectorVisualizer(
+      this.topLeftCorner.x + parseInt(2 * xWidth / 3), yTop, parseInt(1 * xWidth / 3), yHeight / 3, 
+      this.backgroundColor, this.beatDetectLevel,
+      this.options.levelMappingMethod, this.options.levelScale,
+    );
+
+    yTop = scrollingWaveform.getBottom();
+    let scrollingSpectrogram = new soundvis.Spectrogram(
+      this.topLeftCorner.x, yTop, parseInt(2 * xWidth / 3), yHeight / 3, 
+      this.backgroundColor, this.options.showLengthInSeconds, this.beatDetectLevel,
+    );
+
+    let xBottomWidth = xWidth / 3;
+    let xBottom = this.topLeftCorner.x;
+
+    let lengthOfOneWaveformBufferInSecs = this.options.numFftBins / this.options.sampleRate;
+    yTop = scrollingSpectrogram.getBottom();
+    let instantWaveFormVis = new soundvis.InstantWaveformVis(
+      xBottom, yTop, xBottomWidth, yHeight / 3, 
+      this.backgroundColor, lengthOfOneWaveformBufferInSecs, this.beatDetectLevel,
+      this.options.levelMappingMethod, this.options.levelScale,
+    );
+    xBottom += xBottomWidth;
+    let spectrumVis = new soundvis.SpectrumVisualizer(
+      xBottom, yTop, xBottomWidth, yHeight / 3, 
+      this.backgroundColor
+    );
+    xBottom += xBottomWidth;
+    let spectrumBarGraph = new soundvis.SpectrumBarGraph(
+      xBottom, yTop, xBottomWidth, yHeight / 3, 
+      this.backgroundColor
+    );
+
+    this.visualizations['scrollingWaveform'] = scrollingWaveform;
+    this.visualizations['beatDetectorVisualizer'] = beatDetectorVisualizer;
+    this.visualizations['scrollingSpectrogram'] = scrollingSpectrogram;
+    this.visualizations['instantWaveFormVis'] = instantWaveFormVis;
+    this.visualizations['spectrumVis'] = spectrumVis;
+    this.visualizations['spectrumBarGraph'] = spectrumBarGraph;
+
+    this.applyColorScheme();
+  }
+
 }
 
 export {
