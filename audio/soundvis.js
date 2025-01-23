@@ -539,9 +539,29 @@ export class ScrollingWaveform extends SoundVisualizer {
 
 
   draw() {
-    // draw our offscreen buffers to the screen! 
-    image(this.offscreenGfxBuffer1, this.offscreenGfxBuffer1.x, this.y);
-    image(this.offscreenGfxBuffer2, this.offscreenGfxBuffer2.x, this.y);
+    // draw our offscreen buffers to the screen!
+    image(
+      this.offscreenGfxBuffer1,
+      this.offscreenGfxBuffer1.destXPosition, // Number: the x-coordinate of the destination rectangle in which to draw the source image
+      this.y,   // Number: the y-coordinate of the destination rectangle in which to draw the source image
+      this.offscreenGfxBuffer1.destWidth,
+      this.height,
+      this.offscreenGfxBuffer1.sectionToDisplayX,  // Number: the x-coordinate of the subsection of the source image to draw into the destination rectangle
+      0,  // Number: the y-coordinate of the subsection of the source image to draw into the destination rectangle
+      this.offscreenGfxBuffer1.sectionToDisplayWidth, // Number: the width of the subsection of the source image to draw into the destination rectangle
+      this.height,// Number: the height of the subsection of the source image to draw into the destination rectangle
+    )
+    image(
+      this.offscreenGfxBuffer2,
+      this.offscreenGfxBuffer2.destXPosition, // Number: the x-coordinate of the destination rectangle in which to draw the source image
+      this.y,   // Number: the y-coordinate of the destination rectangle in which to draw the source image
+      this.offscreenGfxBuffer2.destWidth,
+      this.height,
+      this.offscreenGfxBuffer2.sectionToDisplayX,  // Number: the x-coordinate of the subsection of the source image to draw into the destination rectangle
+      0,  // Number: the y-coordinate of the subsection of the source image to draw into the destination rectangle
+      this.offscreenGfxBuffer2.sectionToDisplayWidth, // Number: the width of the subsection of the source image to draw into the destination rectangle
+      this.height,// Number: the height of the subsection of the source image to draw into the destination rectangle
+    )
   }
 }
 
@@ -679,9 +699,29 @@ export class Spectrogram extends SoundVisualizer {
 
 
   draw() {
-    // draw our offscreen buffers to the screen! 
-    image(this.offscreenGfxBuffer1, this.offscreenGfxBuffer1.x, this.y);
-    image(this.offscreenGfxBuffer2, this.offscreenGfxBuffer2.x, this.y);
+    // draw our offscreen buffers to the screen! Draw only needed sections to dont go out of margins
+    image(
+      this.offscreenGfxBuffer1,
+      this.offscreenGfxBuffer1.destXPosition, // Number: the x-coordinate of the destination rectangle in which to draw the source image
+      this.y,   // Number: the y-coordinate of the destination rectangle in which to draw the source image
+      this.offscreenGfxBuffer1.destWidth,
+      this.height,
+      this.offscreenGfxBuffer1.sectionToDisplayX,  // Number: the x-coordinate of the subsection of the source image to draw into the destination rectangle
+      0,  // Number: the y-coordinate of the subsection of the source image to draw into the destination rectangle
+      this.offscreenGfxBuffer1.sectionToDisplayWidth, // Number: the width of the subsection of the source image to draw into the destination rectangle
+      this.height,// Number: the height of the subsection of the source image to draw into the destination rectangle
+    )
+    image(
+      this.offscreenGfxBuffer2,
+      this.offscreenGfxBuffer2.destXPosition, // Number: the x-coordinate of the destination rectangle in which to draw the source image
+      this.y,   // Number: the y-coordinate of the destination rectangle in which to draw the source image
+      this.offscreenGfxBuffer2.destWidth,
+      this.height,
+      this.offscreenGfxBuffer2.sectionToDisplayX,  // Number: the x-coordinate of the subsection of the source image to draw into the destination rectangle
+      0,  // Number: the y-coordinate of the subsection of the source image to draw into the destination rectangle
+      this.offscreenGfxBuffer2.sectionToDisplayWidth, // Number: the width of the subsection of the source image to draw into the destination rectangle
+      this.height,// Number: the height of the subsection of the source image to draw into the destination rectangle
+    )
 
     if (this.bDrawAxes) {
       this.drawAxes();
