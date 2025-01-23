@@ -3,7 +3,7 @@ import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
   static defaultAudioReactiveEnabled = false;
-  static defaultDisplayVisualizationEnabled = true;
+  static defaultDisplayVisualizationEnabled = false;
   static defaultBeatThreshold = 0.6;
   static defaultBeatDecayRate = 0.1;
   // static defaultBeatDecayRate = 0.02;
