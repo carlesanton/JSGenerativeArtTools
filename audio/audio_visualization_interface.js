@@ -85,6 +85,20 @@ class AudioVisualizationModule {
     this.applyColorScheme();
   }
 
+  applyColorScheme() {
+    let colorSchemes = Object.entries(soundvis.COLORSCHEME);
+    if (this.options.colorSchemeIndex >= colorSchemes.length) {
+      this.options.colorSchemeIndex = 0;
+    }
+    for (const [key, vis] of Object.entries(this.visualizations)) {
+      if (vis.colorScheme) {
+        let colorSchemeArray = colorSchemes[this.options.colorSchemeIndex];
+        vis.colorScheme = colorSchemeArray[1];
+      }
+    }
+  }
+
+
   start() {
     this.mic.start();
     if (this.options.playSong && this.options.song) {
@@ -98,6 +112,11 @@ class AudioVisualizationModule {
     if (this.options.playSong && this.options.song) {
       this.options.song.stop();
     }
+  }
+
+  changeColorScheme() {
+    this.options.colorSchemeIndex++;
+    this.applyColorScheme();
   }
 
 }
