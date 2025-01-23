@@ -32,7 +32,7 @@ function buildPaletteIndexDict(palette){
   return palette_dictionary
 }
 
-function displayPalette(colorPallete, palleteWidth, palleteHeight){
+function displayPalette(colorPallete, x, y, palleteWidth, palleteHeight){
   const vertical = palleteHeight > palleteWidth;
   const squareSize = Math.sqrt(palleteWidth * palleteHeight / colorPallete.length);
   let numberOfColumns = palleteWidth / squareSize;
@@ -46,16 +46,6 @@ function displayPalette(colorPallete, palleteWidth, palleteHeight){
     numberOfRows = Math.ceil(numberOfRows);
   }
 
-  let xOffset = 0;
-  let yOffset = 0;
-
-  // Change coords if using WEBGL
-  let usingWEBGL = _renderer['GL']
-  if (usingWEBGL){
-    xOffset-=width/2
-    yOffset-=height/2
-  }
-
   strokeWeight(2); // Thickness of the border
   for (let row = 0; row < numberOfRows; row++) {
     for (let col = 0; col < numberOfColumns; col++) {
@@ -65,7 +55,7 @@ function displayPalette(colorPallete, palleteWidth, palleteHeight){
       }
       if (i < colorPallete.length) {
         fill(colorPallete[i]);
-        square(xOffset + col * squareSize, yOffset + row * squareSize, squareSize);
+        square(x + col * squareSize, y + row * squareSize, squareSize);
       }
     }
   }
