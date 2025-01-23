@@ -44,7 +44,8 @@
 //  - https://gomakethings.com/whats-the-best-way-to-document-javascript/
 //  - https://google.github.io/styleguide/jsguide.html#jsdoc-method-and-function-comments
 
-class Rectangle {
+
+export class Rectangle {
   constructor(x, y, width, height, backgroundColor) {
     this.x = x;
     this.y = y;
@@ -156,7 +157,7 @@ class Rectangle {
 }
 
 // "Abstract" class extended by WaveformVisualizer, Spectrogram, etc.
-class SoundVisualizer extends Rectangle {
+export class SoundVisualizer extends Rectangle {
   constructor(x, y, width, height, backgroundColor, lengthInSeconds) {
     super(x, y, width, height, backgroundColor);
 
@@ -289,7 +290,7 @@ class SoundVisualizer extends Rectangle {
   }
 }
 
-class MinMaxRange {
+export class MinMaxRange {
   constructor(min, max) {
     this.min = min;
     this.max = max;
@@ -315,7 +316,7 @@ const COLORSCHEME = {
 // - polish and change SoundVisualizer to ScrollingSoundVisualizer?
 //   and move some of the offscreen buffer code there?
 // - [done] erase offscreenbuffer once fully offscreen
-class ScrollingWaveform extends SoundVisualizer {
+export class ScrollingWaveform extends SoundVisualizer {
   constructor(x, y, width, height, backgroundColor, lengthInSeconds) {
     super(x, y, width, height, backgroundColor, lengthInSeconds);
 
@@ -499,7 +500,7 @@ class ScrollingWaveform extends SoundVisualizer {
   }
 }
 
-class Spectrogram extends SoundVisualizer {
+export class Spectrogram extends SoundVisualizer {
   constructor(x, y, width, height, backgroundColor, lengthInSeconds) {
     super(x, y, width, height, backgroundColor, lengthInSeconds);
 
@@ -659,7 +660,7 @@ class Spectrogram extends SoundVisualizer {
   }
 }
 
-class SpectrumBarGraph extends Rectangle {
+export class SpectrumBarGraph extends Rectangle {
   // see: https://p5js.org/reference/#/p5.FFT
   constructor(x, y, width, height, backgroundColor) {
     super(x, y, width, height, backgroundColor);
@@ -840,7 +841,7 @@ class SpectrumBarGraph extends Rectangle {
   }
 }
 
-class SpectrumVisualizer extends Rectangle {
+export class SpectrumVisualizer extends Rectangle {
   // see: https://p5js.org/reference/#/p5.FFT
   constructor(x, y, width, height, backgroundColor) {
     super(x, y, width, height, backgroundColor);
@@ -1014,7 +1015,7 @@ class SpectrumVisualizer extends Rectangle {
   }
 }
 
-class InstantWaveformVis extends SoundVisualizer {
+export class InstantWaveformVis extends SoundVisualizer {
   // see: https://p5js.org/reference/#/p5.FFT
   constructor(x, y, width, height, backgroundColor, lengthInSeconds) {
     super(x, y, width, height, backgroundColor, lengthInSeconds);
