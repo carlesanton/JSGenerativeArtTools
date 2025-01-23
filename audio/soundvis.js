@@ -320,6 +320,7 @@ export class ScrollingWaveform extends SoundVisualizer {
   constructor(x, y, width, height, backgroundColor, lengthInSeconds, beatDetectLevel, levelMappingMethod, levelScale) {
     super(x, y, width, height, backgroundColor, lengthInSeconds);
 
+    this.waveform = null; // To identify that it needs the waveform
     this.colorScheme = COLORSCHEME.GRAYSCALE;
     this.strokeColor = color(255);
 
