@@ -235,4 +235,11 @@ export class AudioReactive {
     return this.displayVisualizationEnabled;
   }
 
+
+  takeOverControlls(){
+    this.externalControllsDisableMethods.forEach(method => {
+      method();
+    });    
+  }
+
 }
