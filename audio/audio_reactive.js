@@ -236,6 +236,10 @@ export class AudioReactive {
   }
 
 
+  addControllToTakeOver(controllToTakeOver){
+    this.externalControllsDisableMethods.push(controllToTakeOver)
+  }
+
   takeOverControlls(){
     this.externalControllsDisableMethods.forEach(method => {
       method();
