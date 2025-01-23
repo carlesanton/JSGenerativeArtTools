@@ -790,7 +790,7 @@ export class SpectrumBarGraph extends Rectangle {
     this.strokeColor = color(255);  
     this.fillColor = color(180);
     this.colorScheme = COLORSCHEME.GRAYSCALE;
-    this.setFadeBackground(false);
+    this.setFadeBackground(true);
   }
 
   update(spectrum) {
@@ -979,6 +979,20 @@ export class SpectrumVisualizer extends Rectangle {
     this.colorScheme = COLORSCHEME.GRAYSCALE;
     this.strokeColor = color(255);
     this.setupColors();
+    this.setFadeBackground(true)
+  }
+
+  setFadeBackground(turnOnFadeBackground){
+    if(turnOnFadeBackground){
+      this.backgroundColor = color(red(this.backgroundColor), 
+                                 green(this.backgroundColor),
+                                 blue(this.backgroundColor),
+                                 20); 
+    }else{
+     this.backgroundColor = color(red(this.backgroundColor), 
+                                 green(this.backgroundColor),
+                                 blue(this.backgroundColor)); 
+    }
   }
 
   setupColors() {
