@@ -251,7 +251,7 @@ export class SoundVisualizer extends Rectangle {
   }
 
   getXPixelFromTimeInSecs(timeInSecs) {
-    let xVal = map(timeInSecs, this.getMinXAsTimeInSecs(), this.getMaxXAsTimeInSecs(), this.x, this.width);
+    let xVal = map(timeInSecs, this.getMinXAsTimeInSecs(), this.getMaxXAsTimeInSecs(), this.getLeft(), this.getLeft()+this.width);
     //print("xVal", xVal, "timeInSecs", timeInSecs, "minX", this.getMinXAsTimeInSecs(), "maxX", this.getMaxXAsTimeInSecs());
     return xVal;
   }
@@ -331,8 +331,8 @@ export class ScrollingWaveform extends SoundVisualizer {
     this.offscreenGfxBuffer1 = createGraphics(this.width, this.height);
     this.offscreenGfxBuffer2 = createGraphics(this.width, this.height);
 
-    this.offscreenGfxBuffer1.x = 0;
-    this.offscreenGfxBuffer2.x = this.offscreenGfxBuffer1.width;
+    this.offscreenGfxBuffer1.x = this.getLeft();
+    this.offscreenGfxBuffer2.x = this.getLeft() + this.offscreenGfxBuffer1.width;
 
     this.resetGraphicsBuffer(this.offscreenGfxBuffer1);
     this.resetGraphicsBuffer(this.offscreenGfxBuffer2);
@@ -368,7 +368,7 @@ export class ScrollingWaveform extends SoundVisualizer {
       if (selectOffscreenBuffer == 0) {
         offScreenBuffer = this.offscreenGfxBuffer1;
 
-        let newXPosForGfxBuffer1 = this.width - xVal;
+        let newXPosForGfxBuffer1 = this.getLeft() + this.width - xVal;
         if (this.offscreenGfxBuffer1.x < newXPosForGfxBuffer1) {
           // if we're here, then this graphics buffer just looped around
           // and needs to be cleared
@@ -376,19 +376,19 @@ export class ScrollingWaveform extends SoundVisualizer {
         }
 
         this.offscreenGfxBuffer1.x = newXPosForGfxBuffer1;
-        this.offscreenGfxBuffer2.x = this.width - (xVal + this.width);
+        this.offscreenGfxBuffer2.x = this.getLeft() - xVal;
       } else {
 
         offScreenBuffer = this.offscreenGfxBuffer2;
 
-        let newXPosForGfxBuffer2 = this.width - xVal;
+        let newXPosForGfxBuffer2 = this.getLeft() + this.width - xVal;
         if (this.offscreenGfxBuffer2.x < newXPosForGfxBuffer2) {
           // if we're here, then this graphics buffer just looped around
           // and needs to be cleared
           this.resetGraphicsBuffer(this.offscreenGfxBuffer2); // color(100, 0, 100)
         }
 
-        this.offscreenGfxBuffer1.x = this.width - (xVal + this.width);
+        this.offscreenGfxBuffer1.x = this.getLeft() - xVal;
         this.offscreenGfxBuffer2.x = newXPosForGfxBuffer2;
       }
     }
@@ -512,8 +512,8 @@ export class Spectrogram extends SoundVisualizer {
     this.offscreenGfxBuffer1 = createGraphics(this.width, this.height);
     this.offscreenGfxBuffer2 = createGraphics(this.width, this.height);
 
-    this.offscreenGfxBuffer1.x = 0;
-    this.offscreenGfxBuffer2.x = this.offscreenGfxBuffer1.width;
+    this.offscreenGfxBuffer1.x = this.getLeft();
+    this.offscreenGfxBuffer2.x = this.getLeft() + this.offscreenGfxBuffer1.width;
 
     this.resetGraphicsBuffer(this.offscreenGfxBuffer1);
     this.resetGraphicsBuffer(this.offscreenGfxBuffer2);
@@ -546,12 +546,12 @@ export class Spectrogram extends SoundVisualizer {
     if (xBufferVal > this.width) {
       if (selectOffscreenBuffer == 0) {
         offScreenBuffer = this.offscreenGfxBuffer1;
-        this.offscreenGfxBuffer1.x = this.width - xVal;
-        this.offscreenGfxBuffer2.x = this.width - (xVal + this.width);
+        this.offscreenGfxBuffer1.x = this.getLeft() + this.width - xVal - bufferLengthInXPixels; //  - bufferLengthInXPixels is to close the gap between both buffers
+        this.offscreenGfxBuffer2.x = this.getLeft() - xVal;
       } else {
         offScreenBuffer = this.offscreenGfxBuffer2;
-        this.offscreenGfxBuffer1.x = this.width - (xVal + this.width);
-        this.offscreenGfxBuffer2.x = this.width - xVal;
+        this.offscreenGfxBuffer1.x = this.getLeft() - xVal;
+        this.offscreenGfxBuffer2.x = this.getLeft() + this.width - xVal - bufferLengthInXPixels; //  - bufferLengthInXPixels is to close the gap between both buffers
 
         //print("this.offscreenGfxBuffer1.x", this.offscreenGfxBuffer1.x, "this.offscreenGfxBuffer2.x", this.offscreenGfxBuffer2.x); 
       }
