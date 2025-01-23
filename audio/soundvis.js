@@ -1127,7 +1127,7 @@ export class SpectrumVisualizer extends Rectangle {
 
     beginShape();
     vertex(this.getLeft(), this.getBottom());
-    for (let i = 0; i < spectrum.length; i++) {
+    for (let i = 0; i < spectrum.length; i+=10) { // i+=10 to not draw all the lines and make it faster
       let x = map(i, 0, spectrum.length, this.x, this.getRight());
       let y = map(spectrum[i], 0, 255, this.getBottom(), this.y);
       vertex(x, y);
