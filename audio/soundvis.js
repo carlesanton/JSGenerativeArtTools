@@ -524,6 +524,19 @@ export class ScrollingWaveform extends SoundVisualizer {
     }
     offScreenBuffer.endShape();
 
+    // Draw threshold Line
+    let y = map(this.beatDetectLevel, 0, 1, 0, this.height/2);
+    // prevBeatDetectLevel is used to create smooth shape/transition if the value changes instead of creating a serie of unconnected straight lines
+    // That appear uf changing the beatDetectLevel at every draw cycle
+    let prevY = map(this.prevBeatDetectLevel, 0, 1, 0, this.height/2);
+    offScreenBuffer.push();
+    offScreenBuffer.strokeWeight(3);
+    offScreenBuffer.stroke(255,255,255);
+    offScreenBuffer.line(xVal, this.height/2 + prevY, xVal + bufferLengthInXPixels, this.height/2 + y);
+    offScreenBuffer.line(xVal, this.height/2 - prevY, xVal + bufferLengthInXPixels, this.height/2 - y);
+    offScreenBuffer.pop();
+    this.prevBeatDetectLevel = this.beatDetectLevel;
+
     this.previousOffScreenBuffer = offScreenBuffer;
 
     super.update(waveform);
@@ -1219,6 +1232,15 @@ export class InstantWaveformVis extends SoundVisualizer {
         vertex(x, y);
       }
       endShape();
+
+      // Draw threshold line
+      beginShape();
+      let y = map(this.beatDetectLevel, 0, 1, 0, this.height/2);
+      stroke(50,0,255);
+      line(this.getLeft(), this.getTop()+this.height/2-y, this.getRight(), this.getTop()+this.height/2-y);
+      line(this.getLeft(), this.getTop()+this.height/2+y, this.getRight(), this.getTop()+this.height/2+y);
+      endShape();
+
       pop();
     }
   }
