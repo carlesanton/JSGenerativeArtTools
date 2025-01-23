@@ -238,6 +238,74 @@ export class AudioReactive {
     return this.displayVisualizationEnabled;
   }
 
+  createAudioReactiveControlsCard() {
+    const elements_dict = {};
+
+    const card = create_daisyui_expandable_card('audioReactiveSettings', 'Audio Reactive');
+    const cardBody = card.getElementsByClassName('collapse-content')[0];
+
+    let initialLabel = AudioReactive.defaultAudioReactiveEnabled ? 'Disable' : 'Enable';
+    const enableAudioButton = create_button(initialLabel, (a) => {
+      this.toggleEnableAudio();
+      this.takeOverControlls()
+    });
+    elements_dict['AudioEnable'] = enableAudioButton.getElementsByTagName('button')[0];
+    
+    let initialLabelSoundVis = AudioReactive.defaultDisplayVisualizationEnabled ? 'Hide Visualization' : 'Show Visualization';
+    const enableVisButton = create_button(initialLabelSoundVis, (a) => {
+      this.toggleDisplayVisualization()
+    });
+    elements_dict['VisualizationEnable'] = enableVisButton.getElementsByTagName('button')[0];
+
+    const levelScale = create_number_input_slider_and_number(
+      'levelScale',
+      'Input Audio Scale',
+      AudioReactive.defaultLevelScale,
+      0.,
+      5.,
+      (e) => {this.setLevelScale(e)},
+      0.05
+    );
+    elements_dict['levelScale'] = levelScale.getElementsByTagName('input')[0];
+
+    const beathThreshold = create_number_input_slider_and_number(
+      'beathThreshold',
+      'Beat Detect Threshold',
+      AudioReactive.defaultBeatThreshold,
+      0.,
+      1.,
+      (e) => {this.setBeatDetectLevel(e)},
+      0.01
+    );
+    elements_dict['beathThreshold'] = beathThreshold.getElementsByTagName('input')[0];
+
+    const beatDecayRate = create_number_input_slider_and_number(
+      'beatDecayRate',
+      'Beat Detect Decay Rate',
+      AudioReactive.defaultBeatDecayRate,
+      0.,
+      1.,
+      (e) => {this.setBeatDecayRate(e)},
+      0.01
+    );
+    elements_dict['beatDecayRate'] = beatDecayRate.getElementsByTagName('input')[0];
+  
+    cardBody.appendChild(enableAudioButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(enableVisButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(levelScale);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(beathThreshold);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(beatDecayRate);
+
+    elements_dict['main-toolbar'] = card;
+
+    this.AudioInputs = elements_dict;
+
+    return elements_dict;
+  }
 
   addControllToTakeOver(controllToTakeOver){
     this.externalControllsDisableMethods.push(controllToTakeOver)
