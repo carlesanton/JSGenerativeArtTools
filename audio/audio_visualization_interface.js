@@ -149,6 +149,22 @@ class AudioVisualizationModule {
     this.applyColorScheme();
   }
 
+  setBeatDetectLevel(beatDetectLevel){
+    this.beatDetectLevel = beatDetectLevel;
+    this.visualizations['instantWaveFormVis'].setBeatDetectLevel(this.beatDetectLevel)
+    this.visualizations['scrollingWaveform'].setBeatDetectLevel(this.beatDetectLevel)
+    this.visualizations['beatDetectorVisualizer'].setBeatDetectLevel(this.beatDetectLevel)
+  }
+
+  setLevelScale(levelScale){
+    this.visualizations['instantWaveFormVis'].setLevelScale(levelScale)
+    this.visualizations['scrollingWaveform'].setLevelScale(levelScale)
+    this.visualizations['beatDetectorVisualizer'].setLevelScale(levelScale)
+  }
+
+  setBeatDetected(beatDetected){
+    this.visualizations['beatDetectorVisualizer'].setBeatDetected(beatDetected)
+  }
 }
 
 export {
