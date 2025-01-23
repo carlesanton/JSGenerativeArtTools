@@ -98,6 +98,36 @@ class AudioVisualizationModule {
     }
   }
 
+  update() {
+    let waveform = this.fft.waveform(); 
+    let spectrum = this.fft.analyze();
+    let volLevel = this.mic.getLevel(this.options.smoothFactor)
+
+    for (const [key, vis] of Object.entries(this.visualizations)) {
+      if (vis.update) {
+        if (Object.hasOwn(vis, 'spectrum')){
+          vis.update(spectrum);
+        }
+        else if (Object.hasOwn(vis, 'waveform')){
+          vis.update(waveform);
+        }
+        else if (Object.hasOwn(vis, 'volLevel')){
+          vis.update(volLevel)
+        }
+      }
+    }
+  }
+
+  draw() {
+    // background(this.backgroundColor);
+
+    for (const [key, vis] of Object.entries(this.visualizations)) {
+      vis.draw();
+    }
+
+    fill(255);
+  //   text("fps: " + nfc(frameRate(), 1), 6, 15);
+  }
 
   start() {
     this.mic.start();
