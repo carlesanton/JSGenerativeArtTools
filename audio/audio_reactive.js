@@ -1,3 +1,5 @@
+import {AudioVisualizationModule} from './audio_visualization_interface.js'
+
 export class AudioReactive {
   static defaultAudioReactiveEnabled = false;
   static defaultDisplayVisualizationEnabled = true;
