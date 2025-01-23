@@ -336,6 +336,11 @@ export class ScrollingWaveform extends SoundVisualizer {
 
     this.resetGraphicsBuffer(this.offscreenGfxBuffer1);
     this.resetGraphicsBuffer(this.offscreenGfxBuffer2);
+    // Set up position and section for intial display
+    this.offscreenGfxBuffer1.destXPosition = this.getLeft();
+    this.offscreenGfxBuffer1.destWidth = this.width;
+    this.offscreenGfxBuffer1.sectionToDisplayX = 0;
+    this.offscreenGfxBuffer1.sectionToDisplayWidth = 0;
 
     this.previousOffScreenBuffer = this.offscreenGfxBuffer1;
 
@@ -382,6 +387,19 @@ export class ScrollingWaveform extends SoundVisualizer {
 
         this.offscreenGfxBuffer1.x = newXPosForGfxBuffer1;
         this.offscreenGfxBuffer2.x = this.getLeft() - xVal;
+
+        // Set up vars for displaying buffers in correct position with correct section
+        // Buffer 1
+        this.offscreenGfxBuffer1.destXPosition = this.getLeft() + this.width - xVal; // maybe with + this.width
+        this.offscreenGfxBuffer1.destWidth = xVal;
+        this.offscreenGfxBuffer1.sectionToDisplayX = 0;
+        this.offscreenGfxBuffer1.sectionToDisplayWidth = xVal;
+
+        // Buffer 2
+        this.offscreenGfxBuffer2.destXPosition = this.getLeft();
+        this.offscreenGfxBuffer2.destWidth = this.width - xVal;
+        this.offscreenGfxBuffer2.sectionToDisplayX = xVal;
+        this.offscreenGfxBuffer2.sectionToDisplayWidth = this.width - xVal;
       } else {
 
         offScreenBuffer = this.offscreenGfxBuffer2;
@@ -395,6 +413,19 @@ export class ScrollingWaveform extends SoundVisualizer {
 
         this.offscreenGfxBuffer1.x = this.getLeft() - xVal;
         this.offscreenGfxBuffer2.x = newXPosForGfxBuffer2;
+
+        // Set up vars for displaying buffers in correct position with correct section
+        // Buffer 1
+        this.offscreenGfxBuffer1.destXPosition = this.getLeft();
+        this.offscreenGfxBuffer1.destWidth = this.width - xVal;
+        this.offscreenGfxBuffer1.sectionToDisplayX = xVal;
+        this.offscreenGfxBuffer1.sectionToDisplayWidth = this.width - xVal;
+
+        // Buffer 2
+        this.offscreenGfxBuffer2.destXPosition = this.getLeft() + this.width - xVal; // maybe with + this.width
+        this.offscreenGfxBuffer2.destWidth = xVal;
+        this.offscreenGfxBuffer2.sectionToDisplayX = 0;
+        this.offscreenGfxBuffer2.sectionToDisplayWidth = xVal;
       }
     }
     
@@ -528,6 +559,11 @@ export class Spectrogram extends SoundVisualizer {
 
     this.offscreenGfxBuffer1.x = this.getLeft();
     this.offscreenGfxBuffer2.x = this.getLeft() + this.offscreenGfxBuffer1.width;
+    // Set up position and section for intiial display
+    this.offscreenGfxBuffer1.destXPosition = this.getLeft();
+    this.offscreenGfxBuffer1.destWidth = this.width;
+    this.offscreenGfxBuffer1.sectionToDisplayX = 0;
+    this.offscreenGfxBuffer1.sectionToDisplayWidth = 0;
 
     this.resetGraphicsBuffer(this.offscreenGfxBuffer1);
     this.resetGraphicsBuffer(this.offscreenGfxBuffer2);
@@ -562,12 +598,37 @@ export class Spectrogram extends SoundVisualizer {
         offScreenBuffer = this.offscreenGfxBuffer1;
         this.offscreenGfxBuffer1.x = this.getLeft() + this.width - xVal - bufferLengthInXPixels; //  - bufferLengthInXPixels is to close the gap between both buffers
         this.offscreenGfxBuffer2.x = this.getLeft() - xVal;
+
+        // Set up vars for displaying buffers in correct position with correct section
+        // Buffer 1
+        this.offscreenGfxBuffer1.destXPosition = this.getLeft() + this.width - xVal; // maybe with + this.width
+        this.offscreenGfxBuffer1.destWidth = xVal;
+        this.offscreenGfxBuffer1.sectionToDisplayX = 0;
+        this.offscreenGfxBuffer1.sectionToDisplayWidth = xVal;
+
+        // Buffer 2
+        this.offscreenGfxBuffer2.destXPosition = this.getLeft();
+        this.offscreenGfxBuffer2.destWidth = this.width - xVal;
+        this.offscreenGfxBuffer2.sectionToDisplayX = xVal;
+        this.offscreenGfxBuffer2.sectionToDisplayWidth = this.width - xVal;
       } else {
         offScreenBuffer = this.offscreenGfxBuffer2;
         this.offscreenGfxBuffer1.x = this.getLeft() - xVal;
         this.offscreenGfxBuffer2.x = this.getLeft() + this.width - xVal - bufferLengthInXPixels; //  - bufferLengthInXPixels is to close the gap between both buffers
 
-        //print("this.offscreenGfxBuffer1.x", this.offscreenGfxBuffer1.x, "this.offscreenGfxBuffer2.x", this.offscreenGfxBuffer2.x); 
+        // Set up vars for displaying buffers in correct position with correct section
+        // Buffer 1
+        this.offscreenGfxBuffer1.destXPosition = this.getLeft();
+        this.offscreenGfxBuffer1.destWidth = this.width - xVal;
+        this.offscreenGfxBuffer1.sectionToDisplayX = xVal;
+        this.offscreenGfxBuffer1.sectionToDisplayWidth = this.width - xVal;
+
+        // Buffer 2
+        this.offscreenGfxBuffer2.destXPosition = this.getLeft() + this.width - xVal; // maybe with + this.width
+        this.offscreenGfxBuffer2.destWidth = xVal;
+        // this.offscreenGfxBuffer2.sectionToDisplayX = this.offscreenGfxBuffer2.x;
+        this.offscreenGfxBuffer2.sectionToDisplayX = 0;
+        this.offscreenGfxBuffer2.sectionToDisplayWidth = xVal;
       }
     }
 
