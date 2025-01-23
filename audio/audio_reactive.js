@@ -1,199 +1,223 @@
-// what amplitude level can trigger a beat?
-// var beatThreshold = 0.11; 
-var beatThreshold = 0.6;
+export class AudioReactive {
+  static defaultAudioReactiveEnabled = false;
+  static defaultDisplayVisualizationEnabled = true;
+  static defaultBeatThreshold = 0.6;
+  static defaultBeatDecayRate = 0.1;
+  // static defaultBeatDecayRate = 0.02;
+  static defaultLevelScale = 1;
+  static level_scale = 1;
+  static level_min_value = 0.001;
+  static level_max_value = 1;
+  static beatHoldFrames = 0;
+  static smoothFactor = 0.7;
+  static audioSourceIdx = 1;
+  static LFPeakThreshold = 0.35;
+  static MFPeakThreshold = 0.001;
 
-// Vars for beat detection and PS Speed mapping
-export var level_scale = 1;
-export var level_min_value = 0.001;
-export var level_max_value = 0.05;
+  constructor() {
+    this.audioReactiveEnabled = AudioReactive.defaultAudioReactiveEnabled;
+    this.displayVisualizationEnabled = AudioReactive.defaultDisplayVisualizationEnabled;
+    this.beatDetectLevel = AudioReactive.defaultBeatThreshold;
+    this.beatCutoff = this.beatDetectLevel;
+    this.beatDecayRate = AudioReactive.defaultBeatDecayRate;
+    this.levelScale = AudioReactive.defaultLevelScale;
+    this.framesSinceLastBeat = 0;
+    this.audio = null;
+    this.fft = null;
+    this.LFpeakDetect = null;
+    this.MFpeakDetect = null;
+    this.onBeat = null;
+    this.onLevelChange = null;
+    this.onHMEnergyChange = null;
+    this.onCentroidChange = null;
+    this.onEnergyRatioChange = null;
+    this.externalControllsDisableMethods = [];
+    this.audioVisualizationModule = null;
+    this.beatDetected = false;
+  }
 
-// When we have a beat, beatCutoff will be reset to 1.1*beatThreshold, and then decay
-// Level must be greater than beatThreshold and beatCutoff before the next beat can trigger.
-var beatCutoff = 0;
-var beatDecayRate = 0.98; // how fast does beat cutoff decay?
-var framesSinceLastBeat = 0; // once this equals beatHoldFrames, beatCutoff starts to decay.
-var beatHoldFrames = 0;
-// var beatHoldFrames = 30;
-
-let smoothFactor = 0.7;
-let audio;
-let fft;
-let LFpeakDetect;
-let LFPeakThreshold = 0.35;
-
-let MFpeakDetect;
-let MFPeakThreshold = 0.001;
-
-let audioSourceIdx = 0;
-
-// Initialize Dummy functions
-let onBeat = function (){
-    console.log('Beat detected')
-}
-let onLevelChange;
-let onHMEnergyChange;
-let onCentroidChange;
-let onEnergyRatioChange;
-
-function initializeAudio(){
-    // Create an Audio input
-    audio = new p5.AudioIn();
-    fft = new p5.FFT(0, 512);
-
-    // List available inputs
-    audio.getSources().then((sources) => {
-        console.log('Available input sources:')
-        sources.forEach(function(device) {
-            console.log(device.kind + ": " + device.label);
-            });
-        var audioSource = sources[audioSourceIdx];
-        if (audioSource){
-            console.log('Connecting to audio source number ', audioSourceIdx, ' with name', audioSource.label);
-            audio.setSource(audioSourceIdx)
-        }
-        else {
-            console.log('No Audio Source with index', audioSourceIdx)
-        }
+  initializeAudio() {
+    this.audio = new p5.AudioIn();
+    console.log('Available input sources:')
+    this.audio.getSources().then((sources) => {
+      sources.forEach(function(device) {
+          console.log(device.kind + ": " + device.label);
+          });
+      let audioSourceIdx = AudioReactive.audioSourceIdx;
+      var audioSource = sources[audioSourceIdx];
+      if (audioSource){
+          console.log('Connecting to audio source number ', audioSourceIdx, ' with name', audioSource.label);
+          this.audio.setSource(audioSourceIdx)
+      }
+      else {
+          console.log('No Audio Source with index', audioSourceIdx)
+      }
     })
     
-    // start the Audio Input.
-    // By default, it does not .connect() (to the computer speakers)
-    audio.start();
+    this.fft = new p5.FFT(0, 512);
+    this.audio.start();
+    this.fft.setInput(this.audio);
+    this.LFpeakDetect = new p5.PeakDetect(200, 1000, AudioReactive.LFPeakThreshold);
+    this.MFpeakDetect = new p5.PeakDetect(4000, 6000, AudioReactive.MFPeakThreshold);
 
-    fft.setInput(audio)
-    LFpeakDetect = new p5.PeakDetect(200,1000, LFPeakThreshold);
-    MFpeakDetect = new p5.PeakDetect(4000,6000, MFPeakThreshold);
-}
+    this.audioVisualizationModule = new AudioVisualizationModule(
+      this.audio,
+      {x:0, y:0}, {x:640, y:360},
+      this.beatDetectLevel,
+      {
+        levelMappingMethod: this.mapLevel,
+        levelScale: this.levelScale,
+        smoothFactor: AudioReactive.smoothFactor,
+        colorSchemeIndex: 0,
+      },
+    )
+  }
 
-function getAudioInput(){
-    return audio;
-}
+  getSpectrum(){
+    return this.fft.analyze();
+  }
 
-function getSpectrum(){
-    var spectrum = fft.analyze()
-    return spectrum;
-}
+  setLFonPeakCallback(onPeakCallback){
+    this.LFpeakDetect.onPeak(onPeakCallback);
+  }
 
-function setLFonPeakCallback(onPeakCallback){
-    LFpeakDetect.onPeak(onPeakCallback)
-}
+  detectLFPeak(){
+    this.LFpeakDetect.update(this.fft);
+    return this.LFpeakDetect.isDetected;
+  }
 
-function detectLFPeak(){
-    LFpeakDetect.update(fft);
-    return LFpeakDetect.isDetected
-}
+  setMFonPeakCallback(onPeakCallback){
+    this.MFpeakDetect.onPeak(onPeakCallback);
+  }
 
-function setMFonPeakCallback(onPeakCallback){
-    MFpeakDetect.onPeak(onPeakCallback)
-}
+  detectMFPeak(){
+    this.MFpeakDetect.update(this.fft);
+    return this.MFpeakDetect.isDetected;
+  }
 
-function detectMFPeak(){
-    MFpeakDetect.update(fft);
-    return MFpeakDetect.isDetected
-}
-
-function getCentroid(){
-    var centroid = fft.getCentroid()
-    if (onCentroidChange !== undefined && onCentroidChange !== null) {
-        onCentroidChange(centroid);
+  getCentroid(){
+    const centroid = this.fft.getCentroid();
+    if (this.onCentroidChange !== undefined && this.onCentroidChange !== null) {
+      this.onCentroidChange(centroid);
     }
-    return centroid
-}
+    return centroid;
+  }
 
-function setOnCentroidChange(callback){
-    onCentroidChange = callback;
-}
+  setOnCentroidChange(callback){
+    this.onCentroidChange = callback;
+  }
 
-function getAudioLevel(){
-    var audioLevel = parseFloat(audio.getLevel(smoothFactor))
-    if (onLevelChange !== undefined && onLevelChange !== null) {
-        onLevelChange(audioLevel);
+  getAudioLevel(){
+    var audioLevel = parseFloat(this.audio.getLevel(AudioReactive.smoothFactor))
+    if (this.onLevelChange !== undefined && this.onLevelChange !== null) {
+        this.onLevelChange(audioLevel);
     }
     return audioLevel;
-}
+  }
 
-function setOnLevelChangeCallback(callback){
-    onLevelChange = callback;
-}
+  setOnLevelChangeCallback(callback){
+    this.onLevelChange = callback;
+  }
 
-function getLMEnergy(){
-    fft.analyze()
-    var energy = fft.getEnergy('lowMid')
-    return energy
-}
+  getLMEnergy(){
+    this.fft.analyze();
+    return this.fft.getEnergy('lowMid');
+  }
 
-function getHMEnergy(){
-    fft.analyze()
-    var energy = fft.getEnergy('treble')
-    if (onHMEnergyChange !== undefined && onHMEnergyChange !== null) {
-        onHMEnergyChange(energy);
+  getHMEnergy(){
+    this.fft.analyze();
+    const energy = this.fft.getEnergy('treble');
+    if (this.onHMEnergyChange !== undefined && this.onHMEnergyChange !== null) {
+      this.onHMEnergyChange(energy);
     }
-    return energy
-}
+    return energy;
+  }
 
-function setOnHMEnergyChangeCallback(callback){
-    onHMEnergyChange = callback;
-}
+  setOnHMEnergyChangeCallback(callback){
+    this.onHMEnergyChange = callback;
+  }
 
-function getEnergyRatio(){
-    fft.analyze()
-    var hm_energy = fft.getEnergy('highMid')
-    var low_energy = fft.getEnergy('bass')
-    var energy_ratio = hm_energy/low_energy;
-    if (onEnergyRatioChange !== undefined && onEnergyRatioChange !== null) {
-        onEnergyRatioChange(energy_ratio);
+  getEnergyRatio(){
+    this.fft.analyze();
+    const hm_energy = this.fft.getEnergy('highMid');
+    const low_energy = this.fft.getEnergy('bass');
+    const energy_ratio = hm_energy / low_energy;
+    if (this.onEnergyRatioChange !== undefined && this.onEnergyRatioChange !== null) {
+      this.onEnergyRatioChange(energy_ratio);
     }
-    return energy_ratio
-}
+    return energy_ratio;
+  }
 
-function setOnEnergyRatioChangeCallback(callback){
-    onEnergyRatioChange = callback;
-}
+  setOnEnergyRatioChangeCallback(callback){
+    this.onEnergyRatioChange = callback;
+  }
 
-function setOnBeatCallback(onBeatCallback){
-    onBeat = onBeatCallback;
-}
+  setOnBeatCallback(onBeatCallback){
+    this.onBeat = onBeatCallback;
+  }
 
-function detectBeat(level) {
-    level = map(level, 0, 0.1, 0, 1)
-    level = level_scale * level;
-    level = map(level, level_min_value, level_max_value, 1, 2.8)
-    level = constrain(level, 1, 2.8)
-    level = log(level)
-    level = constrain(level, 0, 1)
+  setBeatDetectLevel(beatDetectLevel){
+    this.beatDetectLevel = beatDetectLevel;
+    this.audioVisualizationModule.setBeatDetectLevel(beatDetectLevel)
+  }
 
-    if (level  > beatCutoff && level > beatThreshold){
-        onBeat();
-        beatCutoff = level *1.2;
-        framesSinceLastBeat = 0;
-    } else{
-        if (framesSinceLastBeat <= beatHoldFrames){
-            framesSinceLastBeat ++;
-        }
-        else{
-            beatCutoff *= beatDecayRate;
-            beatCutoff = Math.max(beatCutoff, beatThreshold);
-        }
+  setBeatDecayRate(beatDecayRate){
+    this.beatDecayRate = beatDecayRate;
+  }
+
+  setLevelScale(levelScale){
+    this.levelScale = levelScale;
+    this.audioVisualizationModule.setLevelScale(this.levelScale)
+  }
+
+  detectBeat(level) {
+    let waveformMax = max(this.fft.waveform())
+    level = waveformMax;
+    level = this.mapLevel(level, this.levelScale);
+    if (level > this.beatCutoff && level > this.beatDetectLevel) {
+      this.onBeat();
+      this.beatCutoff = level * 1.2;
+      this.framesSinceLastBeat = 0;
+    } else {
+      if (this.framesSinceLastBeat <= AudioReactive.beatHoldFrames) {
+        this.framesSinceLastBeat++;
+      } else {
+        this.beatCutoff *= (1 - this.beatDecayRate);
+        this.beatCutoff = Math.max(this.beatCutoff, this.beatDetectLevel);
+      }
     }
-}
 
-export {
-    initializeAudio,
-    getAudioInput,
-    getAudioLevel,
-    getSpectrum,
-    detectBeat,
-    setOnBeatCallback,
-    setOnLevelChangeCallback,
-    getCentroid,
-    setOnCentroidChange,
-    detectLFPeak,
-    setLFonPeakCallback,
-    setMFonPeakCallback,
-    detectMFPeak,
-    getLMEnergy,
-    getHMEnergy,
-    setOnHMEnergyChangeCallback,
-    getEnergyRatio,
-    setOnEnergyRatioChangeCallback,
+    // Set beatDetected
+    this.beatDetected = this.beatCutoff > this.beatDetectLevel ? true: false;
+
+    // Send beat cutoff and beatDetected to audio visualization
+    this.audioVisualizationModule.setBeatDetectLevel(this.beatCutoff)
+    this.audioVisualizationModule.setBeatDetected(this.beatDetected)
+
+  }
+
+  mapLevel(level, levelScale) {
+    level = levelScale * level;
+    let sign = 1;
+    if (level<0){
+      sign = -1;
+    }
+    return level;
+  }
+
+  toggleEnableAudio() {
+    this.audioReactiveEnabled = !this.audioReactiveEnabled;
+    if (this.audioReactiveEnabled) {
+      console.log('Enabling audio');
+      this.AudioInputs['AudioEnable'].textContent = 'Disable';
+    } else {
+      console.log('Disabling audio');
+      this.AudioInputs['AudioEnable'].textContent = 'Enable';
+    }
+  }
+
+  isAudioEnabled() {
+    return this.audioReactiveEnabled;
+  }
+
 }
