@@ -85,6 +85,21 @@ class AudioVisualizationModule {
     this.applyColorScheme();
   }
 
+  start() {
+    this.mic.start();
+    if (this.options.playSong && this.options.song) {
+      this.options.song.play();
+      this.fft.setInput(this.options.song);
+    }
+  }
+
+  stop() {
+    this.mic.stop();
+    if (this.options.playSong && this.options.song) {
+      this.options.song.stop();
+    }
+  }
+
 }
 
 export {
