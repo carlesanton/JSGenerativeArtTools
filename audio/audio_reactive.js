@@ -220,4 +220,15 @@ export class AudioReactive {
     return this.audioReactiveEnabled;
   }
 
+  toggleDisplayVisualization() {
+    this.displayVisualizationEnabled = !this.displayVisualizationEnabled;
+    if (this.displayVisualizationEnabled) {
+      console.log('Showing Sound Visualization');
+      this.AudioInputs['VisualizationEnable'].textContent = 'Hide Visualization';
+    } else {
+      console.log('Hiding Sound Visualization');
+      this.AudioInputs['VisualizationEnable'].textContent = 'Show Visualization';
+    }
+  }
+
 }
