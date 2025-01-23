@@ -119,7 +119,7 @@ function create_number_input_text(id, label, default_value, min, max){
     return div;
 }
 
-function create_number_input_slider_and_number(id, label, default_value, min, max, on_change_callback) {
+function create_number_input_slider_and_number(id, label, default_value, min, max, on_change_callback, step) {
     // Outer container
     var div = document.createElement('div');
     div.className = 'flex flex-col';
@@ -209,6 +209,10 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     if (max !== undefined && max !== null) {
         range.max = max;
         number.max = max;
+    }
+    if (step !== undefined && step !== null) {
+        range.step = step;
+        number.step = step;
     }
     if (default_value !== undefined && default_value !== null) {
         range.defaultValue = default_value;
