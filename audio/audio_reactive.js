@@ -246,4 +246,8 @@ export class AudioReactive {
     });    
   }
 
+  displayVisualization(){
+    this.audioVisualizationModule.update();
+    this.audioVisualizationModule.draw();
+  }
 }
