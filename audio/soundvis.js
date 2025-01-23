@@ -4,6 +4,13 @@
 // @jonfroehlich
 // http://makeabilitylab.io/
 // 
+// Modified by Carles Antón to
+// - Make it work on WEGBL (mostly coordinate changes)
+// - Clear/Don't show excess buffer for scrolling spectrum and waveform
+// - Add Beat Detect Level Line on both waveforms
+// - Add scale and mapping methods to modify to waveforms so they match the one used in my main code
+// - Add Beat Detect circle to show when beat detect is on
+//
 // Feel free to use this source code for inspiration or in your
 // own projects. If you do, I'd love to hear about it. Email me
 // at jonf@cs.uw.edu or Tweet @jonfroehlich.
