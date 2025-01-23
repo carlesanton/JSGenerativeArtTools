@@ -1227,8 +1227,13 @@ export class InstantWaveformVis extends SoundVisualizer {
       stroke(this.strokeColor);
       strokeWeight(3);
       for (let i = 0; i < this.waveform.length; i++) {
-        let x = map(i, 0, this.waveform.length, this.x, this.width);
-        let y = map(this.waveform[i], -1, 1, this.getBottom(), this.y);
+        let x = map(i, 0, this.waveform.length, this.x, this.getRight());
+        let waveformVal = this.waveform[i]
+        // Map level if levelMappingMethod is passed in construciton
+        if (this.levelMappingMethod !== undefined && this.levelMappingMethod !== null) {
+          waveformVal = this.levelMappingMethod(waveformVal, this.levelScale);
+        }
+        let y = map(waveformVal, -1, 1, this.getBottom(), this.y);
         vertex(x, y);
       }
       endShape();
