@@ -129,6 +129,10 @@ export class ColorPalette{
     }
   }
 
+  get(){
+    return this.palette;
+  }
+
 
   isDisplayEnabled(){
     return this.show;
