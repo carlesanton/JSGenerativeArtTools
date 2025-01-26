@@ -1,4 +1,5 @@
 import { RgbQuant } from './RgbQuant/rgbquant.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
 
 export class ColorPalette{
   // Pallete display variables
@@ -10,6 +11,7 @@ export class ColorPalette{
   constructor(){
     this.palette = null;
     this.palette_dictionary = null;
+    this.ColorPaletteInputs = null;
     this.width = ColorPalette.defaultPalleteWidth;
     this.heigh = ColorPalette.defaultPalleteHeight;
     this.show = ColorPalette.defaultShowPallete;
@@ -156,4 +158,60 @@ export class ColorPalette{
     this.numberOfColors = numberOfColors;
   }
 
+  createColorPaletteControlsCard() {
+    const elements_dict = {};
+
+    const card = create_daisyui_expandable_card('colorPaletteSettings', 'Color Palette');
+    const cardBody = card.getElementsByClassName('collapse-content')[0];
+    
+    let initialLabelDisplayPalette = ColorPalette.defaultShowPallete ? 'Hide' : 'Show';
+    const enableVisButton = create_button(initialLabelDisplayPalette, (a) => {
+      this.toggleDisplay()
+    });
+    elements_dict['displayPalette'] = enableVisButton.getElementsByTagName('button')[0];
+
+    const displayHeight = create_number_input_slider_and_number(
+      'colorPaletteHeight',
+      'Height',
+      ColorPalette.defaultPalleteHeight,
+      10,
+      4000,
+      (e) => {this.setHeight(e)},
+    );
+    elements_dict['height'] = displayHeight.getElementsByTagName('input')[0];
+
+    const displayWidth = create_number_input_slider_and_number(
+      'colorPaletteWidth',
+      'Width',
+      ColorPalette.defaultPalleteWidth,
+      10,
+      4000,
+      (e) => {this.setWidth(e)},
+    );
+    elements_dict['width'] = displayWidth.getElementsByTagName('input')[0];
+
+    const numberOfColorsInput = create_number_input_slider_and_number(
+      'paletteNumberOfColors',
+      'Number of colors',
+      ColorPalette.defaultNumberOfColors,
+      2,
+      200,
+      (e) => {this.setNumberOfColors(e)},
+    );
+    elements_dict['numberOfColors'] = numberOfColorsInput.getElementsByTagName('input')[0];
+  
+    cardBody.appendChild(enableVisButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(displayHeight);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(displayWidth);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(numberOfColorsInput);
+
+    elements_dict['main-toolbar'] = card;
+
+    this.ColorPaletteInputs = elements_dict;
+
+    return elements_dict;
+  }
 }
