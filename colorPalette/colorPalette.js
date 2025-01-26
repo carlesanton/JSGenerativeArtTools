@@ -144,4 +144,12 @@ export class ColorPalette{
     return this.show;
   }
 
+  setWidth(width){
+    this.width = width;
+  }
+
+  setHeight(heigh){
+    this.heigh = heigh;
+  }
+
 }
