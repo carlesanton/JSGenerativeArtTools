@@ -152,4 +152,8 @@ export class ColorPalette{
     this.heigh = heigh;
   }
 
+  setNumberOfColors(numberOfColors){
+    this.numberOfColors = numberOfColors;
+  }
+
 }
