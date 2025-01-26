@@ -133,6 +133,12 @@ export class ColorPalette{
     return this.palette;
   }
 
+  getRandomColor(){
+    let new_random_color_index = Math.round(random(0,this.palette.length-1))
+    let randomColor =  this.palette[new_random_color_index];
+
+    return randomColor;
+  }
 
   isDisplayEnabled(){
     return this.show;
