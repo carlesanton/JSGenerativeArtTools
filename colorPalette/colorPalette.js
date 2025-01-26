@@ -12,6 +12,7 @@ export class ColorPalette{
     this.palette_dictionary = null;
     this.width = ColorPalette.defaultPalleteWidth;
     this.heigh = ColorPalette.defaultPalleteHeight;
+    this.show = ColorPalette.defaultShowPallete;
     this.numberOfColors = ColorPalette.defaultNumberOfColors;
   }
 
@@ -104,6 +105,33 @@ export class ColorPalette{
     }
     out.updatePixels()
     return out
+  }
+
+  setDisplay(display) {
+    this.show = display;
+    if (this.show) {
+      console.log('Showing Palette Visualization');
+      this.ColorPaletteInputs['displayPalette'].textContent = 'Hide';
+    } else {
+      console.log('Hiding Palette Visualization');
+      this.ColorPaletteInputs['displayPalette'].textContent = 'Show';
+    }
+  }
+
+  toggleDisplay() {
+    this.show = !this.show;
+    if (this.show) {
+      console.log('Showing Palette Visualization');
+      this.ColorPaletteInputs['displayPalette'].textContent = 'Hide';
+    } else {
+      console.log('Hiding Palette Visualization');
+      this.ColorPaletteInputs['displayPalette'].textContent = 'Show';
+    }
+  }
+
+
+  isDisplayEnabled(){
+    return this.show;
   }
 
 }
