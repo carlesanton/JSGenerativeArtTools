@@ -32,6 +32,8 @@ export class FPS{
         return this.lastFPS.reduce((a, b) => a + b) / this.lastFPS.length;
     }
 
+    isDisplayEnabled(){
+        return this.show;
     }
 
     displayFPS(x, y, inputFps) {
@@ -66,6 +68,34 @@ export class FPS{
 
         this.lastDisplayX = x;
         this.lastDisplayY = y;
+    }
+
+    setFPS(newFPS){
+        let fps = parseInt(newFPS);
+        this.fps = fps;
+        frameRate(this.fps);
+    }
+
+    setDisplay(show) {
+        this.show = show;
+        if (this.show) {
+          console.log('Displaying FPS');
+          this.FPSInputs['show'].textContent = 'Hide';
+        } else {
+          console.log('Hiding FPS');
+          this.FPSInputs['show'].textContent = 'Show';
+        }
+      }
+    
+    toggleDisplay() {
+        this.show = !this.show;
+        if (this.show) {
+            console.log('Displaying FPS');
+            this.FPSInputs['show'].textContent = 'Hide';
+        } else {
+            console.log('Hiding FPS');
+            this.FPSInputs['show'].textContent = 'Show';
+        }
     }
 
 }
