@@ -19,12 +19,23 @@ export class FPS{
     
         let fps = 1000/elapsedTime; // Calculate the FPS (1000 because we are dividing elapsedTime by 1000)
         this.lastFrameTime = currentTime; // Update the time of the last frame
-    
-        return fps;
+
+        this.lastFPS.push(fps); // Add computed FPS to array of fps
+        if (this.lastFPS.length > FPS.numberOfAverageFPS) { // loop around if needed
+          this.lastFPS.shift();
+        }
+
+        this.averageFPS = this.computeAverageFPS();
+    }
+
+    computeAverageFPS(){
+        return this.lastFPS.reduce((a, b) => a + b) / this.lastFPS.length;
+    }
+
     }
 
     displayFPS(x, y, inputFps) {
-        let fps = this.fps
+        let fps = this.averageFPS
         if (inputFps !== undefined && inputFps !== null) { // inputFps to display another FPS other than the one in the instance
             fps = inputFps;
         }
