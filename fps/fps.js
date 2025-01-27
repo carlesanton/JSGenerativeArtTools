@@ -1,3 +1,5 @@
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
+
 export class FPS{
     static defaultFPS = 15;
     static defaultDisplayFPS = false;
@@ -98,4 +100,36 @@ export class FPS{
         }
     }
 
+    createFPSSettingsCard() {
+        const elements_dict = {};
+    
+        const card = create_daisyui_expandable_card('FPSSettings', 'FPS');
+        const cardBody = card.getElementsByClassName('collapse-content')[0];
+        
+        let initialLabelDisplayFPS = FPS.defaultDisplayFPS ? 'Hide' : 'Show';
+        const enableVisButton = create_button(initialLabelDisplayFPS, (a) => {
+          this.toggleDisplay()
+        });
+        elements_dict['show'] = enableVisButton.getElementsByTagName('button')[0];
+    
+        const fps = create_number_input_slider_and_number(
+          'FPS',
+          'FPS',
+          FPS.defaultFPS,
+          1,
+          300,
+          (e) => {this.setFPS(e)},
+        );
+        elements_dict['fps'] = fps.getElementsByTagName('input')[0];
+    
+        cardBody.appendChild(enableVisButton);
+        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(fps);
+    
+        elements_dict['main-toolbar'] = card;
+    
+        this.FPSInputs = elements_dict;
+    
+        return elements_dict;
+      }
 }
