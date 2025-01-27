@@ -295,6 +295,23 @@ function create_input_image_button(callback, label, default_text, description_pr
     return div;
 }
 
+function turnDaisyUICardIntoBodyWithTitle(card){
+    const sectionBodyDiv = document.createElement('div')
+
+    const cardTitle = card.getElementsByClassName('collapse-title')[0];
+    console.log('cardTitle', cardTitle.innerHTML)
+    const newTitle = create_subtitle(cardTitle.innerHTML);
+
+    const cardBody = card.getElementsByClassName('collapse-content')[0];
+    cardBody.setAttribute('class', '')
+    console.log('cardBody', cardBody)
+
+    sectionBodyDiv.appendChild(newTitle)
+    sectionBodyDiv.appendChild(cardBody)
+
+    return sectionBodyDiv
+}
+
 export {
     create_card,
     create_expandable_card,
@@ -304,4 +321,5 @@ export {
     create_button,
     create_input_image_button,
     create_daisyui_expandable_card,
+    turnDaisyUICardIntoBodyWithTitle,
 }
