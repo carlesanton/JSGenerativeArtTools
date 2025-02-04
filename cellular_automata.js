@@ -4,6 +4,7 @@ export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
 export let defaultCAPassesPerFrame = 1;
 export let defaultCellularAutomataInitialSteps = 0;
+export let defaultCAEnabled = true;
 
 let CARandomColorChangeRate;
 let CAMaxSteps;
@@ -15,6 +16,7 @@ let CAInputs;
 let cellular_automata_step = 0
 let CAShader; // variable for the shader
 let ca_src = '';
+let enableCA = defaultCAEnabled;
 
 function getMajorityColor(x, y, grid) {
     const directions = [
@@ -195,6 +197,10 @@ function initialize_cellular_automata_shader(){
 }
 
 function cellular_automata_gpu(color_buffer){
+    if (!enableCA){
+        return color_buffer;
+    }
+
     color_buffer.begin();
     if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
         for (let i = 0; i < CAPassesPerFrame; i++) {
