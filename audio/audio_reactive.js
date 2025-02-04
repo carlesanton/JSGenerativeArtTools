@@ -210,12 +210,15 @@ export class AudioReactive {
 
   toggleEnableAudio() {
     this.audioReactiveEnabled = !this.audioReactiveEnabled;
+    const enableButton = this.AudioInputs['AudioEnable']
     if (this.audioReactiveEnabled) {
       console.log('Enabling audio');
-      this.AudioInputs['AudioEnable'].textContent = 'Disable';
+      enableButton.textContent = 'Disable';
+      setButtonEnabledAppearance(enableButton, true);
     } else {
       console.log('Disabling audio');
-      this.AudioInputs['AudioEnable'].textContent = 'Enable';
+      enableButton.textContent = 'Enable';
+      setButtonEnabledAppearance(enableButton, false);
     }
   }
 
@@ -313,7 +316,7 @@ export class AudioReactive {
 
   takeOverControlls(){
     this.externalControllsDisableMethods.forEach(method => {
-      method();
+      method(this.audioReactiveEnabled);
     });    
   }
 
