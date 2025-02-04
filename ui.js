@@ -254,6 +254,17 @@ function create_button(label, onClick, description, size){
     return div;
 }
 
+function setButtonEnabledAppearance(button, enabled){
+    console.log('button', button)
+    var className = button.className;
+    className = className.replace(' btn-neutral', ''); // Remove btn-neutral in both cases, if enabled to make sure that its not twice
+    if (enabled){
+        className += ' btn-neutral' // add btn-neutral if it has to be enabled
+    }
+    button.setAttribute('class', className)
+
+}
+
 function create_input_image_button(callback, label, default_text, description_prefix){
     var div = document.createElement('div');
     
@@ -319,6 +330,7 @@ export {
     create_number_input_text,
     create_number_input_slider_and_number,
     create_button,
+    setButtonEnabledAppearance,
     create_input_image_button,
     create_daisyui_expandable_card,
     turnDaisyUICardIntoBodyWithTitle,
