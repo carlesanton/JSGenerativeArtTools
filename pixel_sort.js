@@ -5,6 +5,7 @@ export let defaultPixelSortMaxSteps = -1;
 export let defaultPixelSortingPasses = 8;
 export let defaultSortNoiseScale = 360
 export let defaultNoiseDirectionChangeRate = 45;
+export let defaultPSEnabled = true;
 
 let pixel_sort_step = 0
 const noise_radius = 1.5;
@@ -20,6 +21,7 @@ let noiseDirectionChangeRate;
 let pixelSortMaxSteps;
 let PixelSortInitialSteps;
 let pixelSortingPassesPerFrame;
+let enablePS = defaultPSEnabled;
 
 function sort_step(sorted){
     sorted.loadPixels();
@@ -100,6 +102,10 @@ function initialize_pixel_sorting_shader(){
 }
 
 function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
+  if (!enablePS){
+    return color_buffer;
+  }
+
   // Change Direction if needed
   
   color_buffer.begin();
