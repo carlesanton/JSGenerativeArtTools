@@ -1,10 +1,11 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, create_button, setButtonEnabledAppearance} from './ui.js'
 
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
 export let defaultPixelSortingPasses = 8;
 export let defaultSortNoiseScale = 360
 export let defaultNoiseDirectionChangeRate = 45;
+export let defaultPSEnabled = true;
 
 let pixel_sort_step = 0
 const noise_radius = 1.5;
@@ -20,6 +21,7 @@ let noiseDirectionChangeRate;
 let pixelSortMaxSteps;
 let PixelSortInitialSteps;
 let pixelSortingPassesPerFrame;
+let enablePS = defaultPSEnabled;
 
 function sort_step(sorted){
     sorted.loadPixels();
@@ -100,6 +102,10 @@ function initialize_pixel_sorting_shader(){
 }
 
 function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
+  if (!enablePS){
+    return color_buffer;
+  }
+
   // Change Direction if needed
   
   color_buffer.begin();
@@ -160,9 +166,9 @@ function set_ps_passes_per_frame_from_slider(new_passes_per_frame){
   return old_passes_per_frame
 }
 
-function disable_ps_passes_per_frame(){
+function disable_ps_passes_per_frame(enable){
   var inputElement = PSInputs.PSPassesPerFrame
-  inputElement.linkedDisabled = !inputElement.disabled
+  inputElement.linkedDisabled = enable;
 
   // Propagate change to slider and value by manualy triggering on change
   var event = new Event('input');
@@ -192,9 +198,9 @@ function set_ps_direction_change_rate_from_slider(new_direction_change_rate){
   return old_direction_change_rate
 }
 
-function disable_ps_direction_change_rate(){
+function disable_ps_direction_change_rate(enable){
   var inputElement = PSInputs.PSnoiseDirectionChangeRate
-  inputElement.linkedDisabled = !inputElement.disabled
+  inputElement.linkedDisabled = enable;
 
   // Propagate change to slider and value by manualy triggering on change
   var event = new Event('input');
@@ -209,12 +215,34 @@ function get_PixelSortInitialSteps(){
   return PixelSortInitialSteps;
 }
 
+function toggleEnablePS() {
+  enablePS = !enablePS;
+  const enableButton = PSInputs['PSEnable'];
+  if (enablePS) {
+    console.log('Enabling PS');
+    enableButton.textContent = 'Disable';
+    setButtonEnabledAppearance(enableButton, true)
+  } else {
+    console.log('Disabling PS');
+    enableButton.textContent = 'Enable';
+    setButtonEnabledAppearance(enableButton, false)
+  }
+}
+
 function createPixelSortingSettings() {
   var elements_dict = {};
 
   // Create Main Card
   const card = create_daisyui_expandable_card('PixelSortingSettings', 'Pixel Sorting');
   const cardBody = card.getElementsByClassName('collapse-content')[0];
+
+  // Enable Disable Button
+  let initialLabel = defaultPSEnabled ? 'Disable' : 'Enable';
+  const enablePSButton = create_button(initialLabel, (a) => {
+    toggleEnablePS();
+  });
+  elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
+  setButtonEnabledAppearance(elements_dict['PSEnable'], defaultPSEnabled); // Set appearance to disabled or enabled depending on default
 
   // Add input fields and labels
   const initialSteps = create_number_input_slider_and_number(
@@ -253,7 +281,7 @@ function createPixelSortingSettings() {
     'PSnoiseScale',                                         // Try to make something that generates 3, 1 directions and so on
     'Scale',
     defaultSortNoiseScale,
-    0,
+    1,
     720,
     set_ps_noise_scale,
   );
@@ -269,6 +297,8 @@ function createPixelSortingSettings() {
   );
   elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
 
+  cardBody.appendChild(enablePSButton);
+  cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(initialSteps);
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(maxSteps);

@@ -1,9 +1,10 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_button, setButtonEnabledAppearance} from './ui.js'
 
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
 export let defaultCAPassesPerFrame = 1;
 export let defaultCellularAutomataInitialSteps = 0;
+export let defaultCAEnabled = true;
 
 let CARandomColorChangeRate;
 let CAMaxSteps;
@@ -15,6 +16,7 @@ let CAInputs;
 let cellular_automata_step = 0
 let CAShader; // variable for the shader
 let ca_src = '';
+let enableCA = defaultCAEnabled;
 
 function getMajorityColor(x, y, grid) {
     const directions = [
@@ -195,6 +197,10 @@ function initialize_cellular_automata_shader(){
 }
 
 function cellular_automata_gpu(color_buffer){
+    if (!enableCA){
+        return color_buffer;
+    }
+
     color_buffer.begin();
     if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
         for (let i = 0; i < CAPassesPerFrame; i++) {
@@ -262,9 +268,9 @@ function set_ca_passes_per_frame_from_slider(new_passes_per_frame){
   return old_passes_per_frame
 }
 
-function disable_ca_passes_per_frame(){
+function disable_ca_passes_per_frame(enable){
   var inputElement = CAInputs.CAPassesPerFrame
-  inputElement.linkedDisabled = !inputElement.disabled
+  inputElement.linkedDisabled = enable;
 
   // Propagate change to slider and value by manualy triggering on change
   var event = new Event('input');
@@ -288,12 +294,34 @@ function get_CellularAutomataInitialSteps(){
     return CellularAutomataInitialSteps
 }
 
+function toggleEnableCA() {
+    enableCA = !enableCA;
+    const enableButton = CAInputs['CAEnable']
+    if (enableCA) {
+        console.log('Enabling CA');
+        enableButton.textContent = 'Disable';
+        setButtonEnabledAppearance(enableButton, true)
+    } else {
+        console.log('Disabling CA');
+        enableButton.textContent = 'Enable';
+        setButtonEnabledAppearance(enableButton, false)
+    }
+}
+
 function createCASettingsCard() {
     var elements_dict = {};
 
     // Create Main Card
     const card = create_daisyui_expandable_card('cellularAutomataSettings', 'Cellular Automata');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
+
+    // Enable Disable Button
+    let initialLabel = defaultCAEnabled ? 'Disable' : 'Enable';
+    const enableCAButton = create_button(initialLabel, (a) => {
+      toggleEnableCA();
+    });
+    elements_dict['CAEnable'] = enableCAButton.getElementsByTagName('button')[0];
+    setButtonEnabledAppearance(elements_dict['CAEnable'], defaultCAEnabled); // Set appearance to disabled or enabled depending on default
 
     // Add input fields and labels
     const initialSteps = create_number_input_slider_and_number(
@@ -336,6 +364,8 @@ function createCASettingsCard() {
     );
     elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
 
+    cardBody.appendChild(enableCAButton);
+    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(initialSteps);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(maxSteps);

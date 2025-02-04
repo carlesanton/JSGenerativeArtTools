@@ -1,4 +1,4 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button, setButtonEnabledAppearance} from '../ui.js';
 import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
@@ -210,12 +210,15 @@ export class AudioReactive {
 
   toggleEnableAudio() {
     this.audioReactiveEnabled = !this.audioReactiveEnabled;
+    const enableButton = this.AudioInputs['AudioEnable']
     if (this.audioReactiveEnabled) {
       console.log('Enabling audio');
-      this.AudioInputs['AudioEnable'].textContent = 'Disable';
+      enableButton.textContent = 'Disable';
+      setButtonEnabledAppearance(enableButton, true);
     } else {
       console.log('Disabling audio');
-      this.AudioInputs['AudioEnable'].textContent = 'Enable';
+      enableButton.textContent = 'Enable';
+      setButtonEnabledAppearance(enableButton, false);
     }
   }
 
@@ -250,6 +253,7 @@ export class AudioReactive {
       this.takeOverControlls()
     });
     elements_dict['AudioEnable'] = enableAudioButton.getElementsByTagName('button')[0];
+    setButtonEnabledAppearance(elements_dict['AudioEnable'], AudioReactive.defaultAudioReactiveEnabled); // Set appearance to disabled or enabled depending on default
     
     let initialLabelSoundVis = AudioReactive.defaultDisplayVisualizationEnabled ? 'Hide Visualization' : 'Show Visualization';
     const enableVisButton = create_button(initialLabelSoundVis, (a) => {
@@ -313,7 +317,7 @@ export class AudioReactive {
 
   takeOverControlls(){
     this.externalControllsDisableMethods.forEach(method => {
-      method();
+      method(this.audioReactiveEnabled);
     });    
   }
 
