@@ -1,4 +1,4 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_button, setButtonEnabledAppearance} from './ui.js'
 
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
@@ -315,6 +315,13 @@ function createCASettingsCard() {
     const card = create_daisyui_expandable_card('cellularAutomataSettings', 'Cellular Automata');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
 
+    // Enable Disable Button
+    let initialLabel = defaultCAEnabled ? 'Disable' : 'Enable';
+    const enableCAButton = create_button(initialLabel, (a) => {
+      toggleEnableCA();
+    });
+    elements_dict['CAEnable'] = enableCAButton.getElementsByTagName('button')[0];
+
     // Add input fields and labels
     const initialSteps = create_number_input_slider_and_number(
         'CAInitialSteps',
@@ -356,6 +363,8 @@ function createCASettingsCard() {
     );
     elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
 
+    cardBody.appendChild(enableCAButton);
+    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(initialSteps);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(maxSteps);
