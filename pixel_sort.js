@@ -1,4 +1,4 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, create_button, setButtonEnabledAppearance} from './ui.js'
 
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
@@ -236,6 +236,13 @@ function createPixelSortingSettings() {
   const card = create_daisyui_expandable_card('PixelSortingSettings', 'Pixel Sorting');
   const cardBody = card.getElementsByClassName('collapse-content')[0];
 
+  // Enable Disable Button
+  let initialLabel = defaultPSEnabled ? 'Disable' : 'Enable';
+  const enablePSButton = create_button(initialLabel, (a) => {
+    toggleEnablePS();
+  });
+  elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
+
   // Add input fields and labels
   const initialSteps = create_number_input_slider_and_number(
     'PSinitialSteps',
@@ -273,7 +280,7 @@ function createPixelSortingSettings() {
     'PSnoiseScale',                                         // Try to make something that generates 3, 1 directions and so on
     'Scale',
     defaultSortNoiseScale,
-    0,
+    1,
     720,
     set_ps_noise_scale,
   );
@@ -289,6 +296,8 @@ function createPixelSortingSettings() {
   );
   elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
 
+  cardBody.appendChild(enablePSButton);
+  cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(initialSteps);
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(maxSteps);
