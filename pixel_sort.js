@@ -242,6 +242,7 @@ function createPixelSortingSettings() {
     toggleEnablePS();
   });
   elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
+  setButtonEnabledAppearance(elements_dict['PSEnable'], defaultPSEnabled); // Set appearance to disabled or enabled depending on default
 
   // Add input fields and labels
   const initialSteps = create_number_input_slider_and_number(

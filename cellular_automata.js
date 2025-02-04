@@ -321,6 +321,7 @@ function createCASettingsCard() {
       toggleEnableCA();
     });
     elements_dict['CAEnable'] = enableCAButton.getElementsByTagName('button')[0];
+    setButtonEnabledAppearance(elements_dict['CAEnable'], defaultCAEnabled); // Set appearance to disabled or enabled depending on default
 
     // Add input fields and labels
     const initialSteps = create_number_input_slider_and_number(

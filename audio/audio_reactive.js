@@ -1,4 +1,4 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button, setButtonEnabledAppearance} from '../ui.js';
 import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
@@ -253,6 +253,7 @@ export class AudioReactive {
       this.takeOverControlls()
     });
     elements_dict['AudioEnable'] = enableAudioButton.getElementsByTagName('button')[0];
+    setButtonEnabledAppearance(elements_dict['AudioEnable'], AudioReactive.defaultAudioReactiveEnabled); // Set appearance to disabled or enabled depending on default
     
     let initialLabelSoundVis = AudioReactive.defaultDisplayVisualizationEnabled ? 'Hide Visualization' : 'Show Visualization';
     const enableVisButton = create_button(initialLabelSoundVis, (a) => {
