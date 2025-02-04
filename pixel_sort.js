@@ -166,9 +166,9 @@ function set_ps_passes_per_frame_from_slider(new_passes_per_frame){
   return old_passes_per_frame
 }
 
-function disable_ps_passes_per_frame(){
+function disable_ps_passes_per_frame(enable){
   var inputElement = PSInputs.PSPassesPerFrame
-  inputElement.linkedDisabled = !inputElement.disabled
+  inputElement.linkedDisabled = enable;
 
   // Propagate change to slider and value by manualy triggering on change
   var event = new Event('input');
@@ -198,9 +198,9 @@ function set_ps_direction_change_rate_from_slider(new_direction_change_rate){
   return old_direction_change_rate
 }
 
-function disable_ps_direction_change_rate(){
+function disable_ps_direction_change_rate(enable){
   var inputElement = PSInputs.PSnoiseDirectionChangeRate
-  inputElement.linkedDisabled = !inputElement.disabled
+  inputElement.linkedDisabled = enable;
 
   // Propagate change to slider and value by manualy triggering on change
   var event = new Event('input');
