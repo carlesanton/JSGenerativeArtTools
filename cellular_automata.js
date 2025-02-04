@@ -268,9 +268,9 @@ function set_ca_passes_per_frame_from_slider(new_passes_per_frame){
   return old_passes_per_frame
 }
 
-function disable_ca_passes_per_frame(){
+function disable_ca_passes_per_frame(enable){
   var inputElement = CAInputs.CAPassesPerFrame
-  inputElement.linkedDisabled = !inputElement.disabled
+  inputElement.linkedDisabled = enable;
 
   // Propagate change to slider and value by manualy triggering on change
   var event = new Event('input');
