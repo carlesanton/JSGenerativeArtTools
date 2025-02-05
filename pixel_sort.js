@@ -270,18 +270,6 @@ function createPixelSortingSettings() {
   );
   elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
 
-  const noiseTitle = create_subtitle('Noise');
-
-  const noiseScale = create_number_input_slider_and_number( // Maybe delete this one, doesn't changes much
-    'PSnoiseScale',                                         // Try to make something that generates 3, 1 directions and so on
-    'Scale',
-    defaultSortNoiseScale,
-    1,
-    720,
-    set_ps_noise_scale,
-  );
-  elements_dict['PSnoiseScale'] = noiseScale.getElementsByTagName('input')[0];
-
   const noiseDirection = create_number_input_slider_and_number(
     'PSnoiseDirectionChangeRate',
     'Direction Change Rate',
@@ -300,9 +288,6 @@ function createPixelSortingSettings() {
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(passesPerFrame);
   cardBody.appendChild(document.createElement('br'));
-  cardBody.appendChild(noiseTitle);
-  cardBody.appendChild(noiseScale);
-  cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseDirection);
 
   elements_dict['main-toolbar'] = card;
@@ -313,7 +298,6 @@ function createPixelSortingSettings() {
 }
 
 function update_all_ps_parametters(){
-  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
   noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
   pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
   PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
