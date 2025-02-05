@@ -159,6 +159,30 @@ export class AudioReactive {
     this.onEnergyRatioChange = callback;
   }
 
+  setLHEnergyRatioStrength(newStrenght){
+    this.lhEnergyRatioStrength = parseFloat(newStrenght);
+  }
+
+  getLHEnergyRatioStrength(){
+    return this.lhEnergyRatioStrength;
+  }
+
+  setLHEnergyRatioStrengthLabel(newLabel){
+    this.AudioInputs['energyRatioStrenghtLabel'].innerHTML = newLabel;
+  }
+
+  setAudioLevelStrength(newStrenght){
+    this.audioLevelStrength = parseFloat(newStrenght);
+  }
+
+  getAudioLevelStrength(){
+    return this.audioLevelStrength;
+  }
+
+  setAudioLevelStrengthSliderLabel(newLabel){
+    this.AudioInputs['audioLevelStrengthLabel'].innerHTML = newLabel;
+  }
+
   setOnBeatCallback(onBeatCallback){
     this.onBeat = onBeatCallback;
   }
