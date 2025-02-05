@@ -360,6 +360,7 @@ export class AudioReactive {
   
     cardBody.appendChild(enableAudioButton);
     cardBody.appendChild(enableVisButton);
+    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(levelScale);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beathThreshold);
