@@ -341,7 +341,7 @@ function createCASettingsCard() {
 
     const passesPerFrame = create_number_input_slider_and_number(
         'passesPerFrame',
-        'Passes per Frame',
+        'Speed',
         defaultCAPassesPerFrame,
         0,
         5,

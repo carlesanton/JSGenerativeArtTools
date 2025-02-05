@@ -256,7 +256,7 @@ function createPixelSortingSettings() {
 
   const passesPerFrame = create_number_input_slider_and_number(
     'PSPassesPerFrame',
-    'Passes Per Frame',
+    'Speed',
     defaultPixelSortingPasses,
     0,
     25,
