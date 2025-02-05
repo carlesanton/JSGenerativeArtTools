@@ -303,20 +303,6 @@ function setEnableCA(enable) {
     }
 }
 
-function toggleEnableCA() {
-    enableCA = !enableCA;
-    const enableButton = CAInputs['CAEnable']
-    if (enableCA) {
-        console.log('Enabling CA');
-        enableButton.textContent = 'Disable';
-        setButtonEnabledAppearance(enableButton, true)
-    } else {
-        console.log('Disabling CA');
-        enableButton.textContent = 'Enable';
-        setButtonEnabledAppearance(enableButton, false)
-    }
-}
-
 function createCASettingsCard() {
     var elements_dict = {};
 
