@@ -294,6 +294,15 @@ function get_CellularAutomataInitialSteps(){
     return CellularAutomataInitialSteps
 }
 
+function setEnableCA(enable) {
+    enableCA = enable;
+    if (enableCA) {
+        console.log('Enabling CA');
+    } else {
+        console.log('Disabling CA');
+    }
+}
+
 function toggleEnableCA() {
     enableCA = !enableCA;
     const enableButton = CAInputs['CAEnable']
