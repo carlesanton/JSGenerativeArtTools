@@ -1,5 +1,5 @@
 import { RgbQuant } from './RgbQuant/rgbquant.js';
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton } from '../ui.js';
 
 export class ColorPalette{
   // Pallete display variables
@@ -173,10 +173,11 @@ export class ColorPalette{
     const card = create_daisyui_expandable_card('colorPaletteSettings', 'Color Palette');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
     
-    let initialLabelDisplayPalette = ColorPalette.defaultShowPallete ? 'Hide' : 'Show';
-    const enableVisButton = create_button(initialLabelDisplayPalette, (a) => {
-      this.toggleDisplay()
-    });
+    const enableVisButton = createToggleButton('Display', (a) => {
+        this.setDisplay(a.target.checked)
+      },
+      ColorPalette.defaultShowPallete
+    );
     elements_dict['displayPalette'] = enableVisButton.getElementsByTagName('button')[0];
 
     const displayHeight = create_number_input_slider_and_number(
