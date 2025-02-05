@@ -321,6 +321,30 @@ export class AudioReactive {
       0.01
     );
     elements_dict['beatDecayRate'] = beatDecayRate.getElementsByTagName('input')[0];
+
+    const audioLevelStrength = create_number_input_slider_and_number(
+      'audioLevelStrength',
+      'Audio Level Strength',
+      AudioReactive.defaultAudioLevelStrength,
+      0.,
+      1.,
+      (e) => {this.setAudioLevelStrength(e)},
+      0.01
+    );
+    elements_dict['audioLevelStrength'] = audioLevelStrength.getElementsByTagName('input')[0];
+    elements_dict['audioLevelStrengthLabel'] = audioLevelStrength.getElementsByTagName('h3')[0];
+    
+    const lhEnergyRatioStrength = create_number_input_slider_and_number(
+      'energyRatioStrenght',
+      'Energy Ratio Strength',
+      AudioReactive.defaultLHEnergyRatioStrength,
+      0.,
+      1.,
+      (e) => {this.setLHEnergyRatioStrength(e)},
+      0.01
+    );
+    elements_dict['energyRatioStrenght'] = lhEnergyRatioStrength.getElementsByTagName('input')[0];
+    elements_dict['energyRatioStrenghtLabel'] = lhEnergyRatioStrength.getElementsByTagName('h3')[0];
   
     cardBody.appendChild(enableAudioButton);
     cardBody.appendChild(document.createElement('br'));
@@ -331,6 +355,10 @@ export class AudioReactive {
     cardBody.appendChild(beathThreshold);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beatDecayRate);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(audioLevelStrength);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(lhEnergyRatioStrength);
 
     elements_dict['main-toolbar'] = card;
 
