@@ -224,20 +224,6 @@ function setEnablePS(enable) {
   }
 }
 
-function toggleEnablePS() {
-  enablePS = !enablePS;
-  const enableButton = PSInputs['PSEnable'];
-  if (enablePS) {
-    console.log('Enabling PS');
-    enableButton.textContent = 'Disable';
-    setButtonEnabledAppearance(enableButton, true)
-  } else {
-    console.log('Disabling PS');
-    enableButton.textContent = 'Enable';
-    setButtonEnabledAppearance(enableButton, false)
-  }
-}
-
 function createPixelSortingSettings() {
   var elements_dict = {};
 
