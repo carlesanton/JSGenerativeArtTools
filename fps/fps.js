@@ -1,4 +1,4 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton } from '../ui.js';
 
 export class FPS{
     static defaultFPS = 15;
@@ -104,10 +104,11 @@ export class FPS{
         const card = create_daisyui_expandable_card('FPSSettings', 'FPS');
         const cardBody = card.getElementsByClassName('collapse-content')[0];
         
-        let initialLabelDisplayFPS = FPS.defaultDisplayFPS ? 'Hide' : 'Show';
-        const enableVisButton = create_button(initialLabelDisplayFPS, (a) => {
-          this.toggleDisplay()
-        });
+        const enableVisButton = createToggleButton('Display', (a) => {
+          this.setDisplay(a.target.checked)
+          },
+          FPS.defaultDisplayFPS,
+        );
         elements_dict['show'] = enableVisButton.getElementsByTagName('button')[0];
     
         const fps = create_number_input_slider_and_number(
