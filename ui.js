@@ -265,6 +265,37 @@ function setButtonEnabledAppearance(button, enabled){
 
 }
 
+function createToggleButton(label, onClick, enabled){
+    var div = document.createElement('div');
+    div.className = 'flex items-center';
+
+    // Create the checkbox input
+    const button = document.createElement('input');
+    button.type = 'checkbox';
+    button.className = 'toggle';
+    button.checked = enabled !== undefined && enabled !== null ? enabled: false;
+    button.onclick = onClick;
+    button.style.marginRight= '10px'
+
+    div.appendChild(button);
+
+    // Create the label element
+    const labelContainer = document.createElement('label');
+    labelContainer.className = 'label cursor-pointer';
+
+    // Create the span element
+    const labelText = document.createElement('span');
+    labelText.className = 'label-text text-lg';
+    labelText.textContent = label;
+
+    // Build the structure
+    labelContainer.appendChild(button);
+    labelContainer.appendChild(labelText);
+    div.appendChild(labelContainer);
+
+    return div;
+}
+
 function create_input_image_button(callback, label, default_text, description_prefix){
     var div = document.createElement('div');
     
@@ -334,4 +365,5 @@ export {
     create_input_image_button,
     create_daisyui_expandable_card,
     turnDaisyUICardIntoBodyWithTitle,
+    createToggleButton,
 }
