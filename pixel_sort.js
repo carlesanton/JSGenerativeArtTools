@@ -175,12 +175,6 @@ function disable_ps_passes_per_frame(enable){
   inputElement.dispatchEvent(event);
 }
 
-function set_ps_noise_scale(new_noise_scale){
-  var old_noise_scale = sortNoiseScale
-  sortNoiseScale = new_noise_scale
-  return old_noise_scale
-}
-
 function set_ps_direction_change_rate(new_direction_change_rate){
   var old_direction_change_rate = noiseDirectionChangeRate
   noiseDirectionChangeRate = new_direction_change_rate
