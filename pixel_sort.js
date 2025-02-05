@@ -1,4 +1,4 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, create_button, setButtonEnabledAppearance} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, createToggleButton} from './ui.js'
 
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
@@ -16,7 +16,7 @@ let PSShader; // variable for the shader
 
 let PSInputs;
 
-let sortNoiseScale;
+let sortNoiseScale = defaultSortNoiseScale;
 let noiseDirectionChangeRate;
 let pixelSortMaxSteps;
 let PixelSortInitialSteps;
@@ -175,12 +175,6 @@ function disable_ps_passes_per_frame(enable){
   inputElement.dispatchEvent(event);
 }
 
-function set_ps_noise_scale(new_noise_scale){
-  var old_noise_scale = sortNoiseScale
-  sortNoiseScale = new_noise_scale
-  return old_noise_scale
-}
-
 function set_ps_direction_change_rate(new_direction_change_rate){
   var old_direction_change_rate = noiseDirectionChangeRate
   noiseDirectionChangeRate = new_direction_change_rate
@@ -215,17 +209,12 @@ function get_PixelSortInitialSteps(){
   return PixelSortInitialSteps;
 }
 
-function toggleEnablePS() {
-  enablePS = !enablePS;
-  const enableButton = PSInputs['PSEnable'];
+function setEnablePS(enable) {
+  enablePS = enable;
   if (enablePS) {
     console.log('Enabling PS');
-    enableButton.textContent = 'Disable';
-    setButtonEnabledAppearance(enableButton, true)
   } else {
     console.log('Disabling PS');
-    enableButton.textContent = 'Enable';
-    setButtonEnabledAppearance(enableButton, false)
   }
 }
 
@@ -237,12 +226,12 @@ function createPixelSortingSettings() {
   const cardBody = card.getElementsByClassName('collapse-content')[0];
 
   // Enable Disable Button
-  let initialLabel = defaultPSEnabled ? 'Disable' : 'Enable';
-  const enablePSButton = create_button(initialLabel, (a) => {
-    toggleEnablePS();
-  });
+  const enablePSButton = createToggleButton('Enable', (a) => {
+      setEnablePS(a.target.checked);
+    },
+    defaultPSEnabled,
+  );
   elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
-  setButtonEnabledAppearance(elements_dict['PSEnable'], defaultPSEnabled); // Set appearance to disabled or enabled depending on default
 
   // Add input fields and labels
   const initialSteps = create_number_input_slider_and_number(
@@ -267,25 +256,13 @@ function createPixelSortingSettings() {
 
   const passesPerFrame = create_number_input_slider_and_number(
     'PSPassesPerFrame',
-    'Passes Per Frame',
+    'Speed',
     defaultPixelSortingPasses,
     0,
     25,
     set_ps_passes_per_frame,
   );
   elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
-
-  const noiseTitle = create_subtitle('Noise');
-
-  const noiseScale = create_number_input_slider_and_number( // Maybe delete this one, doesn't changes much
-    'PSnoiseScale',                                         // Try to make something that generates 3, 1 directions and so on
-    'Scale',
-    defaultSortNoiseScale,
-    1,
-    720,
-    set_ps_noise_scale,
-  );
-  elements_dict['PSnoiseScale'] = noiseScale.getElementsByTagName('input')[0];
 
   const noiseDirection = create_number_input_slider_and_number(
     'PSnoiseDirectionChangeRate',
@@ -305,9 +282,6 @@ function createPixelSortingSettings() {
   cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(passesPerFrame);
   cardBody.appendChild(document.createElement('br'));
-  cardBody.appendChild(noiseTitle);
-  cardBody.appendChild(noiseScale);
-  cardBody.appendChild(document.createElement('br'));
   cardBody.appendChild(noiseDirection);
 
   elements_dict['main-toolbar'] = card;
@@ -318,7 +292,6 @@ function createPixelSortingSettings() {
 }
 
 function update_all_ps_parametters(){
-  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
   noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
   pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
   PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)

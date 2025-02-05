@@ -1,4 +1,4 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_button, setButtonEnabledAppearance} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, createToggleButton} from './ui.js'
 
 export let defaultRandomColorChangeRate = 3;
 export let defaultCAMaxSteps = -1;
@@ -294,17 +294,12 @@ function get_CellularAutomataInitialSteps(){
     return CellularAutomataInitialSteps
 }
 
-function toggleEnableCA() {
-    enableCA = !enableCA;
-    const enableButton = CAInputs['CAEnable']
+function setEnableCA(enable) {
+    enableCA = enable;
     if (enableCA) {
         console.log('Enabling CA');
-        enableButton.textContent = 'Disable';
-        setButtonEnabledAppearance(enableButton, true)
     } else {
         console.log('Disabling CA');
-        enableButton.textContent = 'Enable';
-        setButtonEnabledAppearance(enableButton, false)
     }
 }
 
@@ -316,12 +311,12 @@ function createCASettingsCard() {
     const cardBody = card.getElementsByClassName('collapse-content')[0];
 
     // Enable Disable Button
-    let initialLabel = defaultCAEnabled ? 'Disable' : 'Enable';
-    const enableCAButton = create_button(initialLabel, (a) => {
-      toggleEnableCA();
-    });
+    const enableCAButton = createToggleButton('Enable', (a) => {
+            setEnableCA(a.target.checked);
+        },
+        defaultCAEnabled,
+    );
     elements_dict['CAEnable'] = enableCAButton.getElementsByTagName('button')[0];
-    setButtonEnabledAppearance(elements_dict['CAEnable'], defaultCAEnabled); // Set appearance to disabled or enabled depending on default
 
     // Add input fields and labels
     const initialSteps = create_number_input_slider_and_number(
@@ -346,7 +341,7 @@ function createCASettingsCard() {
 
     const passesPerFrame = create_number_input_slider_and_number(
         'passesPerFrame',
-        'Passes per Frame',
+        'Speed',
         defaultCAPassesPerFrame,
         0,
         5,

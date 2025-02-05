@@ -1,4 +1,4 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button } from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton } from '../ui.js';
 
 export class FPS{
     static defaultFPS = 15;
@@ -82,21 +82,8 @@ export class FPS{
         this.show = show;
         if (this.show) {
           console.log('Displaying FPS');
-          this.FPSInputs['show'].textContent = 'Hide';
         } else {
           console.log('Hiding FPS');
-          this.FPSInputs['show'].textContent = 'Show';
-        }
-      }
-    
-    toggleDisplay() {
-        this.show = !this.show;
-        if (this.show) {
-            console.log('Displaying FPS');
-            this.FPSInputs['show'].textContent = 'Hide';
-        } else {
-            console.log('Hiding FPS');
-            this.FPSInputs['show'].textContent = 'Show';
         }
     }
 
@@ -106,10 +93,11 @@ export class FPS{
         const card = create_daisyui_expandable_card('FPSSettings', 'FPS');
         const cardBody = card.getElementsByClassName('collapse-content')[0];
         
-        let initialLabelDisplayFPS = FPS.defaultDisplayFPS ? 'Hide' : 'Show';
-        const enableVisButton = create_button(initialLabelDisplayFPS, (a) => {
-          this.toggleDisplay()
-        });
+        const enableVisButton = createToggleButton('Display', (a) => {
+          this.setDisplay(a.target.checked)
+          },
+          FPS.defaultDisplayFPS,
+        );
         elements_dict['show'] = enableVisButton.getElementsByTagName('button')[0];
     
         const fps = create_number_input_slider_and_number(
@@ -123,7 +111,6 @@ export class FPS{
         elements_dict['fps'] = fps.getElementsByTagName('input')[0];
     
         cardBody.appendChild(enableVisButton);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(fps);
     
         elements_dict['main-toolbar'] = card;

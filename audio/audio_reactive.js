@@ -1,4 +1,4 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button, setButtonEnabledAppearance} from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton} from '../ui.js';
 import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
@@ -236,17 +236,21 @@ export class AudioReactive {
     return level;
   }
 
-  toggleEnableAudio() {
-    this.audioReactiveEnabled = !this.audioReactiveEnabled;
-    const enableButton = this.AudioInputs['AudioEnable']
+  setEnableAudio(enable) {
+    this.audioReactiveEnabled = enable;
     if (this.audioReactiveEnabled) {
       console.log('Enabling audio');
-      enableButton.textContent = 'Disable';
-      setButtonEnabledAppearance(enableButton, true);
     } else {
       console.log('Disabling audio');
-      enableButton.textContent = 'Enable';
-      setButtonEnabledAppearance(enableButton, false);
+    }
+  }
+
+  toggleEnableAudio() {
+    this.audioReactiveEnabled = !this.audioReactiveEnabled;
+    if (this.audioReactiveEnabled) {
+      console.log('Enabling audio');
+    } else {
+      console.log('Disabling audio');
     }
   }
 
@@ -254,14 +258,21 @@ export class AudioReactive {
     return this.audioReactiveEnabled;
   }
 
+  setDisplayVisualization(enable) {
+    this.displayVisualizationEnabled = enable;
+    if (this.displayVisualizationEnabled) {
+      console.log('Showing Sound Visualization');
+    } else {
+      console.log('Hiding Sound Visualization');
+    }
+  }
+
   toggleDisplayVisualization() {
     this.displayVisualizationEnabled = !this.displayVisualizationEnabled;
     if (this.displayVisualizationEnabled) {
       console.log('Showing Sound Visualization');
-      this.AudioInputs['VisualizationEnable'].textContent = 'Hide Visualization';
     } else {
       console.log('Hiding Sound Visualization');
-      this.AudioInputs['VisualizationEnable'].textContent = 'Show Visualization';
     }
   }
 
@@ -275,18 +286,19 @@ export class AudioReactive {
     const card = create_daisyui_expandable_card('audioReactiveSettings', 'Audio Reactive');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
 
-    let initialLabel = AudioReactive.defaultAudioReactiveEnabled ? 'Disable' : 'Enable';
-    const enableAudioButton = create_button(initialLabel, (a) => {
-      this.toggleEnableAudio();
-      this.takeOverControlls()
-    });
+    const enableAudioButton = createToggleButton('Enable Audio Reactive Controls', (a) => {
+        this.setEnableAudio(a.target.checked);
+        this.takeOverControlls()
+      },
+      AudioReactive.defaultAudioReactiveEnabled
+    );
     elements_dict['AudioEnable'] = enableAudioButton.getElementsByTagName('button')[0];
-    setButtonEnabledAppearance(elements_dict['AudioEnable'], AudioReactive.defaultAudioReactiveEnabled); // Set appearance to disabled or enabled depending on default
     
-    let initialLabelSoundVis = AudioReactive.defaultDisplayVisualizationEnabled ? 'Hide Visualization' : 'Show Visualization';
-    const enableVisButton = create_button(initialLabelSoundVis, (a) => {
-      this.toggleDisplayVisualization()
-    });
+    const enableVisButton = createToggleButton('Show Audio Visualization', (a) => {
+        this.setDisplayVisualization(a.target.checked)
+      },
+      AudioReactive.defaultDisplayVisualizationEnabled,
+    );
     elements_dict['VisualizationEnable'] = enableVisButton.getElementsByTagName('button')[0];
 
     const levelScale = create_number_input_slider_and_number(
@@ -347,7 +359,6 @@ export class AudioReactive {
     elements_dict['energyRatioStrenghtLabel'] = lhEnergyRatioStrength.getElementsByTagName('h3')[0];
   
     cardBody.appendChild(enableAudioButton);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(enableVisButton);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(levelScale);
