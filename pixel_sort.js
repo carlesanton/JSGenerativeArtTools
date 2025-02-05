@@ -1,4 +1,4 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, create_button, setButtonEnabledAppearance} from './ui.js'
+import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, createToggleButton} from './ui.js'
 
 export let defaultPixelSortInitialSteps = 50; //50
 export let defaultPixelSortMaxSteps = -1;
@@ -246,12 +246,12 @@ function createPixelSortingSettings() {
   const cardBody = card.getElementsByClassName('collapse-content')[0];
 
   // Enable Disable Button
-  let initialLabel = defaultPSEnabled ? 'Disable' : 'Enable';
-  const enablePSButton = create_button(initialLabel, (a) => {
-    toggleEnablePS();
-  });
+  const enablePSButton = createToggleButton('Enable', (a) => {
+      setEnablePS(a.target.checked);
+    },
+    defaultPSEnabled,
+  );
   elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
-  setButtonEnabledAppearance(elements_dict['PSEnable'], defaultPSEnabled); // Set appearance to disabled or enabled depending on default
 
   // Add input fields and labels
   const initialSteps = create_number_input_slider_and_number(
