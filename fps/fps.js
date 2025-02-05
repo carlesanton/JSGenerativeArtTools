@@ -82,10 +82,8 @@ export class FPS{
         this.show = show;
         if (this.show) {
           console.log('Displaying FPS');
-          this.FPSInputs['show'].textContent = 'Hide';
         } else {
           console.log('Hiding FPS');
-          this.FPSInputs['show'].textContent = 'Show';
         }
       }
     
