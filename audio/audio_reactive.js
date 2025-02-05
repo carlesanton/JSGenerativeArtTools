@@ -1,4 +1,4 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, create_button, setButtonEnabledAppearance} from '../ui.js';
+import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton} from '../ui.js';
 import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
@@ -293,18 +293,19 @@ export class AudioReactive {
     const card = create_daisyui_expandable_card('audioReactiveSettings', 'Audio Reactive');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
 
-    let initialLabel = AudioReactive.defaultAudioReactiveEnabled ? 'Disable' : 'Enable';
-    const enableAudioButton = create_button(initialLabel, (a) => {
-      this.toggleEnableAudio();
-      this.takeOverControlls()
-    });
+    const enableAudioButton = createToggleButton('Enable Audio Reactive Controls', (a) => {
+        this.setEnableAudio(a.target.checked);
+        this.takeOverControlls()
+      },
+      AudioReactive.defaultAudioReactiveEnabled
+    );
     elements_dict['AudioEnable'] = enableAudioButton.getElementsByTagName('button')[0];
-    setButtonEnabledAppearance(elements_dict['AudioEnable'], AudioReactive.defaultAudioReactiveEnabled); // Set appearance to disabled or enabled depending on default
     
-    let initialLabelSoundVis = AudioReactive.defaultDisplayVisualizationEnabled ? 'Hide Visualization' : 'Show Visualization';
-    const enableVisButton = create_button(initialLabelSoundVis, (a) => {
-      this.toggleDisplayVisualization()
-    });
+    const enableVisButton = createToggleButton('Show Audio Visualization', (a) => {
+        this.setDisplayVisualization(a.target.checked)
+      },
+      AudioReactive.defaultDisplayVisualizationEnabled,
+    );
     elements_dict['VisualizationEnable'] = enableVisButton.getElementsByTagName('button')[0];
 
     const levelScale = create_number_input_slider_and_number(
