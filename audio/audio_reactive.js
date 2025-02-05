@@ -359,9 +359,7 @@ export class AudioReactive {
     elements_dict['energyRatioStrenghtLabel'] = lhEnergyRatioStrength.getElementsByTagName('h3')[0];
   
     cardBody.appendChild(enableAudioButton);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(enableVisButton);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(levelScale);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beathThreshold);
