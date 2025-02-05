@@ -6,6 +6,8 @@ export class AudioReactive {
   static defaultDisplayVisualizationEnabled = false;
   static defaultBeatThreshold = 0.6;
   static defaultBeatDecayRate = 0.1;
+  static defaultAudioLevelStrength = 0.7;
+  static defaultLHEnergyRatioStrength = 0.9;
   // static defaultBeatDecayRate = 0.02;
   static defaultLevelScale = 1;
   static level_scale = 1;
@@ -24,6 +26,8 @@ export class AudioReactive {
     this.beatCutoff = this.beatDetectLevel;
     this.beatDecayRate = AudioReactive.defaultBeatDecayRate;
     this.levelScale = AudioReactive.defaultLevelScale;
+    this.audioLevelStrength = AudioReactive.defaultAudioLevelStrength;
+    this.lhEnergyRatioStrength = AudioReactive.defaultLHEnergyRatioStrength;
     this.framesSinceLastBeat = 0;
     this.audio = null;
     this.fft = null;
