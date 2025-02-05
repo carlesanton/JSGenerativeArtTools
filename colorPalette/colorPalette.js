@@ -129,17 +129,6 @@ export class ColorPalette{
     }
   }
 
-  toggleDisplay() {
-    this.show = !this.show;
-    if (this.show) {
-      console.log('Showing Palette Visualization');
-      this.ColorPaletteInputs['displayPalette'].textContent = 'Hide';
-    } else {
-      console.log('Hiding Palette Visualization');
-      this.ColorPaletteInputs['displayPalette'].textContent = 'Show';
-    }
-  }
-
   get(){
     return this.palette;
   }
