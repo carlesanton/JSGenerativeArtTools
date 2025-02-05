@@ -6,6 +6,8 @@ export class AudioReactive {
   static defaultDisplayVisualizationEnabled = false;
   static defaultBeatThreshold = 0.6;
   static defaultBeatDecayRate = 0.1;
+  static defaultAudioLevelStrength = 0.7;
+  static defaultLHEnergyRatioStrength = 0.9;
   // static defaultBeatDecayRate = 0.02;
   static defaultLevelScale = 1;
   static level_scale = 1;
@@ -24,6 +26,8 @@ export class AudioReactive {
     this.beatCutoff = this.beatDetectLevel;
     this.beatDecayRate = AudioReactive.defaultBeatDecayRate;
     this.levelScale = AudioReactive.defaultLevelScale;
+    this.audioLevelStrength = AudioReactive.defaultAudioLevelStrength;
+    this.lhEnergyRatioStrength = AudioReactive.defaultLHEnergyRatioStrength;
     this.framesSinceLastBeat = 0;
     this.audio = null;
     this.fft = null;
@@ -153,6 +157,30 @@ export class AudioReactive {
 
   setOnEnergyRatioChangeCallback(callback){
     this.onEnergyRatioChange = callback;
+  }
+
+  setLHEnergyRatioStrength(newStrenght){
+    this.lhEnergyRatioStrength = parseFloat(newStrenght);
+  }
+
+  getLHEnergyRatioStrength(){
+    return this.lhEnergyRatioStrength;
+  }
+
+  setLHEnergyRatioStrengthLabel(newLabel){
+    this.AudioInputs['energyRatioStrenghtLabel'].innerHTML = newLabel;
+  }
+
+  setAudioLevelStrength(newStrenght){
+    this.audioLevelStrength = parseFloat(newStrenght);
+  }
+
+  getAudioLevelStrength(){
+    return this.audioLevelStrength;
+  }
+
+  setAudioLevelStrengthSliderLabel(newLabel){
+    this.AudioInputs['audioLevelStrengthLabel'].innerHTML = newLabel;
   }
 
   setOnBeatCallback(onBeatCallback){
@@ -293,6 +321,30 @@ export class AudioReactive {
       0.01
     );
     elements_dict['beatDecayRate'] = beatDecayRate.getElementsByTagName('input')[0];
+
+    const audioLevelStrength = create_number_input_slider_and_number(
+      'audioLevelStrength',
+      'Audio Level Strength',
+      AudioReactive.defaultAudioLevelStrength,
+      0.,
+      1.,
+      (e) => {this.setAudioLevelStrength(e)},
+      0.01
+    );
+    elements_dict['audioLevelStrength'] = audioLevelStrength.getElementsByTagName('input')[0];
+    elements_dict['audioLevelStrengthLabel'] = audioLevelStrength.getElementsByTagName('h3')[0];
+    
+    const lhEnergyRatioStrength = create_number_input_slider_and_number(
+      'energyRatioStrenght',
+      'Energy Ratio Strength',
+      AudioReactive.defaultLHEnergyRatioStrength,
+      0.,
+      1.,
+      (e) => {this.setLHEnergyRatioStrength(e)},
+      0.01
+    );
+    elements_dict['energyRatioStrenght'] = lhEnergyRatioStrength.getElementsByTagName('input')[0];
+    elements_dict['energyRatioStrenghtLabel'] = lhEnergyRatioStrength.getElementsByTagName('h3')[0];
   
     cardBody.appendChild(enableAudioButton);
     cardBody.appendChild(document.createElement('br'));
@@ -303,6 +355,10 @@ export class AudioReactive {
     cardBody.appendChild(beathThreshold);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beatDecayRate);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(audioLevelStrength);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(lhEnergyRatioStrength);
 
     elements_dict['main-toolbar'] = card;
 
