@@ -122,7 +122,6 @@ export class FPS{
         elements_dict['fps'] = fps.getElementsByTagName('input')[0];
     
         cardBody.appendChild(enableVisButton);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(fps);
     
         elements_dict['main-toolbar'] = card;
