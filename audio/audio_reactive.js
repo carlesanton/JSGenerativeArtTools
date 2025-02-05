@@ -247,15 +247,10 @@ export class AudioReactive {
 
   toggleEnableAudio() {
     this.audioReactiveEnabled = !this.audioReactiveEnabled;
-    const enableButton = this.AudioInputs['AudioEnable']
     if (this.audioReactiveEnabled) {
       console.log('Enabling audio');
-      enableButton.textContent = 'Disable';
-      setButtonEnabledAppearance(enableButton, true);
     } else {
       console.log('Disabling audio');
-      enableButton.textContent = 'Enable';
-      setButtonEnabledAppearance(enableButton, false);
     }
   }
 
@@ -276,10 +271,8 @@ export class AudioReactive {
     this.displayVisualizationEnabled = !this.displayVisualizationEnabled;
     if (this.displayVisualizationEnabled) {
       console.log('Showing Sound Visualization');
-      this.AudioInputs['VisualizationEnable'].textContent = 'Hide Visualization';
     } else {
       console.log('Hiding Sound Visualization');
-      this.AudioInputs['VisualizationEnable'].textContent = 'Show Visualization';
     }
   }
 
