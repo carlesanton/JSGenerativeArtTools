@@ -16,7 +16,7 @@ let PSShader; // variable for the shader
 
 let PSInputs;
 
-let sortNoiseScale;
+let sortNoiseScale = defaultSortNoiseScale;
 let noiseDirectionChangeRate;
 let pixelSortMaxSteps;
 let PixelSortInitialSteps;
