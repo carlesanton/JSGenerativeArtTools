@@ -215,6 +215,15 @@ function get_PixelSortInitialSteps(){
   return PixelSortInitialSteps;
 }
 
+function setEnablePS(enable) {
+  enablePS = enable;
+  if (enablePS) {
+    console.log('Enabling PS');
+  } else {
+    console.log('Disabling PS');
+  }
+}
+
 function toggleEnablePS() {
   enablePS = !enablePS;
   const enableButton = PSInputs['PSEnable'];
