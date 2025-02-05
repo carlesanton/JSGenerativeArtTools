@@ -120,6 +120,15 @@ export class ColorPalette{
     }
   }
 
+  setDisplay(show) {
+    this.show = show;
+    if (this.show) {
+      console.log('Showing Palette Visualization');
+    } else {
+      console.log('Hiding Palette Visualization');
+    }
+  }
+
   toggleDisplay() {
     this.show = !this.show;
     if (this.show) {
