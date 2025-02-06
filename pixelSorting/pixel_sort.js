@@ -1,6 +1,6 @@
 import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, createToggleButton} from './ui.js'
 
-export let defaultPixelSortInitialSteps = 50; //50
+export let defaultPixelSortInitialSteps = 0; //50
 export let defaultPixelSortMaxSteps = -1;
 export let defaultPixelSortingPasses = 8;
 export let defaultSortNoiseScale = 360
@@ -135,6 +135,8 @@ function change_ps_direction() {
     noise_coordinates = angleToCoordinates(angle, noise_radius);
     PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
   } while (oldCoordinates.x == noise_coordinates.x && oldCoordinates.y == noise_coordinates.y); // Keep looping until coordinates change
+  // } while (oldCoordinates.x == noise_coordinates.x && oldCoordinates.y == noise_coordinates.y || noise_coordinates.x != 0); // Keep looping until coordinates change
+  console.log('noise_coordinates', noise_coordinates)
 }
 
 function set_ps_initial_steps(new_initial_steps){
