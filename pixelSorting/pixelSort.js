@@ -1,320 +1,314 @@
-import {create_number_input_slider_and_number, create_daisyui_expandable_card, create_subtitle, createToggleButton} from './ui.js'
+import { 
+  create_number_input_slider_and_number,
+  create_daisyui_expandable_card,
+  createToggleButton,
+} from '../ui.js'
 
-export let defaultPixelSortInitialSteps = 0; //50
-export let defaultPixelSortMaxSteps = -1;
-export let defaultPixelSortingPasses = 8;
-export let defaultSortNoiseScale = 360
-export let defaultNoiseDirectionChangeRate = 45;
-export let defaultPSEnabled = true;
+export class PixelSort {
+  static defaultPixelSortInitialSteps = 50; // 50
+  static defaultPixelSortMaxSteps = -1;
+  static defaultPixelSortingPasses = 8;
+  static defaultSortNoiseScale = 360;
+  static defaultNoiseDirectionChangeRate = 45;
+  static defaultPSEnabled = true;
 
-let pixel_sort_step = 0
-const noise_radius = 1.5;
-let angle = -180;
-let noise_coordinates;
-let ps_src = ''; // variable for shader code
-let PSShader; // variable for the shader
+  constructor() {
+      this.pixel_sort_step = 0;
+      this.noise_radius = 1.5;
+      this.angle = -180;
+      this.noise_coordinates = null;
+      this.ps_src = '';
+      this.PSShader = null;
+      this.PSInputs = null;
 
-let PSInputs;
+      // Initialize with defaults
+      this.sortNoiseScale = PixelSort.defaultSortNoiseScale;
+      this.noiseDirectionChangeRate = PixelSort.defaultNoiseDirectionChangeRate;
+      this.pixelSortMaxSteps = PixelSort.defaultPixelSortMaxSteps;
+      this.PixelSortInitialSteps = PixelSort.defaultPixelSortInitialSteps;
+      this.pixelSortingPassesPerFrame = PixelSort.defaultPixelSortingPasses;
+      this.enablePS = PixelSort.defaultPSEnabled;
+      
+      // Load Shader Code
+      this.loadShaderCode();
+  }
 
-let sortNoiseScale = defaultSortNoiseScale;
-let noiseDirectionChangeRate;
-let pixelSortMaxSteps;
-let PixelSortInitialSteps;
-let pixelSortingPassesPerFrame;
-let enablePS = defaultPSEnabled;
-
-function sort_step(sorted){
-    sorted.loadPixels();
-    for (let w = 0; w < sorted.width; w ++) {
-      for (let h = 0; h < sorted.height; h ++) {
-        let off1 = (h * sorted.width + w) * 4;
-        let colorOne = [sorted.pixels[off1], sorted.pixels[off1 + 1], sorted.pixels[off1 + 2], 255];
-        let off2 = ((h-0) * sorted.width + w-1) * 4;
-        if (h==0 || w==0){
-          off2 = off1
-        }
-        let colorTwo = [sorted.pixels[off2], sorted.pixels[off2 + 1], sorted.pixels[off2 + 2], 255];
-        if (hue(colorOne) < hue(colorTwo)) {
-          if (hue(colorOne)<50){
-            sorted.pixels[off1] = colorTwo[0];
-            sorted.pixels[off1+1] = colorTwo[1];
-            sorted.pixels[off1+2] = colorTwo[2];
-            sorted.pixels[off2] = colorOne[0];
-            sorted.pixels[off2+1] = colorOne[1];
-            sorted.pixels[off2+2] = colorOne[2];
+  sortStep(sorted) {
+      sorted.loadPixels();
+      for (let w = 0; w < sorted.width; w++) {
+          for (let h = 0; h < sorted.height; h++) {
+              let off1 = (h * sorted.width + w) * 4;
+              let colorOne = [sorted.pixels[off1], sorted.pixels[off1 + 1], sorted.pixels[off1 + 2], 255];
+              let off2 = ((h-0) * sorted.width + w-1) * 4;
+              if (h==0 || w==0){
+                  off2 = off1;
+              }
+              let colorTwo = [sorted.pixels[off2], sorted.pixels[off2 + 1], sorted.pixels[off2 + 2], 255];
+              if (hue(colorOne) < hue(colorTwo)) {
+                  if (hue(colorOne)<50) {
+                      sorted.pixels[off1] = colorTwo[0];
+                      sorted.pixels[off1+1] = colorTwo[1];
+                      sorted.pixels[off1+2] = colorTwo[2];
+                      sorted.pixels[off2] = colorOne[0];
+                      sorted.pixels[off2+1] = colorOne[1];
+                      sorted.pixels[off2+2] = colorOne[2];
+                  }
+              }
           }
-        }
+          sorted.updatePixels();
       }
-      sorted.updatePixels()
-    }
-    return sorted
-  } 
-
-function sort_step_random(sorted, n_iterations, direction = {x:1,y:0}){
-  let sorted_img = sorted.get()
-  sorted_img.loadPixels();
-  for(let i = 0; i<n_iterations; i++){
-    let w = Math.floor(random(sorted.width));
-    let h = Math.floor(random(sorted.height));
-    let off1 = (h * sorted.width + w) * 4;
-    // console.log('w: ' + w + ' h: ' + h + ' off: ' +off)
-    let colorOne = [sorted.pixels[off1], sorted.pixels[off1 + 1], sorted.pixels[off1 + 2], 255];
-    let off2 = ((h-direction.y) * sorted.width + w+direction.x) * 4;
-    if (h>=sorted.height || w>=sorted.width || w==0 || h==0){
-      off2 = off1
-    }
-    let colorTwo = [sorted.pixels[off2], sorted.pixels[off2 + 1], sorted.pixels[off2 + 2], 255];
-    if (brightness(colorOne) < brightness(colorTwo)) {
-      // if (brightness(colorOne)>10){ 
-        sorted.pixels[off1] = colorTwo[0];
-        sorted.pixels[off1+1] = colorTwo[1];
-        sorted.pixels[off1+2] = colorTwo[2];
-        sorted.pixels[off2] = colorOne[0];
-        sorted.pixels[off2+1] = colorOne[1];
-        sorted.pixels[off2+2] = colorOne[2];
-      // }
-    }
-  }
-  sorted_img.updatePixels()
-  return sorted
-}
-
-function angleToCoordinates(angleInDegrees, radius = 100) {
-  // Normalize the angle to be between 0 and 360
-  let normalizedAngle = ((angleInDegrees % 360) + 360) % 360;
-
-  // Convert the angle to radians
-  let angleInRadians = normalizedAngle * Math.PI / 180;
-
-  // Calculate the x and y coordinates
-  let x = radius * Math.cos(angleInRadians);
-  let y = radius * Math.sin(angleInRadians);
-
-  return { x: Math.round(x), y: Math.round(y) };
-}
-
-function load_pixel_shader_code(){
-  ps_src = loadStrings('./lib/JSGenerativeArtTools/pixel_sort_shader.frag');
-}
-
-function initialize_pixel_sorting_shader(){
-  PSShader = createFilterShader(ps_src.join('\n'));
-}
-
-function pixel_sorting_gpu(color_buffer, apply_direction_change = false){
-  if (!enablePS){
-    return color_buffer;
+      return sorted;
   }
 
-  // Change Direction if needed
-  
-  color_buffer.begin();
-  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
-    if(apply_direction_change && pixel_sort_step%noiseDirectionChangeRate==1){
-        change_ps_direction()
-    }
-    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
-      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
-      filter(PSShader)
-    }
-    pixel_sort_step++;
+  sortStepRandom(sorted, n_iterations, direction = {x:1,y:0}) {
+      let sorted_img = sorted.get();
+      sorted_img.loadPixels();
+      for(let i = 0; i<n_iterations; i++){
+          let w = Math.floor(random(sorted.width));
+          let h = Math.floor(random(sorted.height));
+          let off1 = (h * sorted.width + w) * 4;
+          let colorOne = [sorted.pixels[off1], sorted.pixels[off1 + 1], sorted.pixels[off1 + 2], 255];
+          let off2 = ((h-direction.y) * sorted.width + w+direction.x) * 4;
+          if (h>=sorted.height || w>=sorted.width || w==0 || h==0){
+              off2 = off1;
+          }
+          let colorTwo = [sorted.pixels[off2], sorted.pixels[off2 + 1], sorted.pixels[off2 + 2], 255];
+          if (brightness(colorOne) < brightness(colorTwo)) {
+              sorted.pixels[off1] = colorTwo[0];
+              sorted.pixels[off1+1] = colorTwo[1];
+              sorted.pixels[off1+2] = colorTwo[2];
+              sorted.pixels[off2] = colorOne[0];
+              sorted.pixels[off2+1] = colorOne[1];
+              sorted.pixels[off2+2] = colorOne[2];
+          }
+      }
+      sorted_img.updatePixels();
+      return sorted;
   }
-  color_buffer.end();
 
-  return color_buffer
-}
-
-function change_ps_direction() {
-  let oldCoordinates = {x:12321, y:123123}
-  if (noise_coordinates){
-    oldCoordinates = noise_coordinates; // Clone the current coordinates
+  angleToCoordinates(angleInDegrees, radius = 100) {
+    // Normalize the angle to be between 0 and 360
+    let normalizedAngle = ((angleInDegrees % 360) + 360) % 360;
+    // Convert the angle to radians
+    let angleInRadians = normalizedAngle * Math.PI / 180;
+    // Calculate the x and y coordinates
+    let x = radius * Math.cos(angleInRadians);
+    let y = radius * Math.sin(angleInRadians);
+    return { x: Math.round(x), y: Math.round(y) };
   }
 
-  do {
-    angle = noise(random(1000)) * sortNoiseScale;
-    noise_coordinates = angleToCoordinates(angle, noise_radius);
-    PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  } while (oldCoordinates.x == noise_coordinates.x && oldCoordinates.y == noise_coordinates.y); // Keep looping until coordinates change
-  // } while (oldCoordinates.x == noise_coordinates.x && oldCoordinates.y == noise_coordinates.y || noise_coordinates.x != 0); // Keep looping until coordinates change
-  console.log('noise_coordinates', noise_coordinates)
-}
+  loadShaderCode() {
+      this.ps_src = loadStrings('./lib/JSGenerativeArtTools/pixelSorting/pixel_sort_shader.frag');
+  }
 
-function set_ps_initial_steps(new_initial_steps){
-  const old_initial_steps = PixelSortInitialSteps;
-  PixelSortInitialSteps = new_initial_steps;
-  return old_initial_steps
-}
+  initializeShader() {
+      this.PSShader = createFilterShader(this.ps_src.join('\n'));
+  }
 
-function set_ps_max_steps(new_max_steps){
-  const old_max_steps = pixelSortMaxSteps;
-  pixelSortMaxSteps = new_max_steps;
-  return old_max_steps
-}
+  pixelSortingGPU(color_buffer, apply_direction_change = false) {
+      if (!this.enablePS) {
+          return color_buffer;
+      }
 
-function set_ps_passes_per_frame(new_passes_per_frame){
-  var old_passes_per_frame = pixelSortingPassesPerFrame
-  pixelSortingPassesPerFrame = new_passes_per_frame
-  return old_passes_per_frame
-}
+      color_buffer.begin();
+      if (this.pixel_sort_step < this.pixelSortMaxSteps || this.pixelSortMaxSteps == -1) {
+          if(apply_direction_change && this.pixel_sort_step%this.noiseDirectionChangeRate==1) {
+              this.changeDirection();
+          }
+          for (let i = 0; i < this.pixelSortingPassesPerFrame; i++) {
+              this.PSShader.setUniform('iFrame', (this.PixelSortInitialSteps + this.pixel_sort_step) * this.pixelSortingPassesPerFrame + i);
+              filter(this.PSShader);
+          }
+          this.pixel_sort_step++;
+      }
+      color_buffer.end();
+      return color_buffer;
+  }
 
-function set_ps_passes_per_frame_from_slider(new_passes_per_frame){
-  var inputElement = PSInputs.PSPassesPerFrame
-  var old_passes_per_frame = inputElement.value
-  inputElement.value = new_passes_per_frame
+  changeDirection() {
+      let oldCoordinates = {x:12321, y:123123};
+      if (this.noise_coordinates) {
+          oldCoordinates = {...this.noise_coordinates}; // Clone the current coordinates
+      }
+      do {
+          this.angle = noise(random(1000)) * this.sortNoiseScale;
+          this.noise_coordinates = this.angleToCoordinates(this.angle, this.noise_radius);
+          this.PSShader.setUniform('direction', [this.noise_coordinates.x, this.noise_coordinates.y]);
+      } while (oldCoordinates.x == this.noise_coordinates.x && oldCoordinates.y == this.noise_coordinates.y);
+  }
 
-  // Propagate change to slider and value by manualy triggering on change
-  var event = new Event('input');
-  inputElement.dispatchEvent(event);
-  return old_passes_per_frame
-}
+  setInitialSteps(new_initial_steps) {
+      const old_initial_steps = this.PixelSortInitialSteps;
+      this.PixelSortInitialSteps = new_initial_steps;
+      return old_initial_steps;
+  }
 
-function disable_ps_passes_per_frame(enable){
-  var inputElement = PSInputs.PSPassesPerFrame
-  inputElement.linkedDisabled = enable;
+  setMaxSteps(new_max_steps) {
+      const old_max_steps = this.pixelSortMaxSteps;
+      this.pixelSortMaxSteps = new_max_steps;
+      return old_max_steps;
+  }
 
-  // Propagate change to slider and value by manualy triggering on change
-  var event = new Event('input');
-  inputElement.dispatchEvent(event);
-}
+  setPassesPerFrame(new_passes_per_frame) {
+      const old_passes_per_frame = this.pixelSortingPassesPerFrame;
+      this.pixelSortingPassesPerFrame = new_passes_per_frame;
+      return old_passes_per_frame;
+  }
 
-function set_ps_direction_change_rate(new_direction_change_rate){
-  var old_direction_change_rate = noiseDirectionChangeRate
-  noiseDirectionChangeRate = new_direction_change_rate
-  return old_direction_change_rate
-}
+  setPassesPerFrameFromSlider(new_passes_per_frame) {
+      var inputElement = this.PSInputs.PSPassesPerFrame;
+      if (!inputElement) return null;
 
-function set_ps_direction_change_rate_from_slider(new_direction_change_rate){
-  var inputElement = PSInputs.PSnoiseDirectionChangeRate
-  var old_direction_change_rate = inputElement.value
-  inputElement.value = new_direction_change_rate
+      var old_passes_per_frame = inputElement.value;
+      inputElement.value = new_passes_per_frame;
 
-  // Propagate change to slider and value by manualy triggering on change
-  var event = new Event('input');
-  inputElement.dispatchEvent(event);
-  return old_direction_change_rate
-}
+      var event = new Event('input');
+      inputElement.dispatchEvent(event);
+      return old_passes_per_frame;
+  }
 
-function disable_ps_direction_change_rate(enable){
-  var inputElement = PSInputs.PSnoiseDirectionChangeRate
-  inputElement.linkedDisabled = enable;
+  disablePassesPerFrame(enable) {
+      var inputElement = this.PSInputs?.PSPassesPerFrame;
+      if (!inputElement) return;
 
-  // Propagate change to slider and value by manualy triggering on change
-  var event = new Event('input');
-  inputElement.dispatchEvent(event);
-}
+      inputElement.linkedDisabled = enable;
+      var event = new Event('input');
+      inputElement.dispatchEvent(event);
+  }
 
-function reset_ps_steps(){
-  pixel_sort_step = 0;
-}
+  setDirectionChangeRate(new_direction_change_rate) {
+      const old_direction_change_rate = this.noiseDirectionChangeRate;
+      this.noiseDirectionChangeRate = new_direction_change_rate;
+      return old_direction_change_rate;
+  }
 
-function get_PixelSortInitialSteps(){
-  return PixelSortInitialSteps;
-}
+  setDirectionChangeRateFromSlider(new_direction_change_rate) {
+      var inputElement = this.PSInputs?.PSnoiseDirectionChangeRate;
+      if (!inputElement) return null;
 
-function setEnablePS(enable) {
-  enablePS = enable;
-  if (enablePS) {
-    console.log('Enabling PS');
-  } else {
-    console.log('Disabling PS');
+      var old_direction_change_rate = inputElement.value;
+      inputElement.value = new_direction_change_rate;
+
+      var event = new Event('input');
+      inputElement.dispatchEvent(event);
+      return old_direction_change_rate;
+  }
+
+  setDirectionChangeRateFromSliderToDefault() {
+      var inputElement = this.PSInputs?.PSnoiseDirectionChangeRate;
+      if (!inputElement) return null;
+
+      var old_direction_change_rate = inputElement.value;
+      inputElement.value = PixelSort.defaultNoiseDirectionChangeRate;
+
+      var event = new Event('input');
+      inputElement.dispatchEvent(event);
+      return old_direction_change_rate;
+  }
+
+  disableDirectionChangeRate(enable) {
+      var inputElement = this.PSInputs?.PSnoiseDirectionChangeRate;
+      if (!inputElement) return;
+
+      inputElement.linkedDisabled = enable;
+      var event = new Event('input');
+      inputElement.dispatchEvent(event);
+  }
+
+  resetSteps() {
+      this.pixel_sort_step = 0;
+  }
+
+  getInitialSteps() {
+      return this.PixelSortInitialSteps;
+  }
+
+  setEnable(enable) {
+      this.enablePS = enable;
+      if (this.enablePS) {
+          console.log('Enabling PS');
+      } else {
+          console.log('Disabling PS');
+      }
+  }
+
+  createPixelSortingSettings() {
+    const elements_dict = {};
+    
+    // Create Main Card
+    const card = create_daisyui_expandable_card('PixelSortingSettings', 'Pixel Sorting');
+    const cardBody = card.getElementsByClassName('collapse-content')[0];
+    
+    // Enable Disable Button
+    const enablePSButton = createToggleButton('Enable', (a) => {
+        this.setEnable(a.target.checked);
+    }, this.enablePS);
+    elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
+
+    // Add input fields and labels
+    const initialSteps = create_number_input_slider_and_number(
+        'PSinitialSteps',
+        'Initial Steps',
+        this.PixelSortInitialSteps,
+        0,
+        150,
+        (value) => this.setInitialSteps(value),
+    );
+    elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
+
+    const maxSteps = create_number_input_slider_and_number(
+        'PSMaxSteps',
+        'Max Steps',
+        this.pixelSortMaxSteps,
+        -1,
+        1000,
+        (value) => this.setMaxSteps(value),
+    );
+    elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
+
+    const passesPerFrame = create_number_input_slider_and_number(
+        'PSPassesPerFrame',
+        'Speed',
+        this.pixelSortingPassesPerFrame,
+        0,
+        25,
+        (value) => this.setPassesPerFrame(value),
+    );
+    elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
+
+    const noiseDirection = create_number_input_slider_and_number(
+        'PSnoiseDirectionChangeRate',
+        'Direction Change Rate',
+        this.noiseDirectionChangeRate,
+        0,
+        150,
+        (value) => this.setDirectionChangeRate(value),
+    );
+    elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
+
+    cardBody.appendChild(enablePSButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(initialSteps);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(maxSteps);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(passesPerFrame);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(noiseDirection);
+
+    elements_dict['main-toolbar'] = card;
+    this.PSInputs = elements_dict;
+    return elements_dict;
+  }
+
+  updateAllParameters() {
+      if (!this.PSInputs) return;
+      
+      this.noiseDirectionChangeRate = parseInt(this.PSInputs['PSnoiseDirectionChangeRate'].value);
+      this.pixelSortMaxSteps = parseInt(this.PSInputs['PSMaxSteps'].value);
+      this.PixelSortInitialSteps = parseInt(this.PSInputs['PSinitialSteps'].value);
+      this.pixelSortingPassesPerFrame = parseInt(this.PSInputs['PSPassesPerFrame'].value);
   }
 }
 
-function createPixelSortingSettings() {
-  var elements_dict = {};
-
-  // Create Main Card
-  const card = create_daisyui_expandable_card('PixelSortingSettings', 'Pixel Sorting');
-  const cardBody = card.getElementsByClassName('collapse-content')[0];
-
-  // Enable Disable Button
-  const enablePSButton = createToggleButton('Enable', (a) => {
-      setEnablePS(a.target.checked);
-    },
-    defaultPSEnabled,
-  );
-  elements_dict['PSEnable'] = enablePSButton.getElementsByTagName('button')[0];
-
-  // Add input fields and labels
-  const initialSteps = create_number_input_slider_and_number(
-    'PSinitialSteps',
-    'Initial Steps',
-    defaultPixelSortInitialSteps,
-    0,
-    150,
-    set_ps_initial_steps,
-  );
-  elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
-
-  const maxSteps = create_number_input_slider_and_number(
-    'PSMaxSteps',
-    'Max Steps', 
-    defaultPixelSortMaxSteps,
-    -1,
-    1000,
-    set_ps_max_steps,
-  );
-  elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
-
-  const passesPerFrame = create_number_input_slider_and_number(
-    'PSPassesPerFrame',
-    'Speed',
-    defaultPixelSortingPasses,
-    0,
-    25,
-    set_ps_passes_per_frame,
-  );
-  elements_dict['PSPassesPerFrame'] = passesPerFrame.getElementsByTagName('input')[0];
-
-  const noiseDirection = create_number_input_slider_and_number(
-    'PSnoiseDirectionChangeRate',
-    'Direction Change Rate',
-    defaultNoiseDirectionChangeRate,
-    0,
-    150,
-    set_ps_direction_change_rate,
-  );
-  elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
-
-  cardBody.appendChild(enablePSButton);
-  cardBody.appendChild(document.createElement('br'));
-  cardBody.appendChild(initialSteps);
-  cardBody.appendChild(document.createElement('br'));
-  cardBody.appendChild(maxSteps);
-  cardBody.appendChild(document.createElement('br'));
-  cardBody.appendChild(passesPerFrame);
-  cardBody.appendChild(document.createElement('br'));
-  cardBody.appendChild(noiseDirection);
-
-  elements_dict['main-toolbar'] = card;
-
-  PSInputs = elements_dict
-
-  return elements_dict;
-}
-
-function update_all_ps_parametters(){
-  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
-  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
-  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
-  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
-}
-
-export {
-  sort_step,
-  sort_step_random,
-  load_pixel_shader_code,
-  initialize_pixel_sorting_shader,
-  pixel_sorting_gpu,
-  angleToCoordinates,
-  set_ps_max_steps,
-  set_ps_direction_change_rate_from_slider,
-  disable_ps_direction_change_rate,
-  set_ps_passes_per_frame_from_slider,
-  disable_ps_passes_per_frame,
-  get_PixelSortInitialSteps,
-  reset_ps_steps,
-  change_ps_direction,
-  update_all_ps_parametters,
-  createPixelSortingSettings
-}
+export default PixelSort;
