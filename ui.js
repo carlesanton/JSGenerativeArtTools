@@ -364,6 +364,12 @@ function turnDaisyUICardIntoBodyWithTitle(card){
     return sectionBodyDiv
 }
 
+function indentDiv(div, indent){
+    div.style.marginLeft = indent;
+    return div;
+}
+
+
 export {
     create_card,
     create_expandable_card,
@@ -376,4 +382,5 @@ export {
     create_daisyui_expandable_card,
     turnDaisyUICardIntoBodyWithTitle,
     createToggleButton,
+    indentDiv,
 }
