@@ -169,6 +169,13 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     function toggleDisabled(disabled) {
         number.disabled = disabled;
         range.disabled = disabled;
+
+        if (disabled) {
+            range.className = 'range [--range-shdw:gray] w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+        }
+        else {
+            range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+        }
     }
 
     // Override the disabled property setter
