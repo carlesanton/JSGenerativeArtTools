@@ -262,6 +262,17 @@ export class CellularAutomata {
         this.enableParametter('CAPassesPerFrame', !enable);
     }
 
+    togglePassesPerFrameRateAudioControlled(audioControlled) {
+        this.toggleParameterToAudioReactiveTakenControls('CAPassesPerFrame', audioControlled)
+    }
+
+    toggleParameterToAudioReactiveTakenControls(parameter, add){
+        if (add) {
+            this.CAInputs[parameter].audioReactiveControlled = true;
+        }
+        else {
+            this.CAInputs[parameter].audioReactiveControlled = false;
+        }
     }
 
     setNewRandomColor(new_random_color) {
