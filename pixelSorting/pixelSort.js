@@ -230,6 +230,7 @@ export class PixelSort {
         } else {
             console.log('Disabling PS');
         }
+        this.enableParametters(this.enablePS)
     }
 
     enableParametters(enable) {
