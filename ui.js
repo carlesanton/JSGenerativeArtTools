@@ -369,6 +369,17 @@ function indentDiv(div, indent){
     return div;
 }
 
+function createSmallBreak(heigth){
+    const div = document.createElement('div') 
+    const br = document.createElement('br');
+    div.style.lineHeight = heigth
+    // br.lineHeight = '100px';
+    // br.style.display = 'block'; /* makes it have a width */
+    // br.style.content = ""; /* clears default height */
+    // br.style.marginTop = 100; /* change this to whatever height you want it */
+    div.appendChild(br);
+    return div;
+}
 
 export {
     create_card,
@@ -383,4 +394,5 @@ export {
     turnDaisyUICardIntoBodyWithTitle,
     createToggleButton,
     indentDiv,
+    createSmallBreak,
 }
