@@ -124,6 +124,7 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // Outer container
     var div = document.createElement('div');
     div.className = 'flex flex-col';
+    div.id = id;
 
     var inputs_div = document.createElement('div');
     inputs_div.className = 'flex items-center';
@@ -131,23 +132,23 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // Value
     // Create value div
     const number_div = document.createElement('div');
-    number_div.id = id+'number';
+    number_div.id = id+'number-div';
     number_div.className = 'relative w-32 flex justify-center mr-4';
     // Create value display
     var number = document.createElement('input');
     number.setAttribute('type', 'number');
     number.setAttribute('class', 'input input-bordered input-xs text-base w-full text-center');
-    number.setAttribute('id', id);
+    number.setAttribute('id', id + 'number');
 
     // Range
     // Create range div
     const range_div = document.createElement('div');
     range_div.className = 'relative w-full';
-    range_div.id = id+'range';
+    range_div.id = id+'range-div';
     // Create range input
     var range = document.createElement('input');
     range.setAttribute('type', 'range');
-    range.setAttribute('id', id);
+    range.setAttribute('id', id + 'range');
     range.className = 'range'
     range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
 
