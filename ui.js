@@ -78,11 +78,12 @@ function create_subtitle(title){
     var div = document.createElement('div');
     div.className = 'divider'
     
-    const title_tag = document.createElement('h2');
-    title_tag.className = 'text-xl';
-    title_tag.innerHTML = title;
-
-    div.appendChild(title_tag);
+    if (title !== undefined && title !== null){ // Add title only if passed, otherwise no text on divider
+        const title_tag = document.createElement('h2');
+        title_tag.className = 'text-xl';
+        title_tag.innerHTML = title;
+        div.appendChild(title_tag);
+    }
 
     return div;
 }
