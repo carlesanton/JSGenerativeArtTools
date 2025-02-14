@@ -1,4 +1,9 @@
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton} from '../ui.js';
+import { 
+  create_daisyui_expandable_card,
+  create_number_input_slider_and_number,
+  createToggleButton,
+  create_subtitle,
+} from '../ui.js';
 import {AudioVisualizationModule} from './audio_visualization_interface.js'
 
 export class AudioReactive {
@@ -267,6 +272,11 @@ export class AudioReactive {
     }
   }
 
+  setVisualizationSize(heigth, width) {
+    this.audioVisualizationModule.setDisplayHeigth(heigth);
+    this.audioVisualizationModule.setDisplayWidth(width);
+  }
+
   toggleDisplayVisualization() {
     this.displayVisualizationEnabled = !this.displayVisualizationEnabled;
     if (this.displayVisualizationEnabled) {
@@ -312,9 +322,11 @@ export class AudioReactive {
     );
     elements_dict['levelScale'] = levelScale.getElementsByTagName('input')[0];
 
+    const beatDetectSubtitle = create_subtitle('Beat Detection');
+
     const beathThreshold = create_number_input_slider_and_number(
       'beathThreshold',
-      'Beat Detect Threshold',
+      'Threshold',
       AudioReactive.defaultBeatThreshold,
       0.,
       1.,
@@ -325,7 +337,7 @@ export class AudioReactive {
 
     const beatDecayRate = create_number_input_slider_and_number(
       'beatDecayRate',
-      'Beat Detect Decay Rate',
+      'Decay Rate',
       AudioReactive.defaultBeatDecayRate,
       0.,
       1.,
@@ -333,6 +345,8 @@ export class AudioReactive {
       0.01
     );
     elements_dict['beatDecayRate'] = beatDecayRate.getElementsByTagName('input')[0];
+
+    const sensitivitySubtitle = create_subtitle('Sensitivity');
 
     const audioLevelStrength = create_number_input_slider_and_number(
       'audioLevelStrength',
@@ -363,10 +377,12 @@ export class AudioReactive {
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(levelScale);
     cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(beatDetectSubtitle);
     cardBody.appendChild(beathThreshold);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beatDecayRate);
     cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(sensitivitySubtitle);
     cardBody.appendChild(audioLevelStrength);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(lhEnergyRatioStrength);

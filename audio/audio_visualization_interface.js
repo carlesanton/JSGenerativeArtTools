@@ -5,6 +5,12 @@ class AudioVisualizationModule {
     this.audioInput = audioInput;
     this.topLeftCorner = topLeftCorner;
     this.bottomRightCorner = bottomRightCorner;
+
+    this.displayHeigth = this.bottomRightCorner.y - this.topLeftCorner.y;
+    this.displayWidth = this.bottomRightCorner.x - this.topLeftCorner.x;
+    this.displayHeigthScale = 1;
+    this.displayWidthScale = 1;
+
     this.beatDetectLevel = beatDetectLevel;
     this.options = Object.assign({
       numFftBins: 1024,
@@ -120,7 +126,7 @@ class AudioVisualizationModule {
 
   draw() {
     // background(this.backgroundColor);
-
+    scale(this.displayWidthScale, this.displayHeigthScale)
     for (const [key, vis] of Object.entries(this.visualizations)) {
       vis.draw();
     }
@@ -164,6 +170,14 @@ class AudioVisualizationModule {
 
   setBeatDetected(beatDetected){
     this.visualizations['beatDetectorVisualizer'].setBeatDetected(beatDetected)
+  }
+
+  setDisplayHeigth(heigth) {
+    this.displayHeigthScale = heigth / (this.displayHeigth * 2);
+  }
+
+  setDisplayWidth(width) {
+    this.displayWidthScale = width / (this.displayWidth * 2);
   }
 }
 

@@ -2,15 +2,17 @@ import {
   create_number_input_slider_and_number,
   create_daisyui_expandable_card,
   createToggleButton,
+  indentDiv,
 } from '../ui.js'
 
 export class PixelSort {
     static defaultPixelSortInitialSteps = 50; // 50
-    static defaultPixelSortMaxSteps = -1;
+    static defaultPixelSortMaxSteps = 100;
     static defaultPixelSortingPasses = 8;
     static defaultSortNoiseScale = 360;
     static defaultNoiseDirectionChangeRate = 45;
     static defaultPSEnabled = true;
+    static defaultRunForever = true;
 
     constructor() {
         this.pixel_sort_step = 0;
@@ -28,6 +30,7 @@ export class PixelSort {
         this.PixelSortInitialSteps = PixelSort.defaultPixelSortInitialSteps;
         this.pixelSortingPassesPerFrame = PixelSort.defaultPixelSortingPasses;
         this.enablePS = PixelSort.defaultPSEnabled;
+        this.runForever = PixelSort.defaultRunForever;
         
         // Load Shader Code
         this.loadShaderCode();
@@ -111,7 +114,7 @@ export class PixelSort {
         }
 
         color_buffer.begin();
-        if (this.pixel_sort_step < this.pixelSortMaxSteps || this.pixelSortMaxSteps == -1) {
+        if (this.pixel_sort_step < this.pixelSortMaxSteps || this.runForever) {
             if(apply_direction_change && this.pixel_sort_step%this.noiseDirectionChangeRate==1) {
                 this.changeDirection();
             }
@@ -168,12 +171,11 @@ export class PixelSort {
     }
 
     disablePassesPerFrame(enable) {
-        var inputElement = this.PSInputs?.PSPassesPerFrame;
-        if (!inputElement) return;
+        this.enableParametter('PSPassesPerFrame', !enable);
+    }
 
-        inputElement.linkedDisabled = enable;
-        var event = new Event('input');
-        inputElement.dispatchEvent(event);
+    togglePassesPerFrameAudioControlled(audioControlled) {
+        this.toggleParameterToAudioReactiveTakenControls('PSPassesPerFrame', audioControlled)
     }
 
     setDirectionChangeRate(new_direction_change_rate) {
@@ -206,13 +208,31 @@ export class PixelSort {
         return old_direction_change_rate;
     }
 
-    disableDirectionChangeRate(enable) {
-        var inputElement = this.PSInputs?.PSnoiseDirectionChangeRate;
+    enableParametter(parameter, enable) {
+        var inputElement = this.PSInputs[parameter];
         if (!inputElement) return;
 
-        inputElement.linkedDisabled = enable;
+        if (!this.enablePS && enable) return; // Dont enable parametter if we are disabled
+        inputElement.linkedDisabled = !enable;
         var event = new Event('input');
         inputElement.dispatchEvent(event);
+    }
+
+    disableDirectionChangeRate(enable) {
+        this.enableParametter('PSnoiseDirectionChangeRate', !enable);
+    }
+
+    toggleDirectionChangeRateAudioControlled(audioControlled) {
+        this.toggleParameterToAudioReactiveTakenControls('PSnoiseDirectionChangeRate', audioControlled)
+    }
+
+    toggleParameterToAudioReactiveTakenControls(parameter, add){
+        if (add) {
+            this.PSInputs[parameter].audioReactiveControlled = true;
+        }
+        else {
+            this.PSInputs[parameter].audioReactiveControlled = false;
+        }
     }
 
     resetSteps() {
@@ -229,6 +249,25 @@ export class PixelSort {
             console.log('Enabling PS');
         } else {
             console.log('Disabling PS');
+        }
+        this.enableParametters(this.enablePS)
+    }
+
+    enableParametters(enable) {
+        for (const [key, par] of Object.entries(this.PSInputs)) {
+            if (!par?.audioReactiveControlled) this.enableParametter(key, enable);
+        }
+    }
+
+    setRunForever(runForever){
+        this.runForever = runForever;
+        const maxStepsSlider = this.PSInputs['PSMaxStepsDiv']
+        if (this.runForever) {
+            console.log('PS: Running Forever');
+            maxStepsSlider.style.display = "none";
+        } else {
+            console.log('PS: Not Running for ever');
+            maxStepsSlider.style.display = "";
         }
     }
 
@@ -256,15 +295,24 @@ export class PixelSort {
         );
         elements_dict['PSinitialSteps'] = initialSteps.getElementsByTagName('input')[0];
 
+        // Run Forever Button
+        const maxStepsPSButton = createToggleButton('Run Forever', (a) => {
+            this.setRunForever(a.target.checked);
+        }, this.runForever);
+        elements_dict['maxStepsPSButton'] = maxStepsPSButton.getElementsByTagName('button')[0];
+        
         const maxSteps = create_number_input_slider_and_number(
             'PSMaxSteps',
             'Max Steps',
             this.pixelSortMaxSteps,
-            -1,
+            1,
             1000,
             (value) => this.setMaxSteps(value),
         );
+        indentDiv(maxSteps, '30px');
+        maxSteps.style.display =  "" ? this.enablePS: "none"; // Hide at first if must be hiden
         elements_dict['PSMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
+        elements_dict['PSMaxStepsDiv'] = maxSteps;
 
         const passesPerFrame = create_number_input_slider_and_number(
             'PSPassesPerFrame',
@@ -290,6 +338,7 @@ export class PixelSort {
         cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(initialSteps);
         cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(maxStepsPSButton);
         cardBody.appendChild(maxSteps);
         cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(passesPerFrame);

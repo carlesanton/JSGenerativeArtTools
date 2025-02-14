@@ -1409,7 +1409,7 @@ export class BeatDetectorVisualizer extends Rectangle {
     circle(
       this.getLeft() + this.width/2,
       this.getBottom() - this.height/2,
-      this.displaySize * this.beatDetectLevel,
+      constrain(this.displaySize * this.beatDetectLevel, 0, this.displaySize),
     )
 
     // Outter circle
@@ -1435,7 +1435,7 @@ export class BeatDetectorVisualizer extends Rectangle {
     circle(
       this.getLeft() + this.width/2,
       this.getBottom() - this.height/2,
-      this.displaySize * this.volLevel,
+      constrain(this.displaySize * this.volLevel, 0, this.displaySize),
     )
 
     pop();

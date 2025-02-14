@@ -1,15 +1,17 @@
 import { 
     create_number_input_slider_and_number, 
     create_daisyui_expandable_card, 
-    createToggleButton 
+    createToggleButton,
+    indentDiv,
 } from '../ui.js'
 
 export class CellularAutomata {
     static defaultRandomColorChangeRate = 3;
-    static defaultCAMaxSteps = -1;
+    static defaultCAMaxSteps = 100;
     static defaultCAPassesPerFrame = 1;
     static defaultCellularAutomataInitialSteps = 0;
     static defaultCAEnabled = true;
+    static defaultRunForever = true;
 
     constructor() {
         this.cellular_automata_step = 0;
@@ -23,6 +25,7 @@ export class CellularAutomata {
         this.CAPassesPerFrame = CellularAutomata.defaultCAPassesPerFrame;
         this.CellularAutomataInitialSteps = CellularAutomata.defaultCellularAutomataInitialSteps;
         this.enableCA = CellularAutomata.defaultCAEnabled;
+        this.runForever = CellularAutomata.defaultRunForever;
 
         // Load Shader Code
         this.loadShaderCode();
@@ -186,7 +189,7 @@ export class CellularAutomata {
             return color_buffer;
         }
         color_buffer.begin();
-        if (this.cellular_automata_step < this.CAMaxSteps || this.CAMaxSteps == -1) {
+        if (this.cellular_automata_step < this.CAMaxSteps || this.runForever) {
             for (let i = 0; i < this.CAPassesPerFrame; i++) {
                 filter(this.CAShader);
             }
@@ -232,13 +235,18 @@ export class CellularAutomata {
         return old_color_change_rate;
     }
 
-    disableRandomColorChangeRate(enable) {
-        var inputElement = this.CAInputs?.CARandomColorChangeRate;
+    enableParametter(parameter, enable) {
+        var inputElement = this.CAInputs[parameter];
         if (!inputElement) return;
 
-        inputElement.linkedDisabled = enable;
+        if (!this.enableCA && enable) return; // Dont enable parametter if we are disabled
+        inputElement.linkedDisabled = !enable;
         var event = new Event('input');
         inputElement.dispatchEvent(event);
+    }
+
+    disableRandomColorChangeRate(enable) {
+        this.enableParametter('CARandomColorChangeRate', !enable);
     }
 
     setPassesPerFrameFromSlider(new_passes_per_frame) {
@@ -254,12 +262,20 @@ export class CellularAutomata {
     }
 
     disablePassesPerFrame(enable) {
-        var inputElement = this.CAInputs?.CAPassesPerFrame;
-        if (!inputElement) return;
+        this.enableParametter('CAPassesPerFrame', !enable);
+    }
 
-        inputElement.linkedDisabled = enable;
-        var event = new Event('input');
-        inputElement.dispatchEvent(event);
+    togglePassesPerFrameRateAudioControlled(audioControlled) {
+        this.toggleParameterToAudioReactiveTakenControls('CAPassesPerFrame', audioControlled)
+    }
+
+    toggleParameterToAudioReactiveTakenControls(parameter, add){
+        if (add) {
+            this.CAInputs[parameter].audioReactiveControlled = true;
+        }
+        else {
+            this.CAInputs[parameter].audioReactiveControlled = false;
+        }
     }
 
     setNewRandomColor(new_random_color) {
@@ -285,6 +301,25 @@ export class CellularAutomata {
         } else {
             console.log('Disabling CA');
         }
+        this.enableParametters(this.enableCA)
+    }
+
+    enableParametters(enable) {
+        for (const [key, par] of Object.entries(this.CAInputs)) {
+            if (!par?.audioReactiveControlled) this.enableParametter(key, enable);
+        }
+    }
+
+    setRunForever(runForever){
+        this.runForever = runForever;
+        const maxStepsSlider = this.CAInputs['CAMaxStepsDiv']
+        if (this.runForever) {
+            console.log('CA: Running Forever');
+            maxStepsSlider.style.display = "none";
+        } else {
+            console.log('CA: Not Running for ever');
+            maxStepsSlider.style.display = "";
+        }
     }
 
     createSettingsCard() {
@@ -308,15 +343,24 @@ export class CellularAutomata {
         );
         elements_dict['CAInitialSteps'] = initialSteps.getElementsByTagName('input')[0];
 
+        // Run Forever Button
+        const maxStepsCAButton = createToggleButton('Run Forever', (a) => {
+            this.setRunForever(a.target.checked);
+        }, this.runForever);
+        elements_dict['maxStepsCAButton'] = maxStepsCAButton.getElementsByTagName('button')[0];
+
         const maxSteps = create_number_input_slider_and_number(
             'CAMaxSteps',
-            'Total Steps',
+            'Max Steps',
             this.CAMaxSteps,
-            -1,
+            1,
             1000,
             (value) => this.setMaxSteps(value),
         );
+        indentDiv(maxSteps, '30px');
+        maxSteps.style.display =  "" ? this.enableCA: "none"; // Hide at first if must be hiden
         elements_dict['CAMaxSteps'] = maxSteps.getElementsByTagName('input')[0];
+        elements_dict['CAMaxStepsDiv'] = maxSteps;
 
         const passesPerFrame = create_number_input_slider_and_number(
             'CAPassesPerFrame',
@@ -342,6 +386,7 @@ export class CellularAutomata {
         cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(initialSteps);
         cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(maxStepsCAButton);
         cardBody.appendChild(maxSteps);
         cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(passesPerFrame);

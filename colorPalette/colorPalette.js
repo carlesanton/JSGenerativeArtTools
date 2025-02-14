@@ -1,18 +1,23 @@
 import { RgbQuant } from './RgbQuant/rgbquant.js';
-import { create_daisyui_expandable_card, create_number_input_slider_and_number, createToggleButton } from '../ui.js';
+import {
+  create_daisyui_expandable_card,
+  create_number_input_slider_and_number,
+  createToggleButton,
+  indentDiv,
+} from '../ui.js';
 
 export class ColorPalette{
   // Pallete display variables
-  static defaultPalleteWidth = 36
-  static defaultPalleteHeight = 720;
-  static defaultShowPallete = false;
   static defaultNumberOfColors = 20;
+  static defaultShowPallete = false;
+  static defaultPalleteHeight = 720;
+  static defaultSquareSize = 36;
 
   constructor(){
     this.palette = null;
     this.palette_dictionary = null;
     this.ColorPaletteInputs = null;
-    this.width = ColorPalette.defaultPalleteWidth;
+    this.squareSize = ColorPalette.defaultSquareSize
     this.heigh = ColorPalette.defaultPalleteHeight;
     this.show = ColorPalette.defaultShowPallete;
     this.numberOfColors = ColorPalette.defaultNumberOfColors;
@@ -42,29 +47,16 @@ export class ColorPalette{
   }
 
   display(x, y){
-    const vertical = this.heigh > this.width;
-    const squareSize = Math.sqrt(this.width * this.heigh / this.palette.length);
-    let numberOfColumns = this.width / squareSize;
-    let numberOfRows = this.heigh / squareSize;
-    if (vertical){
-      numberOfColumns = Math.ceil(numberOfColumns);
-      numberOfRows = Math.ceil(numberOfRows);
-    }
-    else{
-      numberOfColumns = Math.ceil(numberOfColumns);
-      numberOfRows = Math.ceil(numberOfRows);
-    }
-  
+    let numberOfRows = Math.floor(this.heigh / this.squareSize);
+    let numberOfColumns = Math.ceil(this.palette.length / numberOfRows);
+
     strokeWeight(2); // Thickness of the border
     for (let row = 0; row < numberOfRows; row++) {
       for (let col = 0; col < numberOfColumns; col++) {
-        let i = row * numberOfColumns + col;
-        if (vertical){
-          i = col * numberOfRows + row;
-        }
+        let i = col * numberOfRows + row;
         if (i < this.palette.length) {
           fill(this.palette[i]);
-          square(x + col * squareSize, y + row * squareSize, squareSize);
+          square(x + col * this.squareSize, y + row * this.squareSize, this.squareSize);
         }
       }
     }
@@ -111,21 +103,13 @@ export class ColorPalette{
 
   setDisplay(display) {
     this.show = display;
+    const squareSizeSlider = this.ColorPaletteInputs['squareSizeDiv']
     if (this.show) {
       console.log('Showing Palette Visualization');
-      this.ColorPaletteInputs['displayPalette'].textContent = 'Hide';
+      squareSizeSlider.style.display = "";
     } else {
       console.log('Hiding Palette Visualization');
-      this.ColorPaletteInputs['displayPalette'].textContent = 'Show';
-    }
-  }
-
-  setDisplay(show) {
-    this.show = show;
-    if (this.show) {
-      console.log('Showing Palette Visualization');
-    } else {
-      console.log('Hiding Palette Visualization');
+      squareSizeSlider.style.display = "none";
     }
   }
 
@@ -144,8 +128,8 @@ export class ColorPalette{
     return this.show;
   }
 
-  setWidth(width){
-    this.width = width;
+  setSize(size){
+    this.squareSize = parseInt(size);
   }
 
   setHeight(heigh){
@@ -161,33 +145,6 @@ export class ColorPalette{
 
     const card = create_daisyui_expandable_card('colorPaletteSettings', 'Color Palette');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
-    
-    const enableVisButton = createToggleButton('Display', (a) => {
-        this.setDisplay(a.target.checked)
-      },
-      ColorPalette.defaultShowPallete
-    );
-    elements_dict['displayPalette'] = enableVisButton.getElementsByTagName('button')[0];
-
-    const displayHeight = create_number_input_slider_and_number(
-      'colorPaletteHeight',
-      'Height',
-      ColorPalette.defaultPalleteHeight,
-      10,
-      4000,
-      (e) => {this.setHeight(e)},
-    );
-    elements_dict['height'] = displayHeight.getElementsByTagName('input')[0];
-
-    const displayWidth = create_number_input_slider_and_number(
-      'colorPaletteWidth',
-      'Width',
-      ColorPalette.defaultPalleteWidth,
-      10,
-      4000,
-      (e) => {this.setWidth(e)},
-    );
-    elements_dict['width'] = displayWidth.getElementsByTagName('input')[0];
 
     const numberOfColorsInput = create_number_input_slider_and_number(
       'paletteNumberOfColors',
@@ -198,14 +155,31 @@ export class ColorPalette{
       (e) => {this.setNumberOfColors(e)},
     );
     elements_dict['numberOfColors'] = numberOfColorsInput.getElementsByTagName('input')[0];
-  
-    cardBody.appendChild(enableVisButton);
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(displayHeight);
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(displayWidth);
-    cardBody.appendChild(document.createElement('br'));
+
+    const enableVisButton = createToggleButton('Display', (a) => {
+        this.setDisplay(a.target.checked)
+      },
+      ColorPalette.defaultShowPallete
+    );
+    elements_dict['displayPalette'] = enableVisButton.getElementsByTagName('button')[0];
+
+    const displaySize = create_number_input_slider_and_number(
+      'colorPaletteHeight',
+      'Size',
+      ColorPalette.defaultSquareSize,
+      20,
+      100,
+      (e) => {this.setSize(e)},
+    );
+    indentDiv(displaySize, '30px');
+    elements_dict['squareSize'] = displaySize.getElementsByTagName('input')[0];
+    displaySize.style.display =  "" ? ColorPalette.defaultShowPallete: "none"; // Hide at first if must be hiden
+    elements_dict['squareSizeDiv'] = displaySize;
+
     cardBody.appendChild(numberOfColorsInput);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(enableVisButton);
+    cardBody.appendChild(displaySize);
 
     elements_dict['main-toolbar'] = card;
 

@@ -78,11 +78,12 @@ function create_subtitle(title){
     var div = document.createElement('div');
     div.className = 'divider'
     
-    const title_tag = document.createElement('h2');
-    title_tag.className = 'text-xl';
-    title_tag.innerHTML = title;
-
-    div.appendChild(title_tag);
+    if (title !== undefined && title !== null){ // Add title only if passed, otherwise no text on divider
+        const title_tag = document.createElement('h2');
+        title_tag.className = 'text-xl';
+        title_tag.innerHTML = title;
+        div.appendChild(title_tag);
+    }
 
     return div;
 }
@@ -123,6 +124,7 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // Outer container
     var div = document.createElement('div');
     div.className = 'flex flex-col';
+    div.id = id;
 
     var inputs_div = document.createElement('div');
     inputs_div.className = 'flex items-center';
@@ -130,23 +132,23 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // Value
     // Create value div
     const number_div = document.createElement('div');
-    number_div.id = id+'number';
+    number_div.id = id+'number-div';
     number_div.className = 'relative w-32 flex justify-center mr-4';
     // Create value display
     var number = document.createElement('input');
     number.setAttribute('type', 'number');
     number.setAttribute('class', 'input input-bordered input-xs text-base w-full text-center');
-    number.setAttribute('id', id);
+    number.setAttribute('id', id + 'number');
 
     // Range
     // Create range div
     const range_div = document.createElement('div');
     range_div.className = 'relative w-full';
-    range_div.id = id+'range';
+    range_div.id = id+'range-div';
     // Create range input
     var range = document.createElement('input');
     range.setAttribute('type', 'range');
-    range.setAttribute('id', id);
+    range.setAttribute('id', id + 'range');
     range.className = 'range'
     range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
 
@@ -167,6 +169,13 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     function toggleDisabled(disabled) {
         number.disabled = disabled;
         range.disabled = disabled;
+
+        if (disabled) {
+            range.className = 'range [--range-shdw:gray] w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+        }
+        else {
+            range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+        }
     }
 
     // Override the disabled property setter
@@ -197,7 +206,8 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
         
         const label_element = document.createElement('h3');
         label_element.className = 'text-lg';
-        label_element.innerHTML = label + ':';
+        label_element.innerHTML = label;
+        label_element.title = label;
 
         label_div.appendChild(label_element);
         div.appendChild(label_div);
@@ -354,6 +364,23 @@ function turnDaisyUICardIntoBodyWithTitle(card){
     return sectionBodyDiv
 }
 
+function indentDiv(div, indent){
+    div.style.marginLeft = indent;
+    return div;
+}
+
+function createSmallBreak(heigth){
+    const div = document.createElement('div') 
+    const br = document.createElement('br');
+    div.style.lineHeight = heigth
+    // br.lineHeight = '100px';
+    // br.style.display = 'block'; /* makes it have a width */
+    // br.style.content = ""; /* clears default height */
+    // br.style.marginTop = 100; /* change this to whatever height you want it */
+    div.appendChild(br);
+    return div;
+}
+
 export {
     create_card,
     create_expandable_card,
@@ -366,4 +393,6 @@ export {
     create_daisyui_expandable_card,
     turnDaisyUICardIntoBodyWithTitle,
     createToggleButton,
+    indentDiv,
+    createSmallBreak,
 }
