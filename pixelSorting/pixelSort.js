@@ -232,6 +232,12 @@ export class PixelSort {
         }
     }
 
+    enableParametters(enable) {
+        for (const [key, par] of Object.entries(this.PSInputs)) {
+            if (!par?.audioReactiveControlled) this.enableParametter(key, enable);
+        }
+    }
+
     setRunForever(runForever){
         this.runForever = runForever;
         const maxStepsSlider = this.PSInputs['PSMaxStepsDiv']
