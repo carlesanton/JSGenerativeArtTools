@@ -232,13 +232,18 @@ export class CellularAutomata {
         return old_color_change_rate;
     }
 
-    disableRandomColorChangeRate(enable) {
-        var inputElement = this.CAInputs?.CARandomColorChangeRate;
+    enableParametter(parameter, enable) {
+        var inputElement = this.CAInputs[parameter];
         if (!inputElement) return;
 
-        inputElement.linkedDisabled = enable;
+        if (!this.enableCA && enable) return; // Dont enable parametter if we are disabled
+        inputElement.linkedDisabled = !enable;
         var event = new Event('input');
         inputElement.dispatchEvent(event);
+    }
+
+    disableRandomColorChangeRate(enable) {
+        this.enableParametter('CARandomColorChangeRate', !enable);
     }
 
     setPassesPerFrameFromSlider(new_passes_per_frame) {
