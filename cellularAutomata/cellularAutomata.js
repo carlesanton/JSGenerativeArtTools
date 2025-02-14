@@ -259,12 +259,9 @@ export class CellularAutomata {
     }
 
     disablePassesPerFrame(enable) {
-        var inputElement = this.CAInputs?.CAPassesPerFrame;
-        if (!inputElement) return;
+        this.enableParametter('CAPassesPerFrame', !enable);
+    }
 
-        inputElement.linkedDisabled = enable;
-        var event = new Event('input');
-        inputElement.dispatchEvent(event);
     }
 
     setNewRandomColor(new_random_color) {
