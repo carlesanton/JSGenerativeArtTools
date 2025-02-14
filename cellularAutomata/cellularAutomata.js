@@ -306,6 +306,18 @@ export class CellularAutomata {
         }
     }
 
+    setRunForever(runForever){
+        this.runForever = runForever;
+        const maxStepsSlider = this.CAInputs['CAMaxStepsDiv']
+        if (this.runForever) {
+            console.log('CA: Running Forever');
+            maxStepsSlider.style.display = "none";
+        } else {
+            console.log('CA: Not Running for ever');
+            maxStepsSlider.style.display = "";
+        }
+    }
+
     createSettingsCard() {
         const elements_dict = {};
         
