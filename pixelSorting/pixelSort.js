@@ -168,12 +168,11 @@ export class PixelSort {
     }
 
     disablePassesPerFrame(enable) {
-        var inputElement = this.PSInputs?.PSPassesPerFrame;
-        if (!inputElement) return;
+        this.enableParametter('PSPassesPerFrame', !enable);
+    }
 
-        inputElement.linkedDisabled = enable;
-        var event = new Event('input');
-        inputElement.dispatchEvent(event);
+    togglePassesPerFrameAudioControlled(audioControlled) {
+        this.toggleParameterToAudioReactiveTakenControls('PSPassesPerFrame', audioControlled)
     }
 
     setDirectionChangeRate(new_direction_change_rate) {
@@ -206,13 +205,31 @@ export class PixelSort {
         return old_direction_change_rate;
     }
 
-    disableDirectionChangeRate(enable) {
-        var inputElement = this.PSInputs?.PSnoiseDirectionChangeRate;
+    enableParametter(parameter, enable) {
+        var inputElement = this.PSInputs[parameter];
         if (!inputElement) return;
 
-        inputElement.linkedDisabled = enable;
+        if (!this.enablePS && enable) return; // Dont enable parametter if we are disabled
+        inputElement.linkedDisabled = !enable;
         var event = new Event('input');
         inputElement.dispatchEvent(event);
+    }
+
+    disableDirectionChangeRate(enable) {
+        this.enableParametter('PSnoiseDirectionChangeRate', !enable);
+    }
+
+    toggleDirectionChangeRateAudioControlled(audioControlled) {
+        this.toggleParameterToAudioReactiveTakenControls('PSnoiseDirectionChangeRate', audioControlled)
+    }
+
+    toggleParameterToAudioReactiveTakenControls(parameter, add){
+        if (add) {
+            this.PSInputs[parameter].audioReactiveControlled = true;
+        }
+        else {
+            this.PSInputs[parameter].audioReactiveControlled = false;
+        }
     }
 
     resetSteps() {
