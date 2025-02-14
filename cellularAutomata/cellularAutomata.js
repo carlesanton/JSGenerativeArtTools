@@ -300,6 +300,12 @@ export class CellularAutomata {
         }
     }
 
+    enableParametters(enable) {
+        for (const [key, par] of Object.entries(this.CAInputs)) {
+            if (!par?.audioReactiveControlled) this.enableParametter(key, enable);
+        }
+    }
+
     createSettingsCard() {
         const elements_dict = {};
         
