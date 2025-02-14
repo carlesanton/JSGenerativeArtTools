@@ -232,6 +232,18 @@ export class PixelSort {
         }
     }
 
+    setRunForever(runForever){
+        this.runForever = runForever;
+        const maxStepsSlider = this.PSInputs['PSMaxStepsDiv']
+        if (this.runForever) {
+            console.log('PS: Running Forever');
+            maxStepsSlider.style.display = "none";
+        } else {
+            console.log('PS: Not Running for ever');
+            maxStepsSlider.style.display = "";
+        }
+    }
+
     createPixelSortingSettings() {
         const elements_dict = {};
         
