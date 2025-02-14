@@ -206,7 +206,8 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
         
         const label_element = document.createElement('h3');
         label_element.className = 'text-lg';
-        label_element.innerHTML = label + ':';
+        label_element.innerHTML = label;
+        label_element.title = label;
 
         label_div.appendChild(label_element);
         div.appendChild(label_div);
