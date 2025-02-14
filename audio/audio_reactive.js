@@ -267,6 +267,11 @@ export class AudioReactive {
     }
   }
 
+  setVisualizationSize(heigth, width) {
+    this.audioVisualizationModule.setDisplayHeigth(heigth);
+    this.audioVisualizationModule.setDisplayWidth(width);
+  }
+
   toggleDisplayVisualization() {
     this.displayVisualizationEnabled = !this.displayVisualizationEnabled;
     if (this.displayVisualizationEnabled) {
