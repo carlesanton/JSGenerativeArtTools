@@ -21,7 +21,7 @@ export class Recorder {
     static defaultUseCustomFPS = false;
     static defaultSketchFPSMethod = () => {return frameRate()};
 
-    constructor (canvas) {
+    constructor () {
         this.recorderInputs = null;
         this.recorder = P5Capture.getInstance();
         
