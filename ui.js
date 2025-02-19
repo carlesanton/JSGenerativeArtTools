@@ -468,7 +468,7 @@ function createRecordStopButton(label, onClick) {
 
 }
 
-function createDropDownMenu(id, options, label){
+function createDropDownMenu(id, options, onSetMethod, label){
     var div = document.createElement('div');
     div.className = 'flex items-center';
     div.id = id;
@@ -517,6 +517,11 @@ function createDropDownMenu(id, options, label){
         
         // Handle option click
         optionButton.addEventListener('click', function() {
+            let ableToSet = false;
+            if (onSetMethod!==undefined && onSetMethod !== null){
+                ableToSet = onSetMethod(option);
+            }
+            if (!ableToSet) return; // don't change label if something failed
             menuSummary.innerHTML = option;
         });
         
