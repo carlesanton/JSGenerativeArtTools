@@ -4,6 +4,7 @@ import {
     createToggleButton,
     indentDiv,
     createRecordStopButton,
+    createDropDownMenu,
   } from '../ui.js'
 
 // Disable Default UI to create our own
@@ -191,6 +192,15 @@ export class Recorder {
         elements_dict['record'] = recordButton.getElementsByTagName('button')[0];
         elements_dict['timerText'] = recordButton.getElementsByTagName('text')[0];
 
+        // Format
+        const formatMenu = createDropDownMenu(
+            'format',
+            Recorder.supportedFormats,
+            (a) => {return this.setFormat(a)},
+            'Format',
+        )
+        elements_dict['formatMenu'] = formatMenu.getElementsByTagName('button')[0];
+
         // FPS
         const sameFPSButton = createToggleButton('Same FPS as Artwork', (a) => {
             this.setUseCustomFPS(!a.target.checked);
@@ -243,7 +253,8 @@ export class Recorder {
         elements_dict['quality'] = quality.getElementsByTagName('input')[0];
 
         cardBody.appendChild(recordButton);
-        // cardBody.appendChild(timerText);
+        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(formatMenu);
         cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(recordForSetDuration);
         cardBody.appendChild(duration);
