@@ -19,6 +19,7 @@ export class Recorder {
     static defaultDuration = 2;
     static defaultAutoSaveDuration = null;
     static defaultUseCustomFPS = false;
+    static defaultSketchFPSMethod = () => {return frameRate()};
 
     constructor (canvas) {
         this.recorderInputs = null;
@@ -31,11 +32,13 @@ export class Recorder {
         this.duration = Recorder.defaultDuration;
         this.useCustomFPS = Recorder.defaultUseCustomFPS;
         this.format = Recorder.defaultFormat;
+        this.sketchFPSMethod = Recorder.defaultSketchFPSMethod;
     }
 
     setRecord(record){
         console.log('record', record)
         if (record) {
+            this.fps = this.getSketchFPS();
             const fps = this.useCustomFPS ? this.customFPS: this.fps;
 
             let duration = this.recordForSetDuration ? this.duration : null;
@@ -82,6 +85,22 @@ export class Recorder {
         this.customFPS = parseInt(fps);
     }
 
+    getSketchFPS() {
+        let fps = this.fps;
+        if (this.sketchFPSMethod !== undefined && this.sketchFPSMethod !== null){ // check if we have a method
+            fps = parseInt(this.sketchFPSMethod());
+        }
+        else {
+            console.log('Recorder: sketchFPSMethod not defined, using previous fps')
+        }
+        return fps;
+    }
+
+    setSketchFPSMethod(method) {
+        // Set the method used to compute the sketch fps
+        // by default its frameRate() but can be set to something like () => {return fps.getFPS()}
+        // in the main sketch to more acurately set the fps to the same ones set by the fps module
+        this.sketchFPSMethod = method;
     }
 
     setQuality(quality) {
