@@ -54,6 +54,7 @@ export class Recorder {
                     duration: duration,
                     quality: this.quality,
                     framerate: fps,
+                    format: this.format,
                 }
             )
         }
