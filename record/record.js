@@ -20,6 +20,7 @@ export class Recorder {
     static defaultAutoSaveDuration = null;
     static defaultUseCustomFPS = false;
     static defaultSketchFPSMethod = () => {return frameRate()};
+    static supportedFormats = ['webm', 'gif', 'png', 'jpg', 'webp'];
 
     constructor () {
         this.recorderInputs = null;
@@ -150,7 +151,19 @@ export class Recorder {
         // Format numbers with leading zeros
         return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(2, '0')}`;
     }
-    
+
+    setFormat(format) {
+        console.log('Recorder.supportedFormats.includes(format)', Recorder.supportedFormats)
+        if (Recorder.supportedFormats.includes(format)) {
+            this.format = format;
+            console.log('Format set to:', format);
+            return true;
+        }
+        else {
+            console.log('Unsupported format:', format);
+            return false;
+        }
+    }
 
     updateUITimmer() {
         const uiTimmer = this.recorderInputs['timerText'];
