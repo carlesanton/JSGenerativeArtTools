@@ -395,6 +395,78 @@ function createText(text, size){
     return div;
 }
 
+function createRecordStopButton(label, onClick) {
+    var div = document.createElement('div');
+    div.className = 'flex items-center';
+
+    // Create the button element
+    const buttonDiv = document.createElement('div');
+    buttonDiv.className = 'relative w-15 flex justify-center mr-3';
+
+    const button = document.createElement('button');
+    button.id = 'playButton';
+    button.className = 'bg-neutral-content hover:bg-neutral rounded-full p-2 transition-colors';
+
+    // Add Icon;
+    // Create Record and Stop Paths for icon
+    const recordPath = "M 10.1333 10.1333 m 10 0 a 10 10 90 1 0 -20 0 a 10 10 90 1 0 20 0"
+    // const stopPath = "M 0 2 L 0 18 C 0 19 1 20 2 20 L 18 20 C 19 20 20 19 20 18 L 20 2 C 20 1 19 0 18 0 L 2 0 C 1 0 0 1 0 2"
+    const stopPath = "M 1 3 L 1 17 C 1 18 2 19 3 19 L 17 19 C 18 19 19 18 19 17 L 19 3 C 19 2 18 1 17 1 L 3 1 C 2 1 1 2 1 3"
+    // const stopPath = "M 2 4 L 2 16 C 2 17 3 18 4 18 L 16 18 C 17 18 18 17 18 16 L 18 4 C 18 3 17 2 16 2 L 4 2 C 3 2 2 3 2 4"
+    
+    const recordIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    recordIcon.setAttributeNS(null, "id", "recordIcon"); 
+    recordIcon.style.display = "block";
+    recordIcon.setAttributeNS(null, "viewBox", '0 0 20 20');
+
+    recordIcon.setAttributeNS(null, 'class', 'w-6 h-6 text-gray-800 dark:text-base-200')
+    recordIcon.setAttributeNS(null, 'ariaHidden', 'true')
+    const recordIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    
+    recordIconPath.setAttributeNS(null, 'fill', "currentcolor");
+    recordIconPath.setAttributeNS(null, 'stroke-linejoin', "round");
+    recordIconPath.setAttributeNS(null, 'd', recordPath);
+    // recordIconPath.setAttributeNS(null, 'd', "M16 0H4a2 2 0 0 0-2 2v1H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM13.929 17H7.071a.5.5 0 0 1-.5-.5 3.935 3.935 0 1 1 7.858 0 .5.5 0 0 1-.5.5Z");
+    recordIconPath.setAttributeNS(null, 'opacity', 1.0);
+
+    recordIcon.appendChild(recordIconPath);
+    button.appendChild(recordIcon);
+    buttonDiv.appendChild(button);
+
+    // Add to the body
+    div.appendChild(buttonDiv);
+
+    if (label !== undefined && label !== null) {
+        var labelDiv = document.createElement('div');
+        labelDiv.className = 'relative w-full';
+
+        var label_tag = document.createElement('text');
+        label_tag.className = 'text-md'
+        label_tag.textContent = label;
+        labelDiv.appendChild(label_tag)
+        div.appendChild(labelDiv)
+    }
+
+    // Add click handler
+    let isRecording = false;
+    button.addEventListener('click', () => {
+        isRecording = !isRecording;
+
+        if (onClick !== undefined && onClick !== null) {
+            onClick(isRecording)
+        }
+
+        if (isRecording) {
+            recordIconPath.setAttributeNS(null, 'd', stopPath);
+        } else {
+            recordIconPath.setAttributeNS(null, 'd', recordPath);
+        }
+        }
+    );
+
+    return div;
+
+}
 
 export {
     create_card,
@@ -411,4 +483,5 @@ export {
     indentDiv,
     createSmallBreak,
     createText,
+    createRecordStopButton,
 }
