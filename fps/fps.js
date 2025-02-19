@@ -2,7 +2,7 @@ import { create_daisyui_expandable_card, create_number_input_slider_and_number, 
 
 export class FPS{
     static defaultFPS = 15;
-    static defaultDisplayFPS = false;
+    static defaultDisplayFPS = true;
     static numberOfAverageFPS = 10;
 
     constructor(){
@@ -76,6 +76,10 @@ export class FPS{
         let fps = parseInt(newFPS);
         this.fps = fps;
         frameRate(this.fps);
+    }
+
+    getFPS() {
+      return this.fps;
     }
 
     setDisplay(show) {
