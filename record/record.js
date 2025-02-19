@@ -18,8 +18,7 @@ export class Recorder {
     static defaultRecordForSetDuration = false;
     static defaultDuration = 2;
     static defaultAutoSaveDuration = null;
-    static defaultUseSameFPS = true;
-    static defaultQuality = 0.1;
+    static defaultUseCustomFPS = false;
 
     constructor (canvas) {
         this.recorderInputs = null;
@@ -27,27 +26,32 @@ export class Recorder {
         
         // defaults
         this.fps = Recorder.defaultFPS;
+        this.customFPS = this.fps;
         this.recordForSetDuration = Recorder.defaultRecordForSetDuration;
         this.duration = Recorder.defaultDuration;
-        this.useSameFPS = Recorder.defaultUseSameFPS;
+        this.useCustomFPS = Recorder.defaultUseCustomFPS;
         this.format = Recorder.defaultFormat;
     }
 
     setRecord(record){
         console.log('record', record)
         if (record) {
-            console.log('this.recordForSetDuration', this.recordForSetDuration)
+            const fps = this.useCustomFPS ? this.customFPS: this.fps;
+
             let duration = this.recordForSetDuration ? this.duration : null;
-            duration *= this.recorder.framerate;
+            duration *= fps;
+
             console.log('Recording:')
-            console.log('   FPS:', this.fps)
+            console.log('   FPS:', fps)
             console.log('   format:', this.format)
             console.log('   duration (frames):', duration)
             console.log('   quality:', this.quality)
+
             this.recorder.start(
                 {
                     duration: duration,
                     quality: this.quality,
+                    framerate: fps,
                 }
             )
         }
@@ -57,22 +61,27 @@ export class Recorder {
 
     }
 
-    setUseSameFPS (value) {
-        this.useSameFPS = value;
+    setUseCustomFPS (value) {
+        this.useCustomFPS = value;
         const fpsSlider = this.recorderInputs['fpsDiv']
 
-        if (this.useSameFPS) {
+        if (!this.useCustomFPS) {
             console.log('Record: Using same FPS as main artwork');
             fpsSlider.style.display = "none";
         } else {
-            console.log('Record: Not sing same FPS as main artwork');
+            console.log('Record: Not using same FPS as main artwork');
             fpsSlider.style.display = "";
         }
     }
     
     setFPS(fps) {
         this.fps = parseInt(fps);
-        this.recorder.framerate = this.fps;
+    }
+
+    setCustomFPS(fps) {
+        this.customFPS = parseInt(fps);
+    }
+
     }
 
     setQuality(quality) {
@@ -107,8 +116,11 @@ export class Recorder {
     }
 
     framesToMSM(frames) {
+        // Use right fps
+        const fps = this.useCustomFPS ? this.customFPS: this.fps;
+
         // Calculate total milliseconds
-        const totalMilliseconds = (frames / this.fps) * 1000;
+        const totalMilliseconds = (frames / fps) * 1000;
         
         // Extract minutes, seconds, and milliseconds
         const minutes = Math.floor(totalMilliseconds / 60000);
@@ -149,8 +161,8 @@ export class Recorder {
 
         // FPS
         const sameFPSButton = createToggleButton('Same FPS as Artwork', (a) => {
-            this.setUseSameFPS(a.target.checked);
-        }, this.useSameFPS);
+            this.setUseCustomFPS(!a.target.checked);
+        }, !this.useCustomFPS);
         elements_dict['sameFPSButton'] = sameFPSButton.getElementsByTagName('button')[0];
 
         const fps = create_number_input_slider_and_number(
@@ -159,11 +171,11 @@ export class Recorder {
             Recorder.defaultFPS,
             1,
             300,
-            (e) => {this.setFPS(e)},
+            (e) => {this.setCustomFPS(e)},
         );
 
         indentDiv(fps, '30px');
-        fps.style.display =  "" ? this.useSameFPS: "none"; // Hide at first if must be hiden
+        fps.style.display =  "" ? this.useCustomFPS: "none"; // Hide at first if must be hiden
         elements_dict['fpsInput'] = fps.getElementsByTagName('input')[0];
         elements_dict['fpsDiv'] = fps;
 
