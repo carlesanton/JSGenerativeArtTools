@@ -36,7 +36,6 @@ export class Recorder {
     }
 
     setRecord(record){
-        console.log('record', record)
         if (record) {
             this.fps = this.getSketchFPS();
             const fps = this.useCustomFPS ? this.customFPS: this.fps;
