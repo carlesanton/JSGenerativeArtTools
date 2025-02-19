@@ -381,6 +381,21 @@ function createSmallBreak(heigth){
     return div;
 }
 
+function createText(text, size){
+    var div = document.createElement('div');
+
+    var text_tag = document.createElement('text');
+    text_tag.className = 'text-md'
+    if (size !== undefined && size !== null){
+        text_tag.className = 'text-' + size
+    }
+    text_tag.textContent = text;
+    div.appendChild(text_tag)
+
+    return div;
+}
+
+
 export {
     create_card,
     create_expandable_card,
@@ -395,4 +410,5 @@ export {
     createToggleButton,
     indentDiv,
     createSmallBreak,
+    createText,
 }
