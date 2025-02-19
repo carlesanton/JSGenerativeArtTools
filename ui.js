@@ -468,6 +468,73 @@ function createRecordStopButton(label, onClick) {
 
 }
 
+function createDropDownMenu(id, options, label){
+    var div = document.createElement('div');
+    div.className = 'flex items-center';
+    div.id = id;
+
+    // Add label if provided
+    if (label !== undefined && label !== null) {
+        var labelDiv = document.createElement('div');
+        labelDiv.className = 'relative flex w-30 justify-center mr-3';
+        labelDiv.id = id + '-label';
+
+        var label_tag = document.createElement('text');
+        label_tag.className = 'text-md'
+        label_tag.textContent = label;
+        labelDiv.appendChild(label_tag)
+        div.appendChild(labelDiv)
+    }
+
+    const menuDiv = document.createElement('div');
+    menuDiv.className = 'dropdown dropdown relative w-full';
+    menuDiv.id = id + '-menu';
+
+
+    const menuDetails = document.createElement('details');
+    menuDetails.className = 'dropdown relative w-full'
+
+    const menuSummary = document.createElement('summary');
+    menuSummary.className = 'btn btn-outline m-1 w-1/2 text-left justify-start'
+    menuSummary.textContent = options[0];
+
+    menuDetails.appendChild(menuSummary);
+
+    // Create dropdown menu
+    var dropdownMenu = document.createElement('ul');
+    dropdownMenu.className = 'menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 z-[1000]';
+    
+    // This is to allow vertical scroll so it has a dive with some size that it cant overflow
+    var dropdownMenuDiv = document.createElement('div');
+    dropdownMenuDiv.className = 'overflow-y-auto max-h-52';
+
+    // Add options dynamically
+    options.forEach(option => {
+        var listItem = document.createElement('li');
+        var optionButton = document.createElement('button');
+        optionButton.className = 'w-full text-left p-2 hover:bg-gray-100 rounded';
+        optionButton.textContent = option;
+        
+        // Handle option click
+        optionButton.addEventListener('click', function() {
+            menuSummary.innerHTML = option;
+        });
+        
+        listItem.appendChild(optionButton);
+        dropdownMenuDiv.appendChild(listItem);
+    });
+    
+    dropdownMenu.appendChild(dropdownMenuDiv);
+    menuDetails.appendChild(dropdownMenu);
+    // menuDiv.appendChild(menuButton);
+    menuDiv.appendChild(menuDetails);
+
+    // Add to the body
+    div.appendChild(menuDiv);
+
+    return div;
+}
+
 export {
     create_card,
     create_expandable_card,
@@ -484,4 +551,5 @@ export {
     createSmallBreak,
     createText,
     createRecordStopButton,
+    createDropDownMenu,
 }
