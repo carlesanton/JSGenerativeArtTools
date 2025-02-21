@@ -429,6 +429,26 @@ function createRecordStopButton(label, onClick) {
     // recordIconPath.setAttributeNS(null, 'd', "M16 0H4a2 2 0 0 0-2 2v1H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM13.929 17H7.071a.5.5 0 0 1-.5-.5 3.935 3.935 0 1 1 7.858 0 .5.5 0 0 1-.5.5Z");
     recordIconPath.setAttributeNS(null, 'opacity', 1.0);
 
+    button.classList.add("hover:text-yellow-500");
+    button.classList.add("text-neutral-content"); // Default color
+
+    // Save the colors to use them
+    const rootStyles = getComputedStyle(document.documentElement);
+    // Get Colors in HSL
+    const daisyUIColor = rootStyles.getPropertyValue("--n").trim(); // --n is "neutral-content" in DaisyUI
+    const daisyUIColorHover = rootStyles.getPropertyValue("--nc").trim(); // --n is "neutral-content" in DaisyUI
+    const daisyUIAccentColor = rootStyles.getPropertyValue("--a").trim(); // --n is "neutral-content" in DaisyUI
+
+    // Change SVG color on hover
+    button.addEventListener('mouseover', function handleMouseOver() {
+        recordIconPath.style.fill = `hsl(${daisyUIColorHover})`;
+    });
+    
+    button.addEventListener('mouseout', function handleMouseOver() {
+        recordIconPath.style.fill = `hsl(${daisyUIColor})`;
+    });
+    recordIconPath.style.fill = `hsl(${daisyUIColor})`;
+
     recordIcon.appendChild(recordIconPath);
     button.appendChild(recordIcon);
     buttonDiv.appendChild(button);
