@@ -488,7 +488,7 @@ function createRecordStopButton(label, onClick) {
 
 }
 
-function createDropDownMenu(id, options, onSetMethod, label){
+function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
     var div = document.createElement('div');
     div.className = 'flex items-center';
     div.id = id;
@@ -516,7 +516,7 @@ function createDropDownMenu(id, options, onSetMethod, label){
 
     const menuSummary = document.createElement('summary');
     menuSummary.className = 'btn btn-outline m-1 w-1/2 text-left justify-start'
-    menuSummary.textContent = options[0];
+    menuSummary.textContent = defaultOption;
 
     menuDetails.appendChild(menuSummary);
 

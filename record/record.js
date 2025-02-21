@@ -196,6 +196,7 @@ export class Recorder {
         const formatMenu = createDropDownMenu(
             'format',
             Recorder.supportedFormats,
+            Recorder.defaultFormat,
             (a) => {return this.setFormat(a)},
             'Format',
         )
