@@ -66,7 +66,7 @@ export class Recorder {
             )
         }
         else {
-            this.recorder.stop()
+            this.recorder.stop();
         }
 
     }
@@ -159,7 +159,6 @@ export class Recorder {
     }
 
     setFormat(format) {
-        console.log('Recorder.supportedFormats.includes(format)', Recorder.supportedFormats)
         if (Recorder.supportedFormats.includes(format)) {
             this.format = format;
             console.log('Format set to:', format);
