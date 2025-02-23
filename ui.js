@@ -381,6 +381,185 @@ function createSmallBreak(heigth){
     return div;
 }
 
+function createText(text, size){
+    var div = document.createElement('div');
+
+    var text_tag = document.createElement('text');
+    text_tag.className = 'text-md'
+    if (size !== undefined && size !== null){
+        text_tag.className = 'text-' + size
+    }
+    text_tag.textContent = text;
+    div.appendChild(text_tag)
+
+    return div;
+}
+
+function createRecordStopButton(label, onClick) {
+    var div = document.createElement('div');
+    div.className = 'flex items-center';
+
+    // Create the button element
+    const buttonDiv = document.createElement('div');
+    buttonDiv.className = 'relative w-15 flex justify-center mr-3';
+
+    const button = document.createElement('button');
+    button.id = 'playButton';
+    button.className = 'bg-neutral-content hover:bg-neutral rounded-full p-2 transition-colors';
+
+    // Add Icon;
+    // Create Record and Stop Paths for icon
+    const recordPath = "M 10.1333 10.1333 m 10 0 a 10 10 90 1 0 -20 0 a 10 10 90 1 0 20 0"
+    // const stopPath = "M 0 2 L 0 18 C 0 19 1 20 2 20 L 18 20 C 19 20 20 19 20 18 L 20 2 C 20 1 19 0 18 0 L 2 0 C 1 0 0 1 0 2"
+    const stopPath = "M 1 3 L 1 17 C 1 18 2 19 3 19 L 17 19 C 18 19 19 18 19 17 L 19 3 C 19 2 18 1 17 1 L 3 1 C 2 1 1 2 1 3"
+    // const stopPath = "M 2 4 L 2 16 C 2 17 3 18 4 18 L 16 18 C 17 18 18 17 18 16 L 18 4 C 18 3 17 2 16 2 L 4 2 C 3 2 2 3 2 4"
+    
+    const recordIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    recordIcon.setAttributeNS(null, "id", "recordIcon"); 
+    recordIcon.style.display = "block";
+    recordIcon.setAttributeNS(null, "viewBox", '0 0 20 20');
+
+    recordIcon.setAttributeNS(null, 'class', 'w-6 h-6 text-gray-800 dark:text-base-200')
+    recordIcon.setAttributeNS(null, 'ariaHidden', 'true')
+    const recordIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    
+    recordIconPath.setAttributeNS(null, 'fill', "currentcolor");
+    recordIconPath.setAttributeNS(null, 'stroke-linejoin', "round");
+    recordIconPath.setAttributeNS(null, 'd', recordPath);
+    // recordIconPath.setAttributeNS(null, 'd', "M16 0H4a2 2 0 0 0-2 2v1H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM13.929 17H7.071a.5.5 0 0 1-.5-.5 3.935 3.935 0 1 1 7.858 0 .5.5 0 0 1-.5.5Z");
+    recordIconPath.setAttributeNS(null, 'opacity', 1.0);
+
+    button.classList.add("hover:text-yellow-500");
+    button.classList.add("text-neutral-content"); // Default color
+
+    // Save the colors to use them
+    const rootStyles = getComputedStyle(document.documentElement);
+    // Get Colors in HSL
+    const daisyUIColor = rootStyles.getPropertyValue("--n").trim(); // --n is "neutral-content" in DaisyUI
+    const daisyUIColorHover = rootStyles.getPropertyValue("--nc").trim(); // --n is "neutral-content" in DaisyUI
+    const daisyUIAccentColor = rootStyles.getPropertyValue("--a").trim(); // --n is "neutral-content" in DaisyUI
+
+    // Change SVG color on hover
+    button.addEventListener('mouseover', function handleMouseOver() {
+        recordIconPath.style.fill = `hsl(${daisyUIColorHover})`;
+    });
+    
+    button.addEventListener('mouseout', function handleMouseOver() {
+        recordIconPath.style.fill = `hsl(${daisyUIColor})`;
+    });
+    recordIconPath.style.fill = `hsl(${daisyUIColor})`;
+
+    recordIcon.appendChild(recordIconPath);
+    button.appendChild(recordIcon);
+    buttonDiv.appendChild(button);
+
+    // Add to the body
+    div.appendChild(buttonDiv);
+
+    if (label !== undefined && label !== null) {
+        var labelDiv = document.createElement('div');
+        labelDiv.className = 'relative w-full';
+
+        var label_tag = document.createElement('text');
+        label_tag.className = 'text-md'
+        label_tag.textContent = label;
+        labelDiv.appendChild(label_tag)
+        div.appendChild(labelDiv)
+    }
+
+    // Add click handler
+    let isRecording = false;
+    button.addEventListener('click', () => {
+        isRecording = !isRecording;
+
+        if (onClick !== undefined && onClick !== null) {
+            onClick(isRecording)
+        }
+
+        if (isRecording) {
+            recordIconPath.setAttributeNS(null, 'd', stopPath);
+        } else {
+            recordIconPath.setAttributeNS(null, 'd', recordPath);
+        }
+        }
+    );
+
+    return div;
+
+}
+
+function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
+    var div = document.createElement('div');
+    div.className = 'flex items-center';
+    div.id = id;
+
+    // Add label if provided
+    if (label !== undefined && label !== null) {
+        var labelDiv = document.createElement('div');
+        labelDiv.className = 'relative flex w-30 justify-center mr-3';
+        labelDiv.id = id + '-label';
+
+        var label_tag = document.createElement('text');
+        label_tag.className = 'text-md'
+        label_tag.textContent = label;
+        labelDiv.appendChild(label_tag)
+        div.appendChild(labelDiv)
+    }
+
+    const menuDiv = document.createElement('div');
+    menuDiv.className = 'dropdown dropdown relative w-full';
+    menuDiv.id = id + '-menu';
+
+
+    const menuDetails = document.createElement('details');
+    menuDetails.className = 'dropdown relative w-full'
+
+    const menuSummary = document.createElement('summary');
+    menuSummary.className = 'btn btn-outline m-1 w-1/2 text-left justify-start'
+    menuSummary.textContent = defaultOption;
+
+    menuDetails.appendChild(menuSummary);
+
+    // Create dropdown menu
+    var dropdownMenu = document.createElement('ul');
+    dropdownMenu.className = 'menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 z-[1000]';
+    
+    // This is to allow vertical scroll so it has a dive with some size that it cant overflow
+    var dropdownMenuDiv = document.createElement('div');
+    dropdownMenuDiv.className = 'overflow-y-auto max-h-52';
+
+    // Add options dynamically
+    options.forEach(option => {
+        var listItem = document.createElement('li');
+        var optionButton = document.createElement('button');
+        optionButton.className = 'w-full text-left p-2 hover:bg-gray-100 rounded';
+        optionButton.textContent = option;
+        
+        // Handle option click
+        optionButton.addEventListener('click', function() {
+            let ableToSet = false;
+            if (onSetMethod!==undefined && onSetMethod !== null){
+                ableToSet = onSetMethod(option);
+            }
+            if (!ableToSet) return; // don't change label if something failed
+            menuSummary.innerHTML = option;
+        });
+        
+        listItem.appendChild(optionButton);
+        dropdownMenuDiv.appendChild(listItem);
+    });
+    
+    dropdownMenu.appendChild(dropdownMenuDiv);
+    menuDetails.appendChild(dropdownMenu);
+    // menuDiv.appendChild(menuButton);
+    menuDiv.appendChild(menuDetails);
+
+    // Add to the body
+    div.appendChild(menuDiv);
+
+    return div;
+}
+
 export {
     create_card,
     create_expandable_card,
@@ -395,4 +574,7 @@ export {
     createToggleButton,
     indentDiv,
     createSmallBreak,
+    createText,
+    createRecordStopButton,
+    createDropDownMenu,
 }

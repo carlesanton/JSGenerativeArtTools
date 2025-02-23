@@ -9,7 +9,9 @@ function scaleCanvasToFit(canvas, artworkHeight, artworkWidth) {
   let scaledWidth_ = artworkWidth * scaleFactor;
   let scaledHeight_ = artworkHeight * scaleFactor;
 
-  resizeCanvas(scaledWidth_, scaledHeight_)
+  // Change only display style so its still the desired resolution for when saving
+  canvas.style('width', scaledWidth_+'px');
+  canvas.style('height', scaledHeight_+'px');
 }
 
 function prepareP5Js(artwork_seed) {

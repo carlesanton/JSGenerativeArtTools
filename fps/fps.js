@@ -78,6 +78,10 @@ export class FPS{
         frameRate(this.fps);
     }
 
+    getFPS() {
+      return this.fps;
+    }
+
     setDisplay(show) {
         this.show = show;
         if (this.show) {
