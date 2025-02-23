@@ -57,6 +57,7 @@ export class Recorder {
                     quality: this.quality,
                     framerate: fps,
                     format: this.format,
+                    baseFilename: (a) => {return this.customBaseFilename(a)},
                 }
             )
         }
@@ -173,6 +174,32 @@ export class Recorder {
 
         // console.log('currentTimer', currentTimer)
         uiTimmer.textContent = currentTimer;
+    }
+
+    defaultBaseFilename(date) {
+        // From https://github.com/tapioca24/p5.capture?tab=readme-ov-file#base-filename-option
+        const zeroPadding = (n) => n.toString().padStart(2, "0");
+        const years = date.getFullYear();
+        const months = zeroPadding(date.getMonth() + 1);
+        const days = zeroPadding(date.getDate());
+        const hours = zeroPadding(date.getHours());
+        const minutes = zeroPadding(date.getMinutes());
+        const seconds = zeroPadding(date.getSeconds());
+        return `${years}${months}${days}-${hours}${minutes}${seconds}`;
+    }
+
+    customBaseFilename(date) {
+        const defaultFilename = this.defaultBaseFilename(date);
+        let filename = defaultFilename ; 
+        if (this.sufix !== undefined && this.sufix !== null) { // add sufix to end of filename
+            filename+= '-' + this.sufix;
+        }
+
+        return filename;
+    }
+
+    setFilenameSufix(sufix) {
+        this.sufix = sufix
     }
 
     createSettingsCard() {
