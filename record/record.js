@@ -10,7 +10,6 @@ import {
 // Disable Default UI to create our own
 P5Capture.setDefaultOptions({
     disableUi: true,
-    quality: 1,
 });
 
 export class Recorder {
@@ -20,6 +19,7 @@ export class Recorder {
     static defaultDuration = 2;
     static defaultAutoSaveDuration = null;
     static defaultUseCustomFPS = false;
+    static defaultQuality = 1.;
     static defaultSketchFPSMethod = () => {return frameRate()};
     static supportedFormats = ['webm', 'gif', 'png', 'jpg', 'webp'];
 
@@ -29,6 +29,7 @@ export class Recorder {
         
         // defaults
         this.fps = Recorder.defaultFPS;
+        this.quality = Recorder.defaultQuality;
         this.customFPS = this.fps;
         this.recordForSetDuration = Recorder.defaultRecordForSetDuration;
         this.duration = Recorder.defaultDuration;
