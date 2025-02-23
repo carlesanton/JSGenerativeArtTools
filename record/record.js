@@ -1,3 +1,6 @@
+// Uses https://github.com/tapioca24/p5.capture
+// <script src="https://cdn.jsdelivr.net/npm/p5.capture"></script>
+
 import { 
     create_number_input_slider_and_number,
     create_daisyui_expandable_card,
