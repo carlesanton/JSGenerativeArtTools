@@ -4,6 +4,9 @@ precision highp float;
 
 varying vec2 vTexCoord;
 uniform sampler2D tex0;
+uniform sampler2D mask;
+#define mask_color vec4(1.,1.,1., 1.)
+
 // uniform vec2 canvasSize;
 uniform vec2 texelSize;
 uniform vec2 normalRes;
@@ -29,6 +32,16 @@ void main() {
   directions[7] = vec2(1.0, 1.0);
 
   vec4 col = texture2D(tex0, uv);
+
+  vec4 masked = texture2D(mask, uv);
+
+  // Dont Perform if Masked
+  bool isMasked = colorsAreEqual(masked, mask_color);
+
+  if (isMasked) {
+    gl_FragColor = col;
+    return;
+  }
 
   for(int i = 0; i < 8; i++) {
     vec2 uv_ = uv + directions[i] * texelSize;
@@ -67,7 +80,7 @@ int count_neighbours_with_same_color(vec4 neighbour_colors[8], vec4 pixel_color)
   int neighbours_with_same_color = 0;
   for (int i=0; i<8; i++){
     vec4 tmp_color = neighbour_colors[i];
-    if(colorsAreEqual(tmp_color, pixel_color)){
+    if(colorsAreEqual(tmp_color, pixel_color) && !colorsAreEqual(tmp_color, mask_color)){
       neighbours_with_same_color+=1; 
     }
   }
@@ -93,6 +106,9 @@ vec4 findMostRepeatedColor(vec4 colors[8], vec4 color_to_avoid) {
     vec4 mostRepeatedVector = vec4(0.);
 
     for (int i = 0; i < 8; i++) {
+        if (colorsAreEqual(colors[i], mask_color)){ // Avoid mask color
+          continue;
+        }
         if (colorsAreEqual(colors[i], color_to_avoid)){
           continue;
         }
