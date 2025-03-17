@@ -2,7 +2,6 @@
 precision mediump float;
 #endif
 
-#define THRESHOLD .0
 #define RANDOM_SINLESS // Don't use Random Lygia funcion that uses sine
                        // variation is so high between close numbers that even with rounding the coordinates
                        // of the pixel and the neighbour the sampled noise may have a different value
@@ -10,12 +9,16 @@ precision mediump float;
 
 varying vec2 vTexCoord;
 uniform sampler2D tex0;
+uniform sampler2D mask;
+#define mask_color vec4(1., 1., 1., 1.)
+
 uniform vec2 texelSize;
 uniform vec2 direction;
 uniform int iFrame;
 
 float hsvbrightness(vec3 c);
 float random(vec3 pos);
+bool colorsAreEqual(vec4 v1, vec4 v2);
 
 #define RANDOM_SCALE vec4(443.897, 441.423, .0973, .1099)
 #define FNC_RANDOM
@@ -42,6 +45,21 @@ void main() {
   // Sample colors
   vec4 col = texture2D(tex0, uv);
   vec4 neighbour_color = texture2D(tex0, uv_);
+
+  vec4 masked = texture2D(mask, uv);
+  vec4 masked_neighboor = texture2D(mask, uv_);
+
+  // Dont Sort if Masked
+  bool isMasked = colorsAreEqual(masked, mask_color);
+  if (direction_multiplier >= 0.0) {
+    isMasked = colorsAreEqual(masked_neighboor, mask_color);
+  }
+
+  if (isMasked) {
+    gl_FragColor = col;
+    return;
+  }
+
 
   // Get brightness using HSV space
   float gCurr = hsvbrightness(col.rgb);
@@ -71,11 +89,11 @@ void main() {
   // We use the direction_multiplier to know if we are in the pixel that needs to be sorted or its neighbour
   vec4 output_color = col;
   if (direction_multiplier > 0.0) { // if we are in the pixel we should be sorting
-    if (gComp > THRESHOLD && gCurr < gComp) {
+    if (!isMasked && gCurr < gComp) {
       output_color = neighbour_color;
     }
   } else { // if we are in the neighbour pixel
-    if (gCurr > THRESHOLD && gCurr > gComp) {
+    if (!isMasked && gCurr > gComp) {
       output_color = neighbour_color;
     }
   }
@@ -96,4 +114,8 @@ float random(in vec3 pos) {
     pos  = fract(pos * RANDOM_SCALE.xyz);
     pos += dot(pos, pos.zyx + 31.32);
     return fract((pos.x + pos.y) * pos.z);
+}
+
+bool colorsAreEqual(vec4 v1, vec4 v2) {
+  return all(equal(v1, v2));
 }
