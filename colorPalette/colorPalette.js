@@ -173,7 +173,7 @@ export class ColorPalette{
     );
     indentDiv(displaySize, '30px');
     elements_dict['squareSize'] = displaySize.getElementsByTagName('input')[0];
-    displaySize.style.display =  "" ? ColorPalette.defaultShowPallete: "none"; // Hide at first if must be hiden
+    displaySize.style.display =  ColorPalette.defaultShowPallete ? "": "none"; // Hide at first if must be hiden
     elements_dict['squareSizeDiv'] = displaySize;
 
     cardBody.appendChild(numberOfColorsInput);
