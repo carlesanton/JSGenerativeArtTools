@@ -12,10 +12,8 @@ uniform vec2 texelSize;
 uniform vec2 normalRes;
 uniform vec4 next_random_color;
 int count_neighbours_with_same_color(vec4 neighbour_colors[8], vec4 pixel_color);
-float count_neighbours_with_same_color_(vec4 neighbour_colors[8], vec4 pixel_color);
 vec4 findMostRepeatedColor(vec4 colors[8], vec4 color_to_avoid);
 bool colorsAreEqual(vec4 v1, vec4 v2);
-bool colorsAreEqualEpsilon(vec4 v1, vec4 v2);
 
 void main() {
   vec2 uv = vTexCoord;
@@ -55,7 +53,6 @@ void main() {
   }
 
   int neighboursWithSameColor = count_neighbours_with_same_color(neighbourColors, col);
-  float neighboursWithSameColor_ = count_neighbours_with_same_color_(neighbourColors, col);
   vec4 nextMajorityColor = findMostRepeatedColor(neighbourColors, col);
   int neighboursWithNextColor = count_neighbours_with_same_color(neighbourColors, nextMajorityColor);
 
@@ -85,19 +82,6 @@ int count_neighbours_with_same_color(vec4 neighbour_colors[8], vec4 pixel_color)
     }
   }
 
-  return neighbours_with_same_color;
-}
-
-float count_neighbours_with_same_color_(vec4 neighbour_colors[8], vec4 pixel_color){
-  float neighbours_with_same_color = 0.0;
-  float epsilon = 0.01; // Adjust based on precision needs
-  for (int i=0; i<8; i++){
-    vec4 tmp_color = neighbour_colors[i];
-    if(abs(tmp_color.r - pixel_color.r) < epsilon && abs(tmp_color.g - pixel_color.g) < epsilon && abs(tmp_color.b - pixel_color.b) < epsilon) {
-        neighbours_with_same_color += 1.;
-    }  
-  }
-  neighbours_with_same_color = neighbours_with_same_color/8.;
   return neighbours_with_same_color;
 }
 
@@ -136,17 +120,4 @@ vec4 findMostRepeatedColor(vec4 colors[8], vec4 color_to_avoid) {
 
 bool colorsAreEqual(vec4 v1, vec4 v2) {
   return all(equal(v1, v2));
-  return colorsAreEqualEpsilon(v1, v2);
-  return v1.r==v2.r && v1.g==v2.g && v1.b==v2.b;
-}
-
-bool colorsAreEqualEpsilon(vec4 v1, vec4 v2) {
-  float epsilon = 0.01; // Adjust based on precision needs
-  bool areEqual = false;
-  if(abs(v1.r - v2.r) < epsilon &&
-    abs(v1.g - v2.g) < epsilon &&
-    abs(v1.b - v2.b) < epsilon) {
-      areEqual = true;
-  }
-  return areEqual;
 }
