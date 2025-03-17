@@ -6,7 +6,7 @@ import {
 } from '../ui.js'
 
 export class CellularAutomata {
-    static defaultRandomColorChangeRate = 3;
+    static defaultRandomColorChangeRate = 10;
     static defaultCAMaxSteps = 100;
     static defaultCAPassesPerFrame = 1;
     static defaultCellularAutomataInitialSteps = 0;
