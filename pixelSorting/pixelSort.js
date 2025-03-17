@@ -22,6 +22,7 @@ export class PixelSort {
         this.ps_src = '';
         this.PSShader = null;
         this.PSInputs = null;
+        this.mask = null;
 
         // Initialize with defaults
         this.sortNoiseScale = PixelSort.defaultSortNoiseScale;
@@ -119,6 +120,9 @@ export class PixelSort {
                 this.changeDirection();
             }
             for (let i = 0; i < this.pixelSortingPassesPerFrame; i++) {
+                if (this.mask !== undefined && this.mask !== null) { // pass only mask if not null
+                    this.PSShader.setUniform('mask', this.mask);
+                }
                 this.PSShader.setUniform('iFrame', (this.PixelSortInitialSteps + this.pixel_sort_step) * this.pixelSortingPassesPerFrame + i);
                 filter(this.PSShader);
             }
@@ -269,6 +273,10 @@ export class PixelSort {
             console.log('PS: Not Running for ever');
             maxStepsSlider.style.display = "";
         }
+    }
+
+    setMask(maskImage) {
+        this.mask = maskImage;
     }
 
     createPixelSortingSettings() {

@@ -18,6 +18,7 @@ export class CellularAutomata {
         this.ca_src = '';
         this.CAShader = null;
         this.CAInputs = null;
+        this.mask = null;
         
         // Initialize with defaults
         this.CARandomColorChangeRate = CellularAutomata.defaultRandomColorChangeRate;
@@ -191,6 +192,9 @@ export class CellularAutomata {
         color_buffer.begin();
         if (this.cellular_automata_step < this.CAMaxSteps || this.runForever) {
             for (let i = 0; i < this.CAPassesPerFrame; i++) {
+                if (this.mask !== undefined && this.mask !== null) { // pass only mask if not null
+                    this.CAShader.setUniform('mask', this.mask);
+                }
                 filter(this.CAShader);
             }
             this.cellular_automata_step += 1;
@@ -320,6 +324,10 @@ export class CellularAutomata {
             console.log('CA: Not Running for ever');
             maxStepsSlider.style.display = "";
         }
+    }
+
+    setMask(maskImage) {
+        this.mask = maskImage;
     }
 
     createSettingsCard() {
