@@ -7,7 +7,7 @@ import {
 
 export class Mask {
     static defaultMinBrightness = .0;
-    static defaultMaxBrightness = .60;
+    static defaultMaxBrightness = .30;
     static defaultMaskColor = [1., 1., 1., 1.];
     static defaultEnable = true;
     static defaultDisplay = false;
