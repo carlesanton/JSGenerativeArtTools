@@ -8,6 +8,7 @@ import {
   export class PixelCam {
     static defaultPixelSize = 8;
     static defaultColorLevels = 10;
+    static defaultGridSideSize = null;
 
     constructor() {
         this.PCShader = null;
@@ -16,6 +17,8 @@ import {
         // Initialize with defaults
         this.pixelSize = PixelCam.defaultPixelSize;
         this.colorLevels = PixelCam.defaultColorLevels;
+        this.gridSideSize = PixelCam.defaultGridSideSize;
+        this.asciiTexture = null;
 
         // Load Shader Code
         this.loadShaderCode();
@@ -30,6 +33,7 @@ import {
 
         this.PCShader.setUniform('pixel_size', this.pixelSize);
         this.PCShader.setUniform('color_levels', this.colorLevels);
+        this.PCShader.setUniform('grid_side_size', this.gridSideSize);
     }
   
     pixelCamGPU(color_buffer) {
@@ -57,6 +61,17 @@ import {
         this.PCShader.setUniform('color_levels', this.colorLevels);
 
         return old_color_levels;
+    }
+
+    setGridSideSize(newGirdSideSize) {
+        this.gridSideSize = newGirdSideSize;
+        this.PCShader.setUniform('grid_side_size', this.gridSideSize);
+    }
+
+    setASCIITexture(new_ascii_texture) {
+        this.asciiTexture = new_ascii_texture;
+
+        this.PCShader.setUniform('ascii_texture', this.asciiTexture);
     }
 
     createPixelCalSettings() {
