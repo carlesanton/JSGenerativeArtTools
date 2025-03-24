@@ -41,6 +41,8 @@ import {
     }
   
     pixelCamGPU(color_buffer) {
+        this.PCShader.setUniform('ascii_texture', this.asciiTexture);
+
         color_buffer.begin();
 
         filter(this.PCShader);
