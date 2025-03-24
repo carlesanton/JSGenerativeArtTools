@@ -306,7 +306,7 @@ function createToggleButton(label, onClick, enabled){
     return div;
 }
 
-function create_input_image_button(callback, label, default_text, description_prefix){
+function create_input_file_button(callback, label, default_text, description_prefix){
     var div = document.createElement('div');
     
     var input = document.createElement('input');
@@ -568,7 +568,7 @@ export {
     create_number_input_slider_and_number,
     create_button,
     setButtonEnabledAppearance,
-    create_input_image_button,
+    create_input_file_button,
     create_daisyui_expandable_card,
     turnDaisyUICardIntoBodyWithTitle,
     createToggleButton,
