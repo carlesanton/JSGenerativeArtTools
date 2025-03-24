@@ -319,7 +319,7 @@ function create_input_file_button(callback, label, default_text, description_pre
         () => { 
             let input_image = input.files[0]
             // Check if the file is an image.
-            if (input_image.type && !input_image.type.startsWith('image/')) {
+            if (input_image.type && !(input_image.type.startsWith('image/') || input_image.type.startsWith('video/'))) {
                 console.log('File is not an image.', input_image.type, input_image);
                 return;
             }
