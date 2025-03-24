@@ -2,13 +2,15 @@ import { create_daisyui_expandable_card, create_number_input_slider_and_number, 
 
 export class FPS{
     static defaultFPS = 15;
-    static defaultDisplayFPS = false;
+    static defaultDisplayFPS = true;
     static numberOfAverageFPS = 10;
+    static defaultFillColor = [255, 255, 255];
 
     constructor(){
         this.fps = FPS.defaultFPS;
         this.averageFPS = this.fps; // There is a difference between the desired FPS and actual FPS
                                    // mainly if the program cannot go faster or it reaches the display refresh rate
+        this.fillColor = FPS.defaultFillColor;
         this.lastFPS = []
         this.show = FPS.defaultDisplayFPS;
         this.FPSInputs = {};
@@ -38,6 +40,10 @@ export class FPS{
         return this.show;
     }
 
+    setFillColor(fillColor) {
+      this.fillColor = fillColor;
+    }
+
     displayFPS(x, y, inputFps) {
         let fps = this.averageFPS
         if (inputFps !== undefined && inputFps !== null) { // inputFps to display another FPS other than the one in the instance
@@ -60,7 +66,7 @@ export class FPS{
         textSize(originalTextSize);
 
         // Style the text with white color, black borders
-        fill(255); // White fill color
+        fill(this.fillColor); // fill color
 
         textSize(32);
         x -= (fpsTextWidth + leftMargin)

@@ -11,6 +11,7 @@ import {
     static defaultCellSize = 400;
     static defaultGridSideSize = null;
     static defaultASCIIString = '';
+    static defaultUseInputFile = false;
 
     constructor() {
         this.PCShader = null;
@@ -22,6 +23,7 @@ import {
         this.cellSize = PixelCam.defaultCellSize;
         this.gridSideSize = PixelCam.defaultGridSideSize;
         this.ASCIIString = PixelCam.defaultASCIIString;
+        this.useInputFile = PixelCam.defaultUseInputFile;
         this.asciiTexture = null;
 
         // Load Shader Code
@@ -122,6 +124,19 @@ import {
         this.PCShader.setUniform('ascii_texture', this.asciiTexture);
     }
 
+    setUseInputFile(useInputFile) {
+        this.useInputFile = useInputFile;
+        if (this.useInputFile) {
+            console.log('Using Input File');
+        } else {
+            console.log('Using Camera PS');
+        }
+    }
+
+    getUseInputFile() {
+        return this.useInputFile;
+    }
+
     createPixelCalSettings() {
         const elements_dict = {};
 
@@ -141,7 +156,15 @@ import {
         );
         elements_dict['PCpixelSize'] = pixelSize.getElementsByTagName('input')[0];
 
+        const useCamera = createToggleButton('Use Camera', (a) => {
+            this.setUseInputFile(!a.target.checked);
+        }, !this.useInputFile);
+        elements_dict['useCamera'] = useCamera.getElementsByTagName('button')[0];
+
+
         cardBody.appendChild(pixelSize);
+        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(useCamera);
 
         elements_dict['main-toolbar'] = card;
         this.PCInputs = elements_dict;
