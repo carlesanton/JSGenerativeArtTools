@@ -13,6 +13,7 @@ float quantize(float value, int levels);
 vec4 quantizeColor(vec4 input_color, int levels);
 float hsvbrightness(vec3 c);
 vec2 get_block_uv(vec2 uv, vec2 block_size);
+vec2 get_subtexture_uv(int section, vec2 block_coordinates, int grid_side_size);
 float map_value(float input_value, float input_min, float input_max, float output_min, float output_max);
 
 // Definitions:
@@ -73,6 +74,30 @@ vec2 get_block_uv(vec2 uv, vec2 block_size) {
   return block_uv;
 }
 
+vec2 get_subtexture_uv(int section, vec2 block_coordinates, int grid_side_size) {
+  // Gets the UV of the pixel on the corresponding section of the texture (maps from 0-1 to the UVs of the subsection)
+
+  // Get Min coords of the subtexture
+  float section_x_min = mod(float(section), float(grid_side_size)) / float(grid_side_size);
+  float section_y_min = floor(float(section) / float(grid_side_size)) / float(grid_side_size);
+  vec2 top_left = vec2(section_x_min, section_y_min); // Top-left UV of the symbol
+
+  // Get Max coords of the subtexture
+  float section_x_max = mod((float(section) + 1.), float(grid_side_size)) / float(grid_side_size);
+  if (int(mod(float(section), float(grid_side_size))) == grid_side_size - 1) { // Check on last column not to go to first one
+    section_x_max = 1.;
+  }
+  float section_y_max = floor((float(section + grid_side_size)) / float(grid_side_size)) / float(grid_side_size);
+  vec2 bottom_right = vec2(section_x_max, section_y_max); // Bottom-Right UV of the symbol
+
+  // Remap from 0-1 to the corresponding subtexture range
+  vec2 mapped_uv = vec2(
+    map_value(block_coordinates.x, 0., 1., top_left.x, bottom_right.x),
+    map_value(block_coordinates.y, 0., 1., top_left.y, bottom_right.y)
+  );
+
+  return mapped_uv;
+}
 
 float map_value(float input_value, float input_min, float input_max, float output_min, float output_max) {
   float slope = (output_max - output_min) / (input_max - input_min);
