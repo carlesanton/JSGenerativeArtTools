@@ -49,6 +49,48 @@ import {
         return color_buffer;
     }
 
+    createASCIITexture(asciiString) {
+        this.ASCIIString = asciiString;
+
+        const buffer_width = this.gridSideSize * this.cellSize;
+        const buffer_height = this.gridSideSize * this.cellSize;
+
+        let buffer_otions = {
+            width: buffer_width,
+            height: buffer_width,
+            textureFiltering: NEAREST,
+            antialias: false,
+            desity: 1,
+            format: UNSIGNED_BYTE,
+            depth: false,
+            channels: RGBA,
+        }
+
+        let buffer = createFramebuffer(buffer_otions);
+
+        buffer.begin();
+        background(255); // White background
+        textAlign(CENTER, CENTER);
+        textSize(this.cellSize);
+        fill(0); // Black text
+
+        for (let i = 0; i < asciiString.length; i++) {
+            let row = floor(i / this.gridSideSize);
+            let col = i % this.gridSideSize;
+
+            if (row >= this.gridSideSize) break; // Stop if we exceed the grid size
+
+            let x = col * this.cellSize + this.cellSize / 2;
+            let y = row * this.cellSize + this.cellSize / 2;
+
+            text(asciiString[i], x-buffer_width/2, y-buffer_height/2);
+        }
+
+        buffer.end();
+
+        return buffer;
+    }
+
     setPixelSize(new_pixel_size) {
         const old_pixel_size = this.pixelSize;
         this.pixelSize = new_pixel_size;
