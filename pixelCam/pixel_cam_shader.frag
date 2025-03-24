@@ -32,10 +32,23 @@ void main() {
   blockCenterUV += vec2(float(pixel_size)/2., float(pixel_size)/2.) * texelSize; // move to center
   vec4 block_color = texture2D(tex0, blockCenterUV);
 
+  // Get block brightness
   float blockBrightness = hsvbrightness(block_color.rgb);
-  vec4 bwColor = vec4(blockBrightness, blockBrightness, blockBrightness, 1.);
+  float quantizedBrightness = quantize(blockBrightness, color_levels);
 
-  vec4 output_color = quantizeColor(bwColor, color_levels);
+  // Sample the ASCII texture
+  int levels = int(ceil(1./(texelSize * float(pixel_size))));
+  // Compute the UV of the pixel relative to its block
+  vec2 block_uv = get_block_uv(uv, texelSize * float(pixel_size));
+
+  // Get what symbol do we need to get based on brightness
+  int current_section = int(floor(map_value(1.-quantizedBrightness, 0.,1.,0., float(color_levels-1))));
+  
+  vec2 subtexture_uv = get_subtexture_uv(current_section, block_uv, grid_side_size);
+
+  vec4 subtexture_color = texture2D(ascii_texture, subtexture_uv);
+
+  vec4 output_color = subtexture_color;
 
   gl_FragColor = output_color;
 }
