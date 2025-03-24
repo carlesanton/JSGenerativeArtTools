@@ -6,8 +6,8 @@ import {
   } from '../ui.js'
   
   export class PixelCam {
-    static defaultPixelSize = 8;
-    static defaultColorLevels = 10;
+    static defaultPixelSize = 9;
+    static defaultColorLevels = 14;
     static defaultGridSideSize = null;
 
     constructor() {
