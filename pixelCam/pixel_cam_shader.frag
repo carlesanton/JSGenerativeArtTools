@@ -28,10 +28,9 @@ void main() {
   vec2 uv = vTexCoord;
 
   // Compute the UV coordinate of the center of the current block
-  vec2 blockUV = floor(vTexCoord / (texelSize * float(pixel_size))) * (texelSize * float(pixel_size));
-  blockUV += vec2(float(pixel_size)/2., float(pixel_size)/2.) * texelSize;
-
-  vec4 block_color = texture2D(tex0, blockUV);
+  vec2 blockCenterUV = floor(uv / (texelSize * float(pixel_size))) * (texelSize * float(pixel_size));
+  blockCenterUV += vec2(float(pixel_size)/2., float(pixel_size)/2.) * texelSize; // move to center
+  vec4 block_color = texture2D(tex0, blockCenterUV);
 
   float blockBrightness = hsvbrightness(block_color.rgb);
   vec4 bwColor = vec4(blockBrightness, blockBrightness, blockBrightness, 1.);
