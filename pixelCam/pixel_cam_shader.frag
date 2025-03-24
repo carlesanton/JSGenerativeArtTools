@@ -13,6 +13,12 @@ float quantize(float value, int levels);
 vec4 quantizeColor(vec4 input_color, int levels);
 float hsvbrightness(vec3 c);
 
+// Definitions:
+// BLOCK: big pixel, group of pixels that are used to represent the same color/symbol
+// BLOCK UV: uv coordinates of the pixel inside the corresponding block
+// SUBTEXTURE: fragment of a texture representing a symbol/frame
+// SECTION: index representing wich subtexture of a texture to use
+
 void main() {
   vec2 uv = vTexCoord;
 
