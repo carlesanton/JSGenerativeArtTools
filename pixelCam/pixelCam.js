@@ -8,6 +8,7 @@ import {
   export class PixelCam {
     static defaultPixelSize = 9;
     static defaultColorLevels = 14;
+    static defaultCellSize = 400;
     static defaultGridSideSize = null;
 
     constructor() {
@@ -17,6 +18,7 @@ import {
         // Initialize with defaults
         this.pixelSize = PixelCam.defaultPixelSize;
         this.colorLevels = PixelCam.defaultColorLevels;
+        this.cellSize = PixelCam.defaultCellSize;
         this.gridSideSize = PixelCam.defaultGridSideSize;
         this.asciiTexture = null;
 
