@@ -2,7 +2,7 @@ import { create_daisyui_expandable_card, create_number_input_slider_and_number, 
 
 export class FPS{
     static defaultFPS = 15;
-    static defaultDisplayFPS = true;
+    static defaultDisplayFPS = false;
     static numberOfAverageFPS = 10;
     static defaultFillColor = [255, 255, 255];
 
