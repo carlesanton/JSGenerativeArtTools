@@ -10,6 +10,7 @@ import {
     static defaultColorLevels = 14;
     static defaultCellSize = 400;
     static defaultGridSideSize = null;
+    static defaultASCIIString = '';
 
     constructor() {
         this.PCShader = null;
@@ -20,6 +21,7 @@ import {
         this.colorLevels = PixelCam.defaultColorLevels;
         this.cellSize = PixelCam.defaultCellSize;
         this.gridSideSize = PixelCam.defaultGridSideSize;
+        this.ASCIIString = PixelCam.defaultASCIIString;
         this.asciiTexture = null;
 
         // Load Shader Code
