@@ -13,6 +13,7 @@ float quantize(float value, int levels);
 vec4 quantizeColor(vec4 input_color, int levels);
 float hsvbrightness(vec3 c);
 vec2 get_block_uv(vec2 uv, vec2 block_size);
+float map_value(float input_value, float input_min, float input_max, float output_min, float output_max);
 
 // Definitions:
 // BLOCK: big pixel, group of pixels that are used to represent the same color/symbol
@@ -72,3 +73,9 @@ vec2 get_block_uv(vec2 uv, vec2 block_size) {
   return block_uv;
 }
 
+
+float map_value(float input_value, float input_min, float input_max, float output_min, float output_max) {
+  float slope = (output_max - output_min) / (input_max - input_min);
+  float output_value = output_min + slope * (input_value - input_min);
+  return output_value;
+}
