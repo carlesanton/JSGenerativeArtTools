@@ -8,6 +8,8 @@ uniform vec2 texelSize;
 
 uniform int pixel_size;
 uniform int color_levels;
+uniform int grid_side_size;
+uniform sampler2D ascii_texture;
 
 float quantize(float value, int levels);
 vec4 quantizeColor(vec4 input_color, int levels);
