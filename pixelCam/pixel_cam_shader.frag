@@ -12,7 +12,6 @@ uniform int grid_side_size;
 uniform sampler2D ascii_texture;
 
 float quantize(float value, int levels);
-vec4 quantizeColor(vec4 input_color, int levels);
 float hsvbrightness(vec3 c);
 vec2 get_block_uv(vec2 uv, vec2 block_size);
 vec2 get_subtexture_uv(int section, vec2 block_coordinates, int grid_side_size);
@@ -57,17 +56,6 @@ void main() {
 float quantize(float value, int levels) {
     float step = 1.0 / float(levels - 1);
     return floor(value / step + 0.5) * step;
-}
-
-vec4 quantizeColor(vec4 input_color, int levels) {
-  vec4 output_color = vec4(
-    quantize(input_color.r, levels),
-    quantize(input_color.g, levels),
-    quantize(input_color.b, levels),
-    quantize(input_color.a, levels)
-  );
-
-  return output_color;
 }
 
 float hsvbrightness(vec3 c){
