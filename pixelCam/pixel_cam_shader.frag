@@ -12,6 +12,7 @@ uniform int color_levels;
 float quantize(float value, int levels);
 vec4 quantizeColor(vec4 input_color, int levels);
 float hsvbrightness(vec3 c);
+vec2 get_block_uv(vec2 uv, vec2 block_size);
 
 // Definitions:
 // BLOCK: big pixel, group of pixels that are used to represent the same color/symbol
@@ -60,3 +61,14 @@ float hsvbrightness(vec3 c){
 
   return q.x;
 }
+
+vec2 get_block_uv(vec2 uv, vec2 block_size) {
+  // Gets the UV of the pixel relative to its corresponding block
+  vec2 block_uv = vec2(
+    mod(uv.x, block_size.x)/block_size.x,
+    mod(uv.y, block_size.y)/block_size.y
+  );
+
+  return block_uv;
+}
+
