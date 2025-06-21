@@ -12,13 +12,17 @@ export class CellularAutomata {
     static defaultCellularAutomataInitialSteps = 0;
     static defaultCAEnabled = true;
     static defaultRunForever = true;
-
+    static defaultFadeToNewImage = false; // set to false before commit
+    static defaultFadeSpeed = 0.01;
+    static defaultChromaColor = [0.,1.,0.,1.]
+    
     constructor() {
         this.cellular_automata_step = 0;
         this.ca_src = '';
         this.CAShader = null;
         this.CAInputs = null;
         this.mask = null;
+        this.newImage = null;
         
         // Initialize with defaults
         this.CARandomColorChangeRate = CellularAutomata.defaultRandomColorChangeRate;
@@ -27,6 +31,9 @@ export class CellularAutomata {
         this.CellularAutomataInitialSteps = CellularAutomata.defaultCellularAutomataInitialSteps;
         this.enableCA = CellularAutomata.defaultCAEnabled;
         this.runForever = CellularAutomata.defaultRunForever;
+        this.fadeToNewImage = CellularAutomata.defaultFadeToNewImage;
+        this.fadeSpeed = CellularAutomata.defaultFadeSpeed;
+        this.chromaColor = CellularAutomata.defaultChromaColor;
 
         // Load Shader Code
         this.loadShaderCode();
@@ -183,6 +190,9 @@ export class CellularAutomata {
 
     initializeShader() {
         this.CAShader = createFilterShader(this.ca_src.join('\n'));
+        this.CAShader.setUniform('activateFade', this.fadeToNewImage);
+        this.CAShader.setUniform('chromaColor', this.chromaColor);
+        this.CAShader.setUniform('fadeSpeed', this.fadeSpeed);
     }
 
     cellularAutomataGPU(color_buffer) {
@@ -195,6 +205,7 @@ export class CellularAutomata {
                 if (this.mask !== undefined && this.mask !== null) { // pass only mask if not null
                     this.CAShader.setUniform('mask', this.mask);
                 }
+                this.CAShader.setUniform('iFrame', (this.CellularAutomataInitialSteps + this.cellular_automata_step) * this.CAPassesPerFrame + i);
                 filter(this.CAShader);
             }
             this.cellular_automata_step += 1;
@@ -328,6 +339,21 @@ export class CellularAutomata {
 
     setMask(maskImage) {
         this.mask = maskImage;
+    }
+
+    setFadeToNewImage(fadeToNewImage) {
+        this.fadeToNewImage = fadeToNewImage;
+        this.CAShader.setUniform('activateFade', this.fadeToNewImage);
+    }
+ 
+    setFadeSpeed(fadeSpeed) {
+        this.fadeSpeed = fadeSpeed;
+        this.CAShader.setUniform('fadeSpeed', this.fadeSpeed);
+    }
+
+    setChromaColor(newChromaColor) {
+        this.chromaColor = newChromaColor;
+        this.CAShader.setUniform('chromaColor', this.chromaColor);
     }
 
     createSettingsCard() {
