@@ -77,6 +77,18 @@ export class Mask {
         image(this.mask, 0-width/2, 0-height/2, width, height)
     }
 
+    applyMask(originalImage, newImage, maskColor) {
+        this.UnmaskShader.setUniform('maskedImage', originalImage);
+        this.UnmaskShader.setUniform('imageToReplace', newImage);
+        this.UnmaskShader.setUniform('maskColor', maskColor);
+
+        this.unmasked.begin();
+        filter(this.UnmaskShader);
+        this.unmasked.end();
+        
+        return this.unmasked;
+    }
+
     getPreviousUsedImage() {
         return this.previousImage;
     }
