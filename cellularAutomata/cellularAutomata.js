@@ -12,13 +12,17 @@ export class CellularAutomata {
     static defaultCellularAutomataInitialSteps = 0;
     static defaultCAEnabled = true;
     static defaultRunForever = true;
-
+    static defaultFadeToNewImage = false; // set to false before commit
+    static defaultFadeSpeed = 0.01;
+    static defaultChromaColor = [0.,1.,0.,1.]
+    
     constructor() {
         this.cellular_automata_step = 0;
         this.ca_src = '';
         this.CAShader = null;
         this.CAInputs = null;
         this.mask = null;
+        this.newImage = null;
         
         // Initialize with defaults
         this.CARandomColorChangeRate = CellularAutomata.defaultRandomColorChangeRate;
@@ -27,6 +31,9 @@ export class CellularAutomata {
         this.CellularAutomataInitialSteps = CellularAutomata.defaultCellularAutomataInitialSteps;
         this.enableCA = CellularAutomata.defaultCAEnabled;
         this.runForever = CellularAutomata.defaultRunForever;
+        this.fadeToNewImage = CellularAutomata.defaultFadeToNewImage;
+        this.fadeSpeed = CellularAutomata.defaultFadeSpeed;
+        this.chromaColor = CellularAutomata.defaultChromaColor;
 
         // Load Shader Code
         this.loadShaderCode();
