@@ -337,6 +337,21 @@ export class CellularAutomata {
         this.mask = maskImage;
     }
 
+    setFadeToNewImage(fadeToNewImage) {
+        this.fadeToNewImage = fadeToNewImage;
+        this.CAShader.setUniform('activateFade', this.fadeToNewImage);
+    }
+ 
+    setFadeSpeed(fadeSpeed) {
+        this.fadeSpeed = fadeSpeed;
+        this.CAShader.setUniform('fadeSpeed', this.fadeSpeed);
+    }
+
+    setChromaColor(newChromaColor) {
+        this.chromaColor = newChromaColor;
+        this.CAShader.setUniform('chromaColor', this.chromaColor);
+    }
+
     createSettingsCard() {
         const elements_dict = {};
         
