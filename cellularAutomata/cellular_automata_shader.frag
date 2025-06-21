@@ -6,6 +6,13 @@ varying vec2 vTexCoord;
 uniform sampler2D tex0;
 uniform sampler2D mask;
 #define mask_color vec4(1.,1.,1., 1.)
+#define RANDOM_SCALE vec4(443.897, 441.423, .0973, .1099)
+
+// Chroma Vars
+uniform bool activateFade;
+uniform vec4 chromaColor;
+uniform float fadeSpeed;
+uniform float iFrame;
 
 // uniform vec2 canvasSize;
 uniform vec2 texelSize;
@@ -14,6 +21,7 @@ uniform vec4 next_random_color;
 int count_neighbours_with_same_color(vec4 neighbour_colors[8], vec4 pixel_color);
 vec4 findMostRepeatedColor(vec4 colors[8], vec4 color_to_avoid);
 bool colorsAreEqual(vec4 v1, vec4 v2);
+float random(float x);
 
 void main() {
   vec2 uv = vTexCoord;
@@ -38,6 +46,17 @@ void main() {
 
   if (isMasked) {
     gl_FragColor = col;
+    return;
+  }
+
+  // Check if has to be replaced with chroma
+  float noise_val = random(uv.x + uv.y * iFrame/10.);
+
+  // gl_FragColor = vec4(noise_val, noise_val, noise_val, 1.);
+  // return;
+  // Dont sort if the random value is lower than 1-sorting chance
+  if(noise_val<=fadeSpeed && !colorsAreEqual(chromaColor, col) && activateFade){
+    gl_FragColor = chromaColor;
     return;
   }
 
@@ -120,4 +139,11 @@ vec4 findMostRepeatedColor(vec4 colors[8], vec4 color_to_avoid) {
 
 bool colorsAreEqual(vec4 v1, vec4 v2) {
   return all(equal(v1, v2));
+}
+
+float random(in float x) {
+    x = fract(x * RANDOM_SCALE.x);
+    x *= x + 33.33;
+    x *= x + x;
+    return fract(x);
 }

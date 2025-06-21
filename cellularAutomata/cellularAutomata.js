@@ -190,6 +190,9 @@ export class CellularAutomata {
 
     initializeShader() {
         this.CAShader = createFilterShader(this.ca_src.join('\n'));
+        this.CAShader.setUniform('activateFade', this.fadeToNewImage);
+        this.CAShader.setUniform('chromaColor', this.chromaColor);
+        this.CAShader.setUniform('fadeSpeed', this.fadeSpeed);
     }
 
     cellularAutomataGPU(color_buffer) {
@@ -202,6 +205,7 @@ export class CellularAutomata {
                 if (this.mask !== undefined && this.mask !== null) { // pass only mask if not null
                     this.CAShader.setUniform('mask', this.mask);
                 }
+                this.CAShader.setUniform('iFrame', (this.CellularAutomataInitialSteps + this.cellular_automata_step) * this.CAPassesPerFrame + i);
                 filter(this.CAShader);
             }
             this.cellular_automata_step += 1;
