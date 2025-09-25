@@ -1,5 +1,5 @@
 #ifdef GL_ES
-precision mediump float;
+precision highp float;
 #endif
 
 #define RANDOM_SINLESS // Don't use Random Lygia funcion that uses sine
