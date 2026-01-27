@@ -328,7 +328,7 @@ function create_input_file_button(callback, label, default_text, description_pre
             const reader = new FileReader();
             reader.addEventListener('load', (event) => {
                 let user_img = event.target.result;
-                callback(user_img)
+                callback(user_img, input_image.name)
             });
             reader.readAsDataURL(input_image);
 
