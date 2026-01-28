@@ -351,12 +351,10 @@ function turnDaisyUICardIntoBodyWithTitle(card){
     const sectionBodyDiv = document.createElement('div')
 
     const cardTitle = card.getElementsByClassName('collapse-title')[0];
-    console.log('cardTitle', cardTitle.innerHTML)
     const newTitle = create_subtitle(cardTitle.innerHTML);
 
     const cardBody = card.getElementsByClassName('collapse-content')[0];
     cardBody.setAttribute('class', '')
-    console.log('cardBody', cardBody)
 
     sectionBodyDiv.appendChild(newTitle)
     sectionBodyDiv.appendChild(cardBody)
