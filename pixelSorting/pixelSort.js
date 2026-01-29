@@ -134,14 +134,17 @@ export class PixelSort {
 
     changeDirection() {
         let oldCoordinates = {x:12321, y:123123};
+        const max_retries = 5;
+        var max_retry_counter = 0;
         if (this.noise_coordinates) {
             oldCoordinates = {...this.noise_coordinates}; // Clone the current coordinates
         }
         do {
-            this.angle = noise(random(1000)) * this.sortNoiseScale;
+            this.angle = random(0, 1) * this.sortNoiseScale;
             this.noise_coordinates = this.angleToCoordinates(this.angle, this.noise_radius);
             this.PSShader.setUniform('direction', [this.noise_coordinates.x, this.noise_coordinates.y]);
-        } while (oldCoordinates.x == this.noise_coordinates.x && oldCoordinates.y == this.noise_coordinates.y);
+            max_retry_counter+=1;
+        } while (oldCoordinates.x == this.noise_coordinates.x && oldCoordinates.y == this.noise_coordinates.y && max_retry_counter < max_retries);
     }
 
     setInitialSteps(new_initial_steps) {
