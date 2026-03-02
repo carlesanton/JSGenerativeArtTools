@@ -337,7 +337,6 @@ function create_input_file_button(callback, label, default_text, description_pre
             if (description_prefix !== undefined && description_prefix !== null) {
                 new_description = description_prefix + new_description;
             }
-            description_tag.textContent = new_description;
         },
         false
     );
