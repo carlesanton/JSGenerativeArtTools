@@ -113,7 +113,7 @@ export class FPS{
         const fps = create_number_input_slider_and_number(
           'FPS',
           'FPS',
-          FPS.defaultFPS,
+          this.fps,
           1,
           300,
           (e) => {this.setFPS(e)},
