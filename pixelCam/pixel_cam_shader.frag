@@ -33,7 +33,7 @@ float random(vec2 st);
 // SUBTEXTURE: fragment of an animation representing a symbol/frame
 // SECTION: index representing wich subtexture of a texture to use
 
-#define RANDOM_SCALE vec4(.1031, .1030, .0973, .1099)
+#define RANDOM_SCALE vec4(443.897, 441.423, .0973, .1099)
 
 void main() {
   vec2 uv = vTexCoord;
