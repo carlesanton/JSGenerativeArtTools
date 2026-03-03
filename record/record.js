@@ -8,6 +8,8 @@ import {
     indentDiv,
     createRecordStopButton,
     createDropDownMenu,
+    create_subtitle,
+    create_button,
   } from '../ui.js'
 
 // Disable Default UI to create our own
@@ -24,6 +26,7 @@ export class Recorder {
     static defaultUseCustomFPS = false;
     static defaultQuality = 1.;
     static defaultSketchFPSMethod = () => {return frameRate()};
+    static defaultCaptureSingleFrameMethod = () => {console.log('Missing implementation for Capture single frame')};
     static supportedFormats = ['webm', 'gif', 'png', 'jpg', 'webp'];
 
     constructor () {
@@ -39,6 +42,7 @@ export class Recorder {
         this.useCustomFPS = Recorder.defaultUseCustomFPS;
         this.format = Recorder.defaultFormat;
         this.sketchFPSMethod = Recorder.defaultSketchFPSMethod;
+        this.captureSingleFrameMethod = Recorder.defaultCaptureSingleFrameMethod;
     }
 
     setRecord(record){
@@ -108,6 +112,13 @@ export class Recorder {
         // by default its frameRate() but can be set to something like () => {return fps.getFPS()}
         // in the main sketch to more acurately set the fps to the same ones set by the fps module
         this.sketchFPSMethod = method;
+    }
+
+    setCaptureSingleFrameMethod(method) {
+        // Set the method used to compute the sketch fps
+        // by default its frameRate() but can be set to something like () => {return fps.getFPS()}
+        // in the main sketch to more acurately set the fps to the same ones set by the fps module
+        this.captureSingleFrameMethod = method;
     }
 
     setQuality(quality) {
@@ -209,8 +220,14 @@ export class Recorder {
         const elements_dict = {};
         
         // Create Main Card
-        const card = create_daisyui_expandable_card('recorderSettings', 'Record Video');
+        const card = create_daisyui_expandable_card('recorderSettings', 'Record');
         const cardBody = card.getElementsByClassName('collapse-content')[0];
+
+        // Single Frame
+        const saveFrameButton = create_button('Save Current Frame', () => { this.captureSingleFrameMethod(); });
+
+        // Video Section
+        const videoTitle = create_subtitle('Video');
 
         // Record/Stop Button
         const recordButton = createRecordStopButton(
@@ -283,6 +300,10 @@ export class Recorder {
         );
         elements_dict['quality'] = quality.getElementsByTagName('input')[0];
 
+        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(saveFrameButton);
+        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(videoTitle);
         cardBody.appendChild(recordButton);
         cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(formatMenu);
