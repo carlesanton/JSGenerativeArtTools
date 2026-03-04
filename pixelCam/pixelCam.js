@@ -122,6 +122,7 @@ import {
         let buffer = createFramebuffer(buffer_otions);
 
         buffer.begin();
+        clear()
         background(255, 255, 255); // White background
 
         for (let i = 0; i < imageArray.length; i++) {
