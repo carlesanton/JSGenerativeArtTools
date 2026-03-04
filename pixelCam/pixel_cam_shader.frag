@@ -84,8 +84,9 @@ void main() {
   );
 
   vec4 output_color = texture2D(spritesheets_atlas_texture, mapped_uv);
-  if (output_color == vec4(1.)){
-    output_color = bg_opacity * block_color;
+  if (output_color.rgb == vec3(1.)){
+    vec3 new_bg_color = mix(vec3(block_color.rgb), vec3(1.0), 1. - bg_opacity);
+    output_color = vec4(new_bg_color*bg_opacity, bg_opacity); // Ensure we premutliply alpha
   }
 
   gl_FragColor = output_color;
