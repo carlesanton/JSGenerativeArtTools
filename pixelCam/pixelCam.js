@@ -222,7 +222,7 @@ import {
             this.bgOpacity,
             0,
             1.0,
-            (value) => this.setBGOpacity(value),
+            (value) => this.setBGOpacity(parseFloat(value)),
             0.01
         );
         elements_dict['PCbgOpacity'] = bgOpacity.getElementsByTagName('input')[0];
