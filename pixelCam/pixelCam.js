@@ -144,7 +144,7 @@ import {
 
     setPixelSize(new_pixel_size) {
         const old_pixel_size = this.pixelSize;
-        this.pixelSize = new_pixel_size;
+        this.pixelSize = parseInt(new_pixel_size);
 
         this.PCShader.setUniform('pixel_size', this.pixelSize);
 
