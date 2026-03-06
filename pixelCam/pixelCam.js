@@ -151,6 +151,10 @@ import {
         return old_pixel_size;
     }
 
+    getPixelSize() {
+        return this.pixelSize;
+    }
+
     setBGOpacity(new_bg_opacity) {
         const old_bg_opacity = this.bgOpacity;
         this.bgOpacity = new_bg_opacity;
