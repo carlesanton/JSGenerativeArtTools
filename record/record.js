@@ -19,7 +19,7 @@ P5Capture.setDefaultOptions({
 
 export class Recorder {
     static defaultFPS = 30;
-    static defaultFormat = 'webm'
+    static defaultFormat = 'png'
     static defaultRecordForSetDuration = false;
     static defaultDuration = 2;
     static defaultAutoSaveDuration = null;
@@ -27,7 +27,7 @@ export class Recorder {
     static defaultQuality = 1.;
     static defaultSketchFPSMethod = () => {return frameRate()};
     static defaultCaptureSingleFrameMethod = () => {console.log('Missing implementation for Capture single frame')};
-    static supportedFormats = ['webm', 'gif', 'png', 'jpg', 'webp'];
+    static supportedFormats = ['webm', 'gif', 'png', 'jpg', 'webp', 'mp4'];
 
     constructor () {
         this.recorderInputs = null;
@@ -66,6 +66,7 @@ export class Recorder {
                     framerate: fps,
                     format: this.format,
                     baseFilename: (a) => {return this.customBaseFilename(a)},
+                    bitrate: 40000,
                 }
             )
         }
