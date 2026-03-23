@@ -207,7 +207,7 @@ export class Recorder {
         const defaultFilename = this.defaultBaseFilename(date);
         let filename = defaultFilename ; 
         if (this.sufix !== undefined && this.sufix !== null) { // add sufix to end of filename
-            filename+= '-' + this.sufix;
+            filename+= '_' + this.sufix;
         }
 
         return filename;
