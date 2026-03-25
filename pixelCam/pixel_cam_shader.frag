@@ -15,7 +15,6 @@ uniform int number_of_frames;
 uniform int frame_grid_size;
 uniform sampler2D spritesheets_atlas_texture;
 
-float quantize(float value, int levels);
 float hsvbrightness(vec3 c);
 vec2 get_block_uv(vec2 uv, vec2 block_size);
 vec2 get_subtexture_uv(int section, vec2 block_coordinates, int grid_side_size);
@@ -43,18 +42,12 @@ void main() {
   blockCenterUV += vec2(float(pixel_size)/2., float(pixel_size)/2.) * texelSize; // move to center
   vec4 block_color = texture2D(tex0, blockCenterUV);
 
-  // Get block brightness
   float blockBrightness = hsvbrightness(block_color.rgb);
-  // Avoid negative values
-  float quantizedBrightness = clamp(quantize(blockBrightness, color_levels), 0.,1.);
-
-  // Sample the ASCII texture
-  int levels = int(ceil(1./(texelSize * float(pixel_size))));
-  // Compute the UV of the pixel relative to its block
-  vec2 block_uv = get_block_uv(uv, texelSize * float(pixel_size));
 
   // Get what animation do we need to get based on brightness
-  int animation_index = int(floor(map_value(1.-quantizedBrightness, 0.,1.,0., float(color_levels-1))));
+  int animation_index = int(map_value((1.0 - blockBrightness) + (0.5/float(color_levels-1)), 0., 1., 0. , float(color_levels-1)));
+  float quantizedBrightness = 1.-float(animation_index) / float(color_levels-1); // Not used, only for debug
+
   // Get boundary coords of the animation in range [0, 1]
   vec2 animation_top_left = get_region_top_left_coords(animation_index, grid_side_size); // Top-left UV of the symbol
   vec2 animation_bottom_right = get_region_bottom_right_coords(animation_index, grid_side_size); // Bottom-Right UV of the symbol
@@ -77,6 +70,9 @@ void main() {
     map_value(frame_bottom_right.y, 0., 1., animation_top_left.y, animation_bottom_right.y)
   );
 
+  // Compute the UV of the pixel relative to its block
+  vec2 block_uv = get_block_uv(uv, texelSize * float(pixel_size));
+
   // Remap block UVs to the corresponding frame UV range
   vec2 mapped_uv = vec2(
     map_value(block_uv.x, 0., 1., remaped_frame_top_left.x, remaped_frame_bottom_right.x),
@@ -87,15 +83,10 @@ void main() {
   if (output_color.rgb == vec3(1.)){
     vec3 new_bg_color = mix(vec3(block_color.rgb), vec3(1.0), 1. - bg_opacity);
     output_color = vec4(new_bg_color*bg_opacity, bg_opacity); // Ensure we premutliply alpha
+    // output_color = vec4(0.6,0.8*quantizedBrightness,quantizedBrightness,1.); // FOR DEBUGGING
   }
 
   gl_FragColor = output_color;
-}
-
-// Function to quantize a color channel
-float quantize(float value, int levels) {
-    float step = 1.0 / float(levels - 1);
-    return floor(value / step + 0.5) * step;
 }
 
 float hsvbrightness(vec3 c){
