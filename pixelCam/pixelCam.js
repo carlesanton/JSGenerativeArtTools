@@ -257,13 +257,14 @@ import {
 
         this.spritesheets.forEach((item, index) => {
             const p5img = item['img'];
+            const id = item['id'];
             // Convert p5.Image → base64 URL
             const dataURL = p5img.canvas.toDataURL();
             
             const itemDiv = document.createElement('div');
             itemDiv.setAttribute('class', 'spritesheet-item flex items-center gap-0 h-12 mb-5');
             
-            const existingImg = document.getElementById(create_spritesheet_img_id(index));
+            const existingImg = document.getElementById(create_spritesheet_img_id(id));
             if (existingImg) {
                 return;
             }
@@ -274,9 +275,9 @@ import {
             handle.innerHTML = '⋮⋮';
 
             // Image
-            const img = createImg(dataURL, create_spritesheet_img_id(index));
+            const img = createImg(dataURL, create_spritesheet_img_id(id));
             img.addClass('spritesheet-image');
-            img.id(create_spritesheet_img_id(index));
+            img.id(create_spritesheet_img_id(id));
             img.addClass('h-12 mr-4');
 
             // File input button
@@ -381,7 +382,7 @@ import {
         addBtn.onclick = () => {
             console.log('Adding new spritesheet')
             const newImg = createGraphics(this.pixelSize || 32, this.pixelSize || 32);
-            this.spritesheets.push({ id: this.spritesheets.length+1, img: newImg });
+            this.spritesheets.push({ id: `lvl-${Date.now()}`, img: newImg });
             this.useSpritesheets(this.spritesheets)
             this.updateUISymbols(); // Re-render
         };
