@@ -74,6 +74,32 @@ function create_daisyui_expandable_card(id, title) {
     return card;
 }
 
+function create_expandable_subtitle(id, title, checked = true) {
+    // Create the main card container
+    const card = document.createElement('div');
+    card.setAttribute('id', id);
+    card.className = 'collapse collapse-arrow bg-base-200 transition-none mt-3' // better with or without animation?
+    // card.className = 'collapse collapse-arrow border-base-300 bg-base-200 border shadow-xl' // better with or without animation?
+
+    const checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+    checkbox.checked=checked // set checkd for it to be open
+
+    const cardTitle = document.createElement('h3');
+    cardTitle.setAttribute('class', 'collapse-title text-lg font-medium pl-0');
+    cardTitle.innerHTML = title;
+
+    const cardBody = document.createElement('div');
+    cardBody.className = 'collapse-content'
+    cardBody.id = id+'card-body'
+
+    card.appendChild(checkbox);
+    card.appendChild(cardTitle);
+    card.appendChild(cardBody);
+
+    return card;
+}
+
 function create_subtitle(title){
     var div = document.createElement('div');
     div.className = 'divider'
@@ -567,6 +593,7 @@ export {
     setButtonEnabledAppearance,
     create_input_file_button,
     create_daisyui_expandable_card,
+    create_expandable_subtitle,
     turnDaisyUICardIntoBodyWithTitle,
     createToggleButton,
     indentDiv,
