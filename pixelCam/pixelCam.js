@@ -1,8 +1,10 @@
 import { 
     create_number_input_slider_and_number,
     create_daisyui_expandable_card,
-    createToggleButton,
-    indentDiv,
+    create_subtitle,
+    createSmallBreak,
+    create_expandable_subtitle,
+    create_input_file_button,
   } from '../ui.js'
   
   export class PixelCam {
@@ -12,6 +14,8 @@ import {
     static defaultCellSize = 400;
     static defaultGridSideSize = null;
     static defaultASCIIString = '';
+    static defaultUseCustomSymbols = true;
+    static defaultNumberOfFrames = 4;
 
     constructor() {
         this.PCShader = null;
@@ -24,10 +28,13 @@ import {
         this.gridSideSize = PixelCam.defaultGridSideSize;
         this.ASCIIString = PixelCam.defaultASCIIString;
         this.asciiTexture = null;
+        this.spritesheets = null;
         this.spritesheets_atlas = null;
         this.frame_count = 0;
         this.frameGridSideSize = null;
+        this.numberOfFrames = PixelCam.defaultNumberOfFrames;
         this.bgOpacity = PixelCam.defaultBGOpacity
+        this.useCustomSymbols = PixelCam.defaultUseCustomSymbols;
 
         // Load Shader Code
         this.loadShaderCode();
@@ -57,6 +64,40 @@ import {
 
         color_buffer.end();
         return color_buffer;
+    }
+
+    setSingleSpritesheet(new_spritesheet, new_index) {
+        this.spritesheets[new_index]['img'] = new_spritesheet;
+        this.useSpritesheets(this.spritesheets)
+        // this.updateUISymbols()
+    }
+
+    reorderSpritesheets(oldIndex, newIndex) {
+        const movedItem = this.spritesheets.splice(oldIndex, 1)[0];
+        this.spritesheets.splice(newIndex, 0, movedItem);
+
+        this.useSpritesheets(this.spritesheets)
+    }
+
+    useSpritesheets(spritesheets) {
+        var mm_ = millis()
+        this.spritesheets = spritesheets;
+
+        // Set color levels and grid size
+        let colorLevels = Object.keys(this.spritesheets).length;
+        this.setColorLevels(colorLevels);
+
+        let gridSideSize = ceil(sqrt(colorLevels));
+        this.setGridSideSize(gridSideSize);
+
+        let frameGridSideSize = Math.ceil(Math.sqrt(this.numberOfFrames));
+        this.setFrameGridSideSize(frameGridSideSize);
+
+        // Set atlas
+        const spritesheetImages = this.spritesheets.map(item => item.img);
+        let spritesheets_atlas = this.joinImagesIntoGrid(spritesheetImages);
+        this.setSpritesheetsAtlas(spritesheets_atlas);
+        console.log('Took', millis() - mm_, 'ms to setup spridesheets')
     }
 
     createASCIITexture(asciiString) {
@@ -198,11 +239,93 @@ import {
         this.PCShader.setUniform('frame_grid_size', this.frameGridSideSize);
     }
 
+    setUseCustomSymbols(newUseCustomSymbols) {
+        this.useCustomSymbols = newUseCustomSymbols;
+    }
+
     increaseFrame() {
         this.frame_count+=1;
     }
 
-    createPixelCalSettings() {
+    updateUISymbols() {
+        const container = this.PCInputs['customSymbolsList'];
+        console.log('Updating UI Symbols')
+
+        function create_spritesheet_img_id(key) {
+            return `spritesheet-image-${key}`
+        }
+
+        this.spritesheets.forEach((item, index) => {
+            const p5img = item['img'];
+            // Convert p5.Image → base64 URL
+            const dataURL = p5img.canvas.toDataURL();
+            
+            const itemDiv = document.createElement('div');
+            itemDiv.setAttribute('class', 'spritesheet-item flex items-center gap-0 h-12 mb-5');
+            
+            const existingImg = document.getElementById(create_spritesheet_img_id(index));
+            if (existingImg) {
+                return;
+            }
+
+            // Drag Handle
+            const handle = document.createElement('div');
+            handle.className = 'drag-handle cursor-grab p-2 opacity-30 hover:opacity-100';
+            handle.innerHTML = '⋮⋮';
+
+            // Image
+            const img = createImg(dataURL, create_spritesheet_img_id(index));
+            img.addClass('spritesheet-image');
+            img.id(create_spritesheet_img_id(index));
+            img.addClass('h-12 mr-4');
+
+            // File input button
+            const input_file = create_input_file_button(
+                (user_file, file_name) => {
+                    const parent = input_file.parentElement; 
+                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                    const currentIndex = allItems.indexOf(parent);
+                    console.log('Changing spritesheet', currentIndex, 'to', file_name)
+                    loadImage(user_file,
+                        (loadedImage)=>{this.setSingleSpritesheet(loadedImage, currentIndex)},
+                    );
+                    const imgElement = parent.querySelector('.spritesheet-image');
+                    if (imgElement) {
+                        imgElement.src = user_file;
+                    }
+                    image.src = dataURL;
+                },
+                'Load Image',
+                'No file chosen',
+                'Loaded Image: ',
+            )
+
+            // Delete button
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn btn-ghost btn-xs text-neutral';
+            delBtn.innerHTML = '✕';
+            delBtn.onclick = () => {
+                const parent = input_file.parentElement; 
+                const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                const currentIndex = allItems.indexOf(parent);
+                console.log('Removing spritesheet', currentIndex)
+                this.spritesheets.splice(currentIndex, 1);
+                this.useSpritesheets(this.spritesheets)
+                parent.remove();
+            };
+
+            input_file.getElementsByTagName('input')[0].className = "file-input file-input-xs file-input-bordered file-input-content file:px-1 max-w-[12rem]"
+            input_file.getElementsByTagName('input')[0].innerHTML = ''
+
+            itemDiv.appendChild(handle);
+            img.parent(itemDiv);
+            itemDiv.appendChild(input_file)
+            itemDiv.appendChild(delBtn)
+            container.appendChild(itemDiv);
+        });
+    }
+
+    createPixelCamSettings() {
         const elements_dict = {};
 
         // Create Main Card
@@ -232,8 +355,62 @@ import {
         );
         elements_dict['PCbgOpacity'] = bgOpacity.getElementsByTagName('input')[0];
 
+        const numFrames = create_number_input_slider_and_number(
+            'PCnumFrames',
+            'Frames per spritesheet',
+            this.numberOfFrames,
+            1,
+            24,
+            (value) => {
+                const newNumberOfFrames = parseInt(value);
+                this.setNumberOfFrames(newNumberOfFrames)
+                let frameGridSideSize = Math.ceil(Math.sqrt(newNumberOfFrames));
+                this.setFrameGridSideSize(frameGridSideSize);
+            },
+            1,
+        );
+        elements_dict['PCnumFrames'] = numFrames.getElementsByTagName('input')[0];
+
+        const customSymbolsSubtitle = create_expandable_subtitle('customSymbolsDiv', 'Used Symbols', false);
+        const customSymbolsDiv = customSymbolsSubtitle.getElementsByClassName('collapse-content')[0]
+        const customSymbolsList = document.createElement('div');
+
+        const addBtn = document.createElement('button');
+        addBtn.className = "btn btn-outline btn-dashed btn-block btn-sm mt-4";
+        addBtn.innerHTML = "+ Add Level";
+        addBtn.onclick = () => {
+            console.log('Adding new spritesheet')
+            const newImg = createGraphics(this.pixelSize || 32, this.pixelSize || 32);
+            this.spritesheets.push({ id: this.spritesheets.length+1, img: newImg });
+            this.useSpritesheets(this.spritesheets)
+            this.updateUISymbols(); // Re-render
+        };
+
+        customSymbolsDiv.appendChild(customSymbolsList)
+        customSymbolsDiv.appendChild(addBtn);
+
+        elements_dict['customSymbolsDiv'] = customSymbolsDiv
+        elements_dict['customSymbolsList'] = customSymbolsList
+        new Sortable(customSymbolsList, {
+            animation: 150,
+            handle: '.drag-handle', 
+            draggable: ".spritesheet-item",
+            filter: '.btn', // Don't drag the buttons
+            forceFallback: true, // This fixes the "cloning" / "ghosting" issue in many browsers
+            fallbackClass: "sortable-fallback",
+            ghostClass: 'opacity-0', // Makes the 'original' item invisible while you drag
+            onEnd: (evt) => {
+                console.log('Moving spritesheet from', evt.oldIndex, 'to', evt.newIndex)
+                this.reorderSpritesheets(evt.oldIndex, evt.newIndex);
+            }
+        });
+
         cardBody.appendChild(pixelSize);
+        cardBody.appendChild(createSmallBreak('15px'))
         cardBody.appendChild(bgOpacity);
+        cardBody.appendChild(create_subtitle());
+        cardBody.appendChild(numFrames);
+        cardBody.appendChild(customSymbolsSubtitle);
 
         elements_dict['main-toolbar'] = card;
         this.PCInputs = elements_dict;
