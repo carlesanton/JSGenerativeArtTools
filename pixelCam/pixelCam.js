@@ -407,7 +407,6 @@ import {
         });
 
         cardBody.appendChild(pixelSize);
-        cardBody.appendChild(createSmallBreak('15px'))
         cardBody.appendChild(bgOpacity);
         cardBody.appendChild(create_subtitle());
         cardBody.appendChild(numFrames);

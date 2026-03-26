@@ -149,7 +149,7 @@ function create_number_input_text(id, label, default_value, min, max){
 function create_number_input_slider_and_number(id, label, default_value, min, max, on_change_callback, step) {
     // Outer container
     var div = document.createElement('div');
-    div.className = 'flex flex-col';
+    div.className = 'flex flex-col mb-3';
     div.id = id;
 
     var inputs_div = document.createElement('div');
