@@ -44,7 +44,7 @@ void main() {
   float blockBrightness = hsvbrightness(block_color.rgb);
 
   // Get what animation do we need to get based on brightness
-  int animation_index = int(map_value((1.0 - blockBrightness) + (0.5/float(color_levels-1)), 0., 1., 0. , float(color_levels-1)));
+  int animation_index = int(float(color_levels - 1) * (1. - blockBrightness) + 0.5);
   float quantizedBrightness = 1.-float(animation_index) / float(color_levels-1); // Not used, only for debug
 
   // Get boundary coords of the animation in range [0, 1]
