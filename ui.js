@@ -180,7 +180,8 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     var range = document.createElement('input');
     range.setAttribute('type', 'range');
     range.setAttribute('id', id + 'range');
-    range.className = 'range range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2';
+    var range_base_class = 'range range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2';
+    range.className = range_base_class;
 
     // --- Logic & Events ---
     range.addEventListener('input', function (e) {
@@ -202,10 +203,10 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
         range.disabled = disabled;
 
         if (disabled) {
-            range.className = 'range [--range-shdw:gray]  range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+            range.className = range_base_class + ' [--range-shdw:gray]';
         }
         else {
-            range.className = 'range  range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+            range.className = range_base_class
         }
     }
 
