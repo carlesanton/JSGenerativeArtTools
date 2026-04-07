@@ -60,7 +60,7 @@ function create_daisyui_expandable_card(id, title) {
     checkbox.checked="true" // set checkd for it to be open
 
     const cardTitle = document.createElement('h2');
-    cardTitle.setAttribute('class', 'collapse-title text-xl font-medium');
+    cardTitle.setAttribute('class', 'collapse-title text-lg font-medium');
     cardTitle.innerHTML = title;
 
     const cardBody = document.createElement('div');
@@ -154,7 +154,7 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
 
     // 1. Label (Left side)
     const label_element = document.createElement('label');
-    label_element.className = 'text-md text-right font-medium w-24 flex-shrink-0'; // Fixed width for alignment
+    label_element.className = 'text-sm text-right font-medium w-24 flex-shrink-0'; // Fixed width for alignment
     label_element.innerHTML = label || '';
     div.appendChild(label_element);
 
@@ -311,7 +311,7 @@ function createToggleButton(label, onClick, enabled){
 
     // 1. Label (Left side)
     const label_element = document.createElement('label');
-    label_element.className = 'text-md text-right text-neutral-200 font-medium w-24 flex-shrink-0'; // Fixed width for alignment
+    label_element.className = 'text-sm text-right font-medium w-24 flex-shrink-0'; // Fixed width for alignment
     label_element.innerHTML = label || '';
 
     // Build the structure
@@ -397,7 +397,7 @@ function createText(text, size){
     var div = document.createElement('div');
 
     var text_tag = document.createElement('text');
-    text_tag.className = 'text-md'
+    text_tag.className = 'text-sm'
     if (size !== undefined && size !== null){
         text_tag.className = 'text-' + size
     }
