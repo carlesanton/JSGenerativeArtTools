@@ -149,35 +149,40 @@ function create_number_input_text(id, label, default_value, min, max){
 function create_number_input_slider_and_number(id, label, default_value, min, max, on_change_callback, step) {
     // Outer container
     var div = document.createElement('div');
-    div.className = 'flex flex-col mb-3';
+    div.className = 'flex items-center justify-between mb-3 gap-4 w-full';
     div.id = id;
 
-    var inputs_div = document.createElement('div');
-    inputs_div.className = 'flex items-center';
+    // 1. Label (Left side)
+    const label_element = document.createElement('label');
+    label_element.className = 'text-md text-right font-medium w-24 flex-shrink-0'; // Fixed width for alignment
+    label_element.innerHTML = label || '';
+    div.appendChild(label_element);
 
-    // Value
-    // Create value div
+    // Container for Slider and Number (Right side group)
+    var inputs_div = document.createElement('div');
+    inputs_div.className = 'flex items-center gap-2 flex-grow';
+
+    // 3. Number Input (Right)
     const number_div = document.createElement('div');
     number_div.id = id+'number-div';
-    number_div.className = 'relative w-32 flex justify-center mr-4';
+    number_div.className = 'relative w-17 flex justify-center';
     // Create value display
     var number = document.createElement('input');
     number.setAttribute('type', 'number');
-    number.setAttribute('class', 'input input-bordered input-xs text-base w-full text-center');
+    number.className = 'input input-bordered input-xs text-base w-full text-center';
     number.setAttribute('id', id + 'number');
 
-    // Range
-    // Create range div
+
+    // 2. Range Slider (Middle)
     const range_div = document.createElement('div');
-    range_div.className = 'relative w-full';
+    range_div.className = 'relative w-32'; // Fixed width as requested
     range_div.id = id+'range-div';
-    // Create range input
     var range = document.createElement('input');
     range.setAttribute('type', 'range');
     range.setAttribute('id', id + 'range');
-    range.className = 'range'
-    range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+    range.className = 'range range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2';
 
+    // --- Logic & Events ---
     range.addEventListener('input', function (e) {
         number.value = e.target.value;
         if (on_change_callback !== undefined && on_change_callback !== null) {
@@ -197,10 +202,10 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
         range.disabled = disabled;
 
         if (disabled) {
-            range.className = 'range [--range-shdw:gray] w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+            range.className = 'range [--range-shdw:gray]  range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2'
         }
         else {
-            range.className = 'range w-full absolute left-0 top-1/2 transform -translate-y-1/2'
+            range.className = 'range  range-sm w-full absolute left-0 top-1/2 transform -translate-y-1/2'
         }
     }
 
@@ -225,19 +230,6 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     range._disabled = false;
 
     // Conditionally set optional attributes
-    if (label !== undefined && label !== null) {
-        const label_div = document.createElement('div');
-        label_div.className = 'mb-2';
-        label_div.setAttribute('for', id);
-        
-        const label_element = document.createElement('h3');
-        label_element.className = 'text-lg';
-        label_element.innerHTML = label;
-        label_element.title = label;
-
-        label_div.appendChild(label_element);
-        div.appendChild(label_div);
-    }
     if (min !== undefined && min !== null) {
         range.min = min;
         number.min = min;
@@ -255,10 +247,10 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
         number.defaultValue = default_value;
     }
 
-    number_div.appendChild(number);
     range_div.appendChild(range);
-    inputs_div.appendChild(number_div);
+    number_div.appendChild(number);
     inputs_div.appendChild(range_div);
+    inputs_div.appendChild(number_div);
     div.appendChild(inputs_div);
 
     return div;
@@ -303,7 +295,7 @@ function setButtonEnabledAppearance(button, enabled){
 
 function createToggleButton(label, onClick, enabled){
     var div = document.createElement('div');
-    div.className = 'flex items-center';
+    div.className = 'flex items-center mb-2 gap-4';
 
     // Create the checkbox input
     const button = document.createElement('input');
@@ -313,21 +305,18 @@ function createToggleButton(label, onClick, enabled){
     button.onclick = onClick;
     button.style.marginRight= '10px'
 
-    div.appendChild(button);
-
     // Create the label element
     const labelContainer = document.createElement('label');
     labelContainer.className = 'label cursor-pointer';
 
-    // Create the span element
-    const labelText = document.createElement('span');
-    labelText.className = 'label-text text-lg';
-    labelText.textContent = label;
+    // 1. Label (Left side)
+    const label_element = document.createElement('label');
+    label_element.className = 'text-md text-right text-neutral-200 font-medium w-24 flex-shrink-0'; // Fixed width for alignment
+    label_element.innerHTML = label || '';
 
     // Build the structure
-    labelContainer.appendChild(button);
-    labelContainer.appendChild(labelText);
-    div.appendChild(labelContainer);
+    div.appendChild(label_element);
+    div.appendChild(button);
 
     return div;
 }
