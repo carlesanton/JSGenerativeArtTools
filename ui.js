@@ -52,7 +52,7 @@ function create_daisyui_expandable_card(id, title) {
     // Create the main card container
     const card = document.createElement('div');
     card.setAttribute('id', id);
-    card.className = 'collapse collapse-arrow border-base-300 bg-base-200 border shadow-xl transition-none' // better with or without animation?
+    card.className = 'collapse collapse-arrow rounded-none border-base-content bg-base-200 border-b transition-none' // better with or without animation?
     // card.className = 'collapse collapse-arrow border-base-300 bg-base-200 border shadow-xl' // better with or without animation?
 
     const checkbox = document.createElement('input');
