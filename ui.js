@@ -165,11 +165,11 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
     // 3. Number Input (Right)
     const number_div = document.createElement('div');
     number_div.id = id+'number-div';
-    number_div.className = 'relative w-17 flex justify-center';
+    number_div.className = 'relative w-20 flex-shrink-0 flex justify-center';
     // Create value display
     var number = document.createElement('input');
     number.setAttribute('type', 'number');
-    number.className = 'input input-bordered input-xs text-base w-full text-center';
+    number.className = 'input input-bordered input-xs text-base w-full text-center px-0';
     number.setAttribute('id', id + 'number');
 
 
