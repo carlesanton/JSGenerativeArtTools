@@ -258,9 +258,10 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
 
 function create_button(label, onClick, description, size){
     var div = document.createElement('div');
+    div.className = 'mb-4'
 
     const button = document.createElement('button');
-    var class_name = 'btn btn-neutral mb-2'
+    var class_name = 'btn btn-neutral hover:bg-neutral/80'
     if (size !== undefined && size !== null) {
         class_name += ' btn-'+size
     }
