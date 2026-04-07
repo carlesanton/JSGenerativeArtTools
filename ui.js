@@ -260,7 +260,7 @@ function create_button(label, onClick, description, size){
     var div = document.createElement('div');
 
     const button = document.createElement('button');
-    var class_name = 'btn btn-neutral'
+    var class_name = 'btn btn-neutral mb-2'
     if (size !== undefined && size !== null) {
         class_name += ' btn-'+size
     }
