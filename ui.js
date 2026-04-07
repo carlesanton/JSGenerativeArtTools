@@ -86,7 +86,7 @@ function create_expandable_subtitle(id, title, checked = true) {
     checkbox.checked=checked // set checkd for it to be open
 
     const cardTitle = document.createElement('h3');
-    cardTitle.setAttribute('class', 'collapse-title text-lg font-medium pl-0');
+    cardTitle.setAttribute('class', 'collapse-title text-lg font-semibold');
     cardTitle.innerHTML = title;
 
     const cardBody = document.createElement('div');
