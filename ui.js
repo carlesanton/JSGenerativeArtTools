@@ -327,7 +327,7 @@ function create_input_file_button(callback, label, default_text, description_pre
     var input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('id', 'inputImageButton');
-    input.setAttribute('class', 'file-input file-input-bordered file-input-content w-full max-w-xs');
+    input.setAttribute('class', 'file-input file-input-sm file-input-bordered file-input-content w-full max-w-xs');
 
     input.addEventListener(
         "change",
