@@ -177,7 +177,6 @@ export class ColorPalette{
     elements_dict['squareSizeDiv'] = displaySize;
 
     cardBody.appendChild(numberOfColorsInput);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(enableVisButton);
     cardBody.appendChild(displaySize);
 

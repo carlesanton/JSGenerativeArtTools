@@ -296,7 +296,7 @@ export class AudioReactive {
     const card = create_daisyui_expandable_card('audioReactiveSettings', 'Audio Reactive');
     const cardBody = card.getElementsByClassName('collapse-content')[0];
 
-    const enableAudioButton = createToggleButton('Enable Audio Reactive Controls', (a) => {
+    const enableAudioButton = createToggleButton('Enable', (a) => {
         this.setEnableAudio(a.target.checked);
         this.takeOverControlls()
       },
@@ -304,7 +304,7 @@ export class AudioReactive {
     );
     elements_dict['AudioEnable'] = enableAudioButton.getElementsByTagName('button')[0];
     
-    const enableVisButton = createToggleButton('Show Audio Visualization', (a) => {
+    const enableVisButton = createToggleButton('Visualize', (a) => {
         this.setDisplayVisualization(a.target.checked)
       },
       AudioReactive.defaultDisplayVisualizationEnabled,
@@ -313,7 +313,7 @@ export class AudioReactive {
 
     const levelScale = create_number_input_slider_and_number(
       'levelScale',
-      'Input Audio Scale',
+      'Input Scale',
       AudioReactive.defaultLevelScale,
       0.,
       5.,
@@ -358,7 +358,7 @@ export class AudioReactive {
       0.01
     );
     elements_dict['audioLevelStrength'] = audioLevelStrength.getElementsByTagName('input')[0];
-    elements_dict['audioLevelStrengthLabel'] = audioLevelStrength.getElementsByTagName('h3')[0];
+    elements_dict['audioLevelStrengthLabel'] = audioLevelStrength.getElementsByTagName('label')[0];
     
     const lhEnergyRatioStrength = create_number_input_slider_and_number(
       'energyRatioStrenght',
@@ -370,21 +370,18 @@ export class AudioReactive {
       0.01
     );
     elements_dict['energyRatioStrenght'] = lhEnergyRatioStrength.getElementsByTagName('input')[0];
-    elements_dict['energyRatioStrenghtLabel'] = lhEnergyRatioStrength.getElementsByTagName('h3')[0];
+    elements_dict['energyRatioStrenghtLabel'] = lhEnergyRatioStrength.getElementsByTagName('label')[0];
   
     cardBody.appendChild(enableAudioButton);
     cardBody.appendChild(enableVisButton);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(levelScale);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beatDetectSubtitle);
     cardBody.appendChild(beathThreshold);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(beatDecayRate);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(sensitivitySubtitle);
     cardBody.appendChild(audioLevelStrength);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(lhEnergyRatioStrength);
 
     elements_dict['main-toolbar'] = card;

@@ -346,14 +346,10 @@ export class PixelSort {
         elements_dict['PSnoiseDirectionChangeRate'] = noiseDirection.getElementsByTagName('input')[0];
 
         cardBody.appendChild(enablePSButton);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(initialSteps);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(maxStepsPSButton);
         cardBody.appendChild(maxSteps);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(passesPerFrame);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(noiseDirection);
 
         elements_dict['main-toolbar'] = card;

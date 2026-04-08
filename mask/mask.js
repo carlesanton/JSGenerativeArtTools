@@ -153,7 +153,7 @@ export class Mask {
         // Add Min / Max
         const minBrightnes = create_number_input_slider_and_number(
             'MaskMinBrightnes',
-            'Min Brightness',
+            'Min',
             this.minBrightness,
             0,
             1,
@@ -164,7 +164,7 @@ export class Mask {
 
         const maxBrightnes = create_number_input_slider_and_number(
             'MaskMaxBrightnes',
-            'Max Brightness',
+            'Max',
             this.maxBrightness,
             0,
             1,
@@ -174,7 +174,7 @@ export class Mask {
         elements_dict['MaskMaxBrightnes'] = maxBrightnes.getElementsByTagName('input')[0];
 
         // Overlay
-        const enableDisplayButton = createToggleButton('Overlay Mask', (a) => {
+        const enableDisplayButton = createToggleButton('Overlay', (a) => {
             this.setDisplay(a.target.checked)
           },
           Mask.defaultDisplay,
@@ -195,11 +195,8 @@ export class Mask {
         elements_dict['displayOpacity'] = displayOpacity;
 
         cardBody.appendChild(enable);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(minBrightnes);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(maxBrightnes);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(enableDisplayButton);
         cardBody.appendChild(displayOpacity);
 

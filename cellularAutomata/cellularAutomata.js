@@ -417,14 +417,10 @@ export class CellularAutomata {
         elements_dict['CARandomColorChangeRate'] = randomColor.getElementsByTagName('input')[0];
 
         cardBody.appendChild(enableCAButton);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(initialSteps);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(maxStepsCAButton);
         cardBody.appendChild(maxSteps);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(passesPerFrame);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(randomColor);
         elements_dict['main-toolbar'] = card;
         this.CAInputs = elements_dict;
