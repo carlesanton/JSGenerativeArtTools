@@ -419,7 +419,7 @@ function createRecordStopButton(label, onClick) {
 
     const button = document.createElement('button');
     button.id = 'playButton';
-    button.className = 'bg-neutral-content hover:bg-neutral rounded-full p-2 transition-colors';
+    button.className = 'bg-primary hover:bg-neutral rounded-full p-2 transition-colors';
 
     // Add Icon;
     // Create Record and Stop Paths for icon
