@@ -10,6 +10,7 @@ import {
     createDropDownMenu,
     create_subtitle,
     create_button,
+    createSmallBreak,
   } from '../ui.js'
 
 // Disable Default UI to create our own
@@ -228,7 +229,7 @@ export class Recorder {
         const cardBody = card.getElementsByClassName('collapse-content')[0];
 
         // Single Frame
-        const saveFrameButton = create_button('Save Current Frame', () => { this.captureSingleFrameMethod(); });
+        const saveFrameButton = create_button('Save Current Frame', () => { this.captureSingleFrameMethod(); }, '', 'sm');
 
         // Video Section
         const videoTitle = create_subtitle('Video');
@@ -254,9 +255,9 @@ export class Recorder {
         elements_dict['formatMenu'] = formatMenu.getElementsByTagName('button')[0];
 
         // FPS
-        const sameFPSButton = createToggleButton('Same FPS as Artwork', (a) => {
-            this.setUseCustomFPS(!a.target.checked);
-        }, !this.useCustomFPS);
+        const sameFPSButton = createToggleButton('Custom FPS', (a) => {
+            this.setUseCustomFPS(a.target.checked);
+        }, this.useCustomFPS);
         elements_dict['sameFPSButton'] = sameFPSButton.getElementsByTagName('button')[0];
 
         const fps = create_number_input_slider_and_number(
@@ -274,7 +275,7 @@ export class Recorder {
         elements_dict['fpsDiv'] = fps;
 
         // Duration
-        const recordForSetDuration = createToggleButton('Record For Set Duration', (a) => {
+        const recordForSetDuration = createToggleButton('Record set duration', (a) => {
             this.setRecordForSetDuration(a.target.checked);
         }, this.recordForSetDuration);
         elements_dict['sameFPSButton'] = sameFPSButton.getElementsByTagName('button')[0];
@@ -304,20 +305,16 @@ export class Recorder {
         );
         elements_dict['quality'] = quality.getElementsByTagName('input')[0];
 
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(saveFrameButton);
-        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(createSmallBreak('0px'));
         cardBody.appendChild(videoTitle);
         cardBody.appendChild(recordButton);
-        cardBody.appendChild(document.createElement('br'));
+        cardBody.appendChild(createSmallBreak('10px'));
         cardBody.appendChild(formatMenu);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(recordForSetDuration);
         cardBody.appendChild(duration);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(sameFPSButton);
         cardBody.appendChild(fps);
-        cardBody.appendChild(document.createElement('br'));
         cardBody.appendChild(quality);
 
         elements_dict['main-toolbar'] = card;
