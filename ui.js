@@ -154,7 +154,7 @@ function create_number_input_slider_and_number(id, label, default_value, min, ma
 
     // 1. Label (Left side)
     const label_element = document.createElement('label');
-    label_element.className = 'text-sm text-right font-medium w-24 flex-shrink-0'; // Fixed width for alignment
+    label_element.className = 'text-sm text-right font-medium w-24 flex-shrink-0';
     label_element.innerHTML = label || '';
     div.appendChild(label_element);
 
