@@ -504,21 +504,16 @@ function createRecordStopButton(label, onClick) {
 
 function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
     var div = document.createElement('div');
-    div.className = 'flex items-center';
+    div.className = 'flex items-center justify-between mb-3 gap-4 w-full';
     div.id = id;
 
-    // Add label if provided
-    if (label !== undefined && label !== null) {
-        var labelDiv = document.createElement('div');
-        labelDiv.className = 'relative flex w-30 justify-center mr-3';
-        labelDiv.id = id + '-label';
-
-        var label_tag = document.createElement('text');
-        label_tag.className = 'text-md'
-        label_tag.textContent = label;
-        labelDiv.appendChild(label_tag)
-        div.appendChild(labelDiv)
-    }
+    // 1. Label (Left side)
+    const label_element = document.createElement('label');
+    // label_element.className = 'text-sm text-right font-medium w-24 flex-shrink-0 '; // Fixed width for alignment
+    label_element.className = 'text-sm text-right font-medium w-24 flex-shrink-0'; // Fixed width for alignment
+    label_element.innerHTML = label || '';
+    label_element.id = id + '-label';
+    div.id = id;
 
     const menuDiv = document.createElement('div');
     menuDiv.className = 'dropdown dropdown relative w-full';
@@ -529,14 +524,14 @@ function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
     menuDetails.className = 'dropdown relative w-full'
 
     const menuSummary = document.createElement('summary');
-    menuSummary.className = 'btn btn-outline m-1 w-1/2 text-left justify-start'
+    menuSummary.className = 'btn btn-sm btn-outline m-1 w-1/2 text-left justify-start bg-base-200 hover:bg-base-200/80'
     menuSummary.textContent = defaultOption;
 
     menuDetails.appendChild(menuSummary);
 
     // Create dropdown menu
     var dropdownMenu = document.createElement('ul');
-    dropdownMenu.className = 'menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 z-[1000]';
+    dropdownMenu.className = 'menu dropdown-content p-2 shadow bg-base-200 rounded-box w-52 z-[1000]';
     
     // This is to allow vertical scroll so it has a dive with some size that it cant overflow
     var dropdownMenuDiv = document.createElement('div');
@@ -557,12 +552,14 @@ function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
             }
             if (!ableToSet) return; // don't change label if something failed
             menuSummary.innerHTML = option;
+            menuDetails.removeAttribute("open");
         });
         
         listItem.appendChild(optionButton);
         dropdownMenuDiv.appendChild(listItem);
     });
     
+    div.appendChild(label_element);
     dropdownMenu.appendChild(dropdownMenuDiv);
     menuDetails.appendChild(dropdownMenu);
     // menuDiv.appendChild(menuButton);
