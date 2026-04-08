@@ -315,7 +315,7 @@ import {
                 parent.remove();
             };
 
-            input_file.getElementsByTagName('input')[0].className = "file-input file-input-xs file-input-bordered file-input-content file:px-1 max-w-[12rem]"
+            input_file.getElementsByTagName('input')[0].className = "file-input file-input-xs bg-primary text-content dark:text-gray-800 file-input-bordered file-input-content file:px-1 max-w-[12rem]"
             input_file.getElementsByTagName('input')[0].innerHTML = ''
 
             itemDiv.appendChild(handle);
