@@ -203,7 +203,6 @@ import {
     }
 
     applyColorsToSpritesheet(spritesheet, white_color, black_color) {
-        console.log('spritesheet', spritesheet)
         this.ColorReplacementShader.setUniform('white_color', white_color);
         this.ColorReplacementShader.setUniform('black_color', black_color);
 
