@@ -97,7 +97,7 @@ import {
         const spritesheetImages = this.spritesheets.map(item => item.img);
         let spritesheets_atlas = this.joinImagesIntoGrid(spritesheetImages);
         this.setSpritesheetsAtlas(spritesheets_atlas);
-        console.log('Took', millis() - mm_, 'ms to setup spridesheets')
+        console.log('Took', millis() - mm_, 'ms to setup spritesheets')
     }
 
     createASCIITexture(asciiString) {
