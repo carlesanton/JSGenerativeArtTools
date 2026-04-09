@@ -14,6 +14,7 @@ uniform int frame_count;
 uniform int number_of_frames;
 uniform int frame_grid_size;
 uniform sampler2D spritesheets_atlas_texture;
+uniform sampler2D spritesheets_bg_atlas_texture;
 
 float hsvbrightness(vec3 c);
 vec2 get_block_uv(vec2 uv, vec2 block_size);
@@ -79,12 +80,12 @@ void main() {
   );
 
   vec4 output_color = texture2D(spritesheets_atlas_texture, mapped_uv);
-  if (output_color.rgb == vec3(1.)){
-    vec3 new_bg_color = mix(vec3(block_color.rgb), vec3(1.0), 1. - bg_opacity);
-    output_color = vec4(new_bg_color*bg_opacity, bg_opacity); // Ensure we premutliply alpha
-    // output_color = vec4(0.6,0.8*quantizedBrightness,quantizedBrightness,1.); // FOR DEBUGGING
-  }
+  vec4 spritesheet_bg_color = texture2D(spritesheets_bg_atlas_texture, remaped_frame_top_left);
 
+  float d = distance(output_color.rgb, spritesheet_bg_color.rgb);
+  float isNotBackground = step(0.005, d);
+  vec3 faded_bg_color = mix(block_color.rgb, spritesheet_bg_color.rgb, 1.0 - bg_opacity);
+  output_color.rgb = mix(faded_bg_color, output_color.rgb, isNotBackground);
   gl_FragColor = output_color;
 }
 

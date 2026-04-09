@@ -20,6 +20,7 @@ import {
     constructor() {
         this.PCShader = null;
         this.PCInputs = null;
+        this.ColorReplacementShader = null;
 
         // Initialize with defaults
         this.pixelSize = PixelCam.defaultPixelSize;
@@ -30,6 +31,7 @@ import {
         this.asciiTexture = null;
         this.spritesheets = null;
         this.spritesheets_atlas = null;
+        this.spritesheets_bg_atlas = null;
         this.frame_count = 0;
         this.frameGridSideSize = null;
         this.numberOfFrames = PixelCam.defaultNumberOfFrames;
@@ -42,10 +44,12 @@ import {
   
     loadShaderCode() {
         this.pc_src = loadStrings('./lib/JSGenerativeArtTools/pixelCam/pixel_cam_shader.frag');
+        this.color_replacement_src = loadStrings('./lib/JSGenerativeArtTools/pixelCam/color_replacement_shader.frag');
     }
 
     initializeShader() {
         this.PCShader = createFilterShader(this.pc_src.join('\n'));
+        this.ColorReplacementShader = createFilterShader(this.color_replacement_src.join('\n'));
 
         this.PCShader.setUniform('pixel_size', this.pixelSize);
         this.PCShader.setUniform('bg_opacity', this.bgOpacity);
@@ -56,6 +60,7 @@ import {
     pixelCamGPU(color_buffer) {
         this.PCShader.setUniform('ascii_texture', this.asciiTexture);
         this.PCShader.setUniform('spritesheets_atlas_texture', this.spritesheets_atlas);
+        this.PCShader.setUniform('spritesheets_bg_atlas_texture', this.spritesheets_bg_atlas);
         this.PCShader.setUniform('frame_count', this.frame_count);
 
         color_buffer.begin();
@@ -94,9 +99,23 @@ import {
         this.setFrameGridSideSize(frameGridSideSize);
 
         // Set atlas
-        const spritesheetImages = this.spritesheets.map(item => item.img);
+        const spritesheetImages = this.spritesheets.map(
+            item => this.applyColorsToSpritesheet(item.img, item.bg_color, item.glyph_color)
+        );
         let spritesheets_atlas = this.joinImagesIntoGrid(spritesheetImages);
         this.setSpritesheetsAtlas(spritesheets_atlas);
+
+        // Compute atlas for bg colors, used in shader to identify and replace bg colors
+        const bg_colors = this.spritesheets.map(
+            (item, idx) => {
+                let tmp = createGraphics(item.img.width,item.img.height);
+                tmp.background(item.bg_color[0]*255, item.bg_color[1]*255, item.bg_color[2]*255);
+                return tmp;
+            }
+        );
+        let spritesheets_bg_atlas = this.joinImagesIntoGrid(bg_colors);
+        this.setSpritesheetsBGAtlas(spritesheets_bg_atlas);
+
         console.log('Took', millis() - mm_, 'ms to setup spritesheets')
     }
 
@@ -183,6 +202,32 @@ import {
         return buffer;
     }
 
+    applyColorsToSpritesheet(spritesheet, white_color, black_color) {
+        console.log('spritesheet', spritesheet)
+        this.ColorReplacementShader.setUniform('white_color', white_color);
+        this.ColorReplacementShader.setUniform('black_color', black_color);
+
+        let color_buffer_otions = {
+            width: spritesheet.width,
+            height: spritesheet.height,
+            textureFiltering: NEAREST,
+            antialias: false,
+            desity: 1,
+            format: UNSIGNED_BYTE,
+            depth: false,
+            channels: RGBA,
+        }
+        let tmp_buffer = createFramebuffer(color_buffer_otions)
+
+        tmp_buffer.begin();
+        background(255);
+        image(spritesheet, -spritesheet.width/2, -spritesheet.height/2);
+        filter(this.ColorReplacementShader);
+        tmp_buffer.end();
+
+        return tmp_buffer;
+    }
+
     setPixelSize(new_pixel_size) {
         const old_pixel_size = this.pixelSize;
         this.pixelSize = parseInt(new_pixel_size);
@@ -227,6 +272,10 @@ import {
     
     setSpritesheetsAtlas(spritesheets_atlas) {
         this.spritesheets_atlas = spritesheets_atlas;
+    }
+    
+    setSpritesheetsBGAtlas(spritesheets_bg_atlas) {
+        this.spritesheets_bg_atlas = spritesheets_bg_atlas;
     }
     
     setNumberOfFrames(numberOfFrames) {
@@ -347,7 +396,7 @@ import {
         // BG Opacity
         const bgOpacity = create_number_input_slider_and_number(
             'PCbgOpacity',
-            'BG Opacity',
+            'Original Color Mix',
             this.bgOpacity,
             0,
             1.0,
@@ -382,7 +431,12 @@ import {
         addBtn.onclick = () => {
             console.log('Adding new spritesheet')
             const newImg = createGraphics(this.pixelSize || 32, this.pixelSize || 32);
-            this.spritesheets.push({ id: `lvl-${Date.now()}`, img: newImg });
+            this.spritesheets.push({
+                id: `lvl-${Date.now()}`,
+                img: newImg,
+                bg_color: [1,1,1],
+                glyph_color: [0,0,0],
+            });
             this.useSpritesheets(this.spritesheets)
             this.updateUISymbols(); // Re-render
         };
