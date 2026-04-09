@@ -251,6 +251,7 @@ export class Recorder {
             Recorder.defaultFormat,
             (a) => {return this.setFormat(a)},
             'Format',
+            '24',
         )
         elements_dict['formatMenu'] = formatMenu.getElementsByTagName('button')[0];
 

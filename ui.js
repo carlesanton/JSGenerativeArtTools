@@ -502,7 +502,7 @@ function createRecordStopButton(label, onClick) {
 
 }
 
-function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
+function createDropDownMenu(id, options, defaultOption, onSetMethod, label, max_height){
     var div = document.createElement('div');
     div.className = 'flex items-center justify-between mb-3 gap-4 w-full';
     div.id = id;
@@ -535,7 +535,7 @@ function createDropDownMenu(id, options, defaultOption, onSetMethod, label){
     
     // This is to allow vertical scroll so it has a dive with some size that it cant overflow
     var dropdownMenuDiv = document.createElement('div');
-    dropdownMenuDiv.className = 'overflow-y-auto max-h-52';
+    dropdownMenuDiv.className = `overflow-y-auto max-h-${max_height || '40'}`;
 
     // Add options dynamically
     options.forEach(option => {
