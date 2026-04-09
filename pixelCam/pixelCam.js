@@ -310,7 +310,16 @@ import {
             const dataURL = p5img.canvas.toDataURL();
             
             const itemDiv = document.createElement('div');
-            itemDiv.setAttribute('class', 'spritesheet-item flex items-center gap-0 h-12 mb-5');
+            itemDiv.setAttribute('class', 'spritesheet-item flex items-center gap-4 mb-5');
+
+            const contentDiv = document.createElement('div');
+            contentDiv.setAttribute('class', 'flex flex-col gap-2');
+
+            const fileDiv = document.createElement('div');
+            fileDiv.setAttribute('class', 'spritesheet-item-file flex items-center gap-0 h-12');
+
+            const colorPickerDiv = document.createElement('div');
+            colorPickerDiv.setAttribute('class', 'flex items-center gap-0');
             
             const existingImg = document.getElementById(create_spritesheet_img_id(id));
             if (existingImg) {
@@ -331,8 +340,8 @@ import {
             // File input button
             const input_file = create_input_file_button(
                 (user_file, file_name) => {
-                    const parent = input_file.parentElement; 
-                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                    const parent = input_file.parentElement;
+                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item-file'));
                     const currentIndex = allItems.indexOf(parent);
                     console.log('Changing spritesheet', currentIndex, 'to', file_name)
                     loadImage(user_file,
@@ -351,10 +360,10 @@ import {
 
             // Delete button
             const delBtn = document.createElement('button');
-            delBtn.className = 'btn btn-ghost btn-xs text-neutral';
+            delBtn.className = 'btn btn-ghost btn-xs text-neutral ml-1';
             delBtn.innerHTML = '✕';
             delBtn.onclick = () => {
-                const parent = input_file.parentElement; 
+                const parent = contentDiv.parentElement; 
                 const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
                 const currentIndex = allItems.indexOf(parent);
                 console.log('Removing spritesheet', currentIndex)
@@ -367,9 +376,18 @@ import {
             input_file.getElementsByTagName('input')[0].innerHTML = ''
 
             itemDiv.appendChild(handle);
+
+            img.parent(fileDiv);
+            fileDiv.appendChild(input_file)
+            fileDiv.appendChild(delBtn)
             img.parent(itemDiv);
             itemDiv.appendChild(input_file)
             itemDiv.appendChild(delBtn)
+
+            contentDiv.appendChild(fileDiv);
+            contentDiv.appendChild(colorPickerDiv);
+
+            itemDiv.appendChild(contentDiv);
             container.appendChild(itemDiv);
         });
     }
