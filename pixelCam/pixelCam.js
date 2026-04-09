@@ -276,7 +276,7 @@ import {
 
             // Image
             const img = createImg(dataURL, create_spritesheet_img_id(id));
-            img.addClass('spritesheet-image');
+            img.addClass('spritesheet-image bg-white');
             img.id(create_spritesheet_img_id(id));
             img.addClass('h-12 mr-4');
 
