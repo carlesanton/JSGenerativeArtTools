@@ -2,7 +2,8 @@ import {
     create_number_input_slider_and_number,
     create_daisyui_expandable_card,
     create_subtitle,
-    createSmallBreak,
+    create_button,
+    createColorPicker,
     create_expandable_subtitle,
     create_input_file_button,
   } from '../ui.js'
@@ -310,7 +311,7 @@ import {
             const dataURL = p5img.canvas.toDataURL();
             
             const itemDiv = document.createElement('div');
-            itemDiv.setAttribute('class', 'spritesheet-item flex items-center gap-4 mb-5');
+            itemDiv.setAttribute('class', 'spritesheet-item flex items-center gap-4 mb-1 pr-2 py-2 border border-[1px]');
 
             const contentDiv = document.createElement('div');
             contentDiv.setAttribute('class', 'flex flex-col gap-2');
@@ -359,18 +360,52 @@ import {
             )
 
             // Delete button
-            const delBtn = document.createElement('button');
-            delBtn.className = 'btn btn-ghost btn-xs text-neutral ml-1';
-            delBtn.innerHTML = '✕';
-            delBtn.onclick = () => {
-                const parent = contentDiv.parentElement; 
-                const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
-                const currentIndex = allItems.indexOf(parent);
-                console.log('Removing spritesheet', currentIndex)
-                this.spritesheets.splice(currentIndex, 1);
-                this.useSpritesheets(this.spritesheets)
-                parent.remove();
-            };
+            const delBtn = create_button(
+                'x',
+                    () => {
+                    const parent = contentDiv.parentElement; 
+                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                    const currentIndex = allItems.indexOf(parent);
+                    console.debug('Removing spritesheet', currentIndex)
+                    this.spritesheets.splice(currentIndex, 1);
+                    this.useSpritesheets(this.spritesheets)
+                    parent.remove();
+                },
+                '',
+                'xs',
+            );
+            delBtn.className = 'ml-1'
+            delBtn.getElementsByTagName('button')[0].classList.remove('btn-neutral');
+            delBtn.getElementsByTagName('button')[0].classList.add('lowercase');
+            delBtn.getElementsByTagName('button')[0].classList.add('border-opacity-25');
+
+            // BG Color Picker
+            const bgColorPicker = createColorPicker(
+                'Background',
+                '#FFFFFF',
+                (new_color) => {
+                    const parent = contentDiv.parentElement; 
+                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                    const currentIndex = allItems.indexOf(parent);
+                    this.spritesheets[currentIndex].bg_color = new_color;
+                    this.useSpritesheets(this.spritesheets)
+                    console.debug('New BG color', new_color, 'for spritesheet', currentIndex);
+                }
+            );
+
+            const glyphColorPicker = createColorPicker(
+                'Glyph',
+                '#000000',
+                (new_color) => {
+                    const parent = contentDiv.parentElement; 
+                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                    const currentIndex = allItems.indexOf(parent);
+                    this.spritesheets[currentIndex].glyph_color = new_color;
+                    this.useSpritesheets(this.spritesheets)
+                    console.debug('New Glyph color', new_color, 'for spritesheet', currentIndex);
+                },
+            )
+            glyphColorPicker.className += ' ml-5'
 
             input_file.getElementsByTagName('input')[0].className = "file-input file-input-xs bg-primary text-content dark:text-gray-800 file-input-bordered file-input-content file:px-1 max-w-[12rem]"
             input_file.getElementsByTagName('input')[0].innerHTML = ''
@@ -380,9 +415,9 @@ import {
             img.parent(fileDiv);
             fileDiv.appendChild(input_file)
             fileDiv.appendChild(delBtn)
-            img.parent(itemDiv);
-            itemDiv.appendChild(input_file)
-            itemDiv.appendChild(delBtn)
+
+            colorPickerDiv.appendChild(bgColorPicker);
+            colorPickerDiv.appendChild(glyphColorPicker);
 
             contentDiv.appendChild(fileDiv);
             contentDiv.appendChild(colorPickerDiv);
