@@ -1,3 +1,8 @@
+import {
+    defaultPalette,
+    hexToGL,
+} from './utils.js'
+
 function create_card(id) {
     // Create the main card container
     const card = document.createElement('div');
@@ -285,7 +290,6 @@ function create_button(label, onClick, description, size){
 }
 
 function setButtonEnabledAppearance(button, enabled){
-    console.log('button', button)
     var className = button.className;
     className = className.replace(' btn-neutral', ''); // Remove btn-neutral in both cases, if enabled to make sure that its not twice
     if (enabled){
@@ -571,6 +575,63 @@ function createDropDownMenu(id, options, defaultOption, onSetMethod, label, max_
     return div;
 }
 
+function createColorPicker(labelName, defaultHex, callback, palette) {
+    // Parent Container
+    const container = document.createElement('div');
+    container.setAttribute('id', 'color-picker-container')
+    container.className = "flex items-center gap-1 p-0 w-fit";
+
+    // Label
+    const label = document.createElement('span');
+    label.className = "text-xs font-medium opacity-80";
+    label.innerText = labelName;
+    container.appendChild(label);
+
+    // Pickr needs a real element in the DOM to attach to
+    const pickerButton = document.createElement('div');
+    container.appendChild(pickerButton);
+
+    let swatches = palette || defaultPalette;
+
+    const pickr = Pickr.create({
+        el: pickerButton,
+        container: container,
+        theme: 'nano', 
+        default: defaultHex,
+        appClass: 'custom-color-picker',
+        comparison: false, // Syncs button color automaticaly without having to hit save button (that's hidden)
+        swatches: swatches,
+        components: {
+            preview: true,
+            opacity: false,
+            hue: true,
+            interaction: {
+                hex: true,
+                input: true,
+                save: false,
+                hsva: true,
+            }
+        }
+    });
+
+    // Callback on events
+    pickr.on('hide', instance => {
+        const hex = instance._color.toHEXA().toString();
+        callback(hexToGL(hex));
+        instance.hide(); // Close the popup after saving
+    });
+    pickr.on('changestop', (source, instance) => {
+        const hex = instance._color.toHEXA().toString();
+        callback(hexToGL(hex));
+    });
+    pickr.on('swatchselect', (color, instance) => {
+        const hex = color.toHEXA().toString();
+        callback(hexToGL(hex));
+    });
+
+    return container;
+}
+
 export {
     create_card,
     create_expandable_card,
@@ -589,4 +650,5 @@ export {
     createText,
     createRecordStopButton,
     createDropDownMenu,
+    createColorPicker,
 }
