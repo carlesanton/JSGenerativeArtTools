@@ -6,7 +6,9 @@ import {
     createColorPicker,
     create_expandable_subtitle,
     create_input_file_button,
-  } from '../ui.js'
+} from '../ui.js'
+import { glToHex } from '../utils.js'
+
   
   export class PixelCam {
     static defaultPixelSize = 9;
@@ -382,7 +384,7 @@ import {
             // BG Color Picker
             const bgColorPicker = createColorPicker(
                 'Background',
-                '#FFFFFF',
+                glToHex(...item['bg_color']),
                 (new_color) => {
                     const parent = contentDiv.parentElement; 
                     const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
@@ -395,7 +397,7 @@ import {
 
             const glyphColorPicker = createColorPicker(
                 'Glyph',
-                '#000000',
+                glToHex(...item['glyph_color']),
                 (new_color) => {
                     const parent = contentDiv.parentElement; 
                     const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));

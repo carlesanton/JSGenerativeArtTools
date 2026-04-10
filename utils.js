@@ -47,9 +47,24 @@ function hexToGL(hex) {
     return [r / 255, g / 255, b / 255];
 }
 
+function glToHex(r, g, b) {
+    // 1. Map [0, 1] to [0, 255] and ensure they are integers
+    const to255 = (v) => Math.max(0, Math.min(255, Math.round(v * 255)));
+
+    const r255 = to255(r);
+    const g255 = to255(g);
+    const b255 = to255(b);
+
+    // 2. Convert to Hex string and pad with leading zeros if necessary
+    const toHex = (v) => v.toString(16).padStart(2, '0');
+
+    return `#${toHex(r255)}${toHex(g255)}${toHex(b255)}`.toUpperCase();
+}
+
 export {
   scaleCanvasToFit,
   prepareP5Js,
   defaultPalette,
   hexToGL,
+  glToHex,
 }
