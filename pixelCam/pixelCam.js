@@ -117,7 +117,7 @@ import {
         let spritesheets_bg_atlas = this.joinImagesIntoGrid(bg_colors);
         this.setSpritesheetsBGAtlas(spritesheets_bg_atlas);
 
-        console.log('Took', millis() - mm_, 'ms to setup spritesheets')
+        console.debug('Took', millis() - mm_, 'ms to setup spritesheets')
     }
 
     createASCIITexture(asciiString) {
@@ -298,7 +298,7 @@ import {
 
     updateUISymbols() {
         const container = this.PCInputs['customSymbolsList'];
-        console.log('Updating UI Symbols')
+        console.debug('Updating UI Symbols')
 
         function create_spritesheet_img_id(key) {
             return `spritesheet-image-${key}`
@@ -344,7 +344,7 @@ import {
                     const parent = input_file.parentElement;
                     const allItems = Array.from(container.querySelectorAll('.spritesheet-item-file'));
                     const currentIndex = allItems.indexOf(parent);
-                    console.log('Changing spritesheet', currentIndex, 'to', file_name)
+                    console.debug('Changing spritesheet', currentIndex, 'to', file_name)
                     loadImage(user_file,
                         (loadedImage)=>{this.setSingleSpritesheet(loadedImage, currentIndex)},
                     );
@@ -481,7 +481,7 @@ import {
         addBtn.className = "btn btn-outline btn-dashed btn-block btn-sm mt-4";
         addBtn.innerHTML = "+ Add Level";
         addBtn.onclick = () => {
-            console.log('Adding new spritesheet')
+            console.debug('Adding new spritesheet')
             const newImg = createGraphics(this.pixelSize || 32, this.pixelSize || 32);
             this.spritesheets.push({
                 id: `lvl-${Date.now()}`,
@@ -507,7 +507,7 @@ import {
             fallbackClass: "sortable-fallback",
             ghostClass: 'opacity-0', // Makes the 'original' item invisible while you drag
             onEnd: (evt) => {
-                console.log('Moving spritesheet from', evt.oldIndex, 'to', evt.newIndex)
+                console.debug('Moving spritesheet from', evt.oldIndex, 'to', evt.newIndex)
                 this.reorderSpritesheets(evt.oldIndex, evt.newIndex);
             }
         });
