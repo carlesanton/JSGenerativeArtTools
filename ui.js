@@ -629,6 +629,8 @@ function createColorPicker(labelName, defaultHex, callback, palette) {
         callback(hexToGL(hex));
     });
 
+    container.pickr = pickr;
+
     return container;
 }
 
