@@ -7,7 +7,7 @@ import {
     create_expandable_subtitle,
     create_input_file_button,
 } from '../ui.js'
-import { glToHex } from '../utils.js'
+import { glToHex, hexToGL } from '../utils.js'
 
   
   export class PixelCam {
@@ -409,6 +409,34 @@ import { glToHex } from '../utils.js'
             )
             glyphColorPicker.className += ' ml-5'
 
+            const swapButton = create_button(
+                '<svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M864 416H160c-12.8 0-25.6-6.4-28.8-19.2-6.4-12.8-3.2-25.6 6.4-35.2l224-224c12.8-12.8 32-12.8 44.8 0s12.8 32 0 44.8L236.8 352H864c19.2 0 32 12.8 32 32s-12.8 32-32 32zM640 896c-9.6 0-16-3.2-22.4-9.6-12.8-12.8-12.8-32 0-44.8l169.6-169.6H160c-19.2 0-32-12.8-32-32s12.8-32 32-32h704c12.8 0 25.6 6.4 28.8 19.2 6.4 12.8 3.2 25.6-6.4 35.2l-224 224c-6.4 6.4-12.8 9.6-22.4 9.6z"  /></svg>',
+                () => {
+                    const parent = contentDiv.parentElement; 
+                    const allItems = Array.from(container.querySelectorAll('.spritesheet-item'));
+                    const currentIndex = allItems.indexOf(parent);
+
+                    let past_glyph_color = glyphColorPicker.pickr._color.toHEXA().toString()
+                    let past_bg_color = bgColorPicker.pickr._color.toHEXA().toString()
+
+                    glyphColorPicker.pickr.setColor(past_bg_color)
+                    this.spritesheets[currentIndex].glyph_color = hexToGL(past_bg_color);
+
+                    bgColorPicker.pickr.setColor(past_glyph_color)
+                    this.spritesheets[currentIndex].bg_color = hexToGL(past_glyph_color);
+
+                    this.useSpritesheets(this.spritesheets)
+                    console.debug('Swapped colors for spritesheet', currentIndex);
+                },
+                '',
+                'xs',
+            )
+            swapButton.className = 'ml-auto'
+            swapButton.getElementsByTagName('button')[0].classList.remove('btn-neutral');
+            swapButton.getElementsByTagName('button')[0].classList.add('lowercase');
+            swapButton.getElementsByTagName('button')[0].classList.add('border-opacity-25');
+
+
             input_file.getElementsByTagName('input')[0].className = "file-input file-input-xs bg-primary text-content dark:text-gray-800 file-input-bordered file-input-content file:px-1 max-w-[12rem]"
             input_file.getElementsByTagName('input')[0].innerHTML = ''
 
@@ -420,6 +448,7 @@ import { glToHex } from '../utils.js'
 
             colorPickerDiv.appendChild(bgColorPicker);
             colorPickerDiv.appendChild(glyphColorPicker);
+            colorPickerDiv.appendChild(swapButton);
 
             contentDiv.appendChild(fileDiv);
             contentDiv.appendChild(colorPickerDiv);
